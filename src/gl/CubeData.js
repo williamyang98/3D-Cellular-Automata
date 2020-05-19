@@ -1,9 +1,9 @@
 function vertex_data(left, right, front, back, top, bottom) {
   return new Float32Array([
-    left, bottom, front, 0, -1, 0,
-    right, bottom, front, 0, -1, 0,
-    left, top, front, 0, -1, 0,
-    right, top, front, 0, -1, 0,
+    left, bottom, front, 0, 0, 1,
+    right, bottom, front, 0, 0, 1,
+    left, top, front, 0, 0, 1,
+    right, top, front, 0, 0, 1,
 
     left, top, front, 0, 1, 0,
     left, top, back, 0, 1, 0,

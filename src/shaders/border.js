@@ -5,11 +5,14 @@ precision mediump float;
 attribute vec3 position;
 attribute vec3 normal;
 
-uniform mat4 uMVP;
+uniform mat4 uModel;
+uniform mat4 uView;
+uniform mat4 uProjection;
 uniform vec3 uOffset;
 
 void main() {
-    gl_Position = uMVP * vec4(position + uOffset, 1);
+    mat4 MVP = uProjection * uView * uModel;
+    gl_Position = MVP * vec4(position + uOffset, 1);
 }`;
 
 const frag = 

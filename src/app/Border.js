@@ -33,7 +33,9 @@ export class Border {
     this.vao = new VertexBufferArray(gl);
     this.vao.add_vertex_buffer(this.vertex_buffer, layout);
 
-    this.shader.add_uniform("uMVP", new UniformMat4f(gl, this.camera.MVP));
+    this.shader.add_uniform("uModel", new UniformMat4f(gl, this.camera.model));
+    this.shader.add_uniform("uView", new UniformMat4f(gl, this.camera.view));
+    this.shader.add_uniform("uProjection", new UniformMat4f(gl, this.camera.projection));
     // this.shader.add_uniform("uColour", new UniformVec4f(gl, vec4.fromValues(0, 0, 0, 1)));
     this.shader.add_uniform("uColour", new UniformVec4f(gl, vec4.fromValues(0, 0, 0, 0.8)));
     this.shader.add_uniform("uOffset", new UniformVec3f(gl, offset_vec));

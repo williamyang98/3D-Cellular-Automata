@@ -57,11 +57,17 @@ export class SimulationWindow {
     this.vao = new VertexBufferArray(gl);
     this.vao.add_vertex_buffer(this.vertex_buffer, layout);
     
-    this.shader.add_uniform("uMVP", new UniformMat4f(gl, this.camera.MVP));
+    this.shader.add_uniform("uModel", new UniformMat4f(gl, this.camera.model));
+    this.shader.add_uniform("uView", new UniformMat4f(gl, this.camera.view));
+    this.shader.add_uniform("uProjection", new UniformMat4f(gl, this.camera.projection));
     // this.shader.add_uniform("uGridSize", new UniformVec3f(gl, this.size));
     this.shader.add_uniform("uStateColour", new Uniform(loc => gl.uniform4fv(loc, this.state_colours_data)));
     this.shader.add_uniform("uLightColour", new UniformVec3f(gl, vec3.fromValues(1, 1, 1)));
-    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 1)));
+    let light_position = vec3.create();
+    vec3.scale(light_position, this.size, 2);
+    this.shader.add_uniform("uLightPos", new UniformVec3f(gl, light_position));
+    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 0.6)));
+    this.shader.add_uniform("uDiffuseStrength", new Uniform(loc => gl.uniform1f(loc, 0.9)));
   }
 
   clear() {
