@@ -46,18 +46,30 @@ out vec4 fragColour;
 
 uniform vec3 uLightPos;
 uniform vec3 uLightColour;
+
 uniform float uAmbientStrength;
 uniform float uDiffuseStrength;
+uniform float uSpecularStrength;
+
+uniform vec3 uViewPosition;
+uniform float uSpecularPowerFactor;
 
 void main() {
+    vec3 ambient = uAmbientStrength * uLightColour;
+
     vec3 normal = normalize(vNormal);
     vec3 light_direction = normalize(uLightPos - vFragPos);
     float diff = max(dot(normal, light_direction), 0.0);
-
-    vec3 ambient = uAmbientStrength * uLightColour;
     vec3 diffuse = diff * uDiffuseStrength * uLightColour;
 
-    vec3 combined = ambient + diffuse;
+    vec3 view_direction = normalize(uViewPosition - vFragPos);
+    vec3 reflect_direction = reflect(-light_direction, normal);
+    float spec = dot(view_direction, reflect_direction);
+    spec = max(spec, 0.0);
+    spec = pow(spec, uSpecularPowerFactor);
+    vec3 specular = uSpecularStrength * spec * uLightColour;
+
+    vec3 combined = ambient + diffuse + specular;
     vec4 result = vec4(combined, 1) * vColour; 
 
     fragColour = result;
