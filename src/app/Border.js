@@ -28,6 +28,7 @@ export class Border {
 
     let layout = new VertexBufferLayout(gl);
     layout.add_element(3, gl.FLOAT, false);
+    layout.add_element(3, gl.FLOAT, false);
 
     this.vao = new VertexBufferArray(gl);
     this.vao.add_vertex_buffer(this.vertex_buffer, layout);

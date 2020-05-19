@@ -3,6 +3,7 @@ const vertex =
 precision mediump float;
 
 attribute vec3 position;
+attribute vec3 normal;
 
 uniform mat4 uMVP;
 uniform vec3 uOffset;

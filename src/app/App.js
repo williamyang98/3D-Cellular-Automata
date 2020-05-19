@@ -23,8 +23,8 @@ export class App {
 
     this.renderer = new Renderer(gl); 
 
-    // let x = 80;
-    this.size = vec3.fromValues(50, 50, 50);
+    let x = 30;
+    this.size = vec3.fromValues(x, x, x);
     this.border = new Border(gl, this.size, this.renderer, this.camera);
     this.simulation_window = new SimulationWindow(gl, this.size, this.renderer, this.camera);
 
@@ -39,11 +39,8 @@ export class App {
   }
 
   loop() {
-    // let start = new Date().getTime();
     this.on_update();
     this.on_render();
-    // let end = new Date().getTime();
-    // let dt = end-start;
     requestAnimationFrame(this.loop.bind(this));
   }
 

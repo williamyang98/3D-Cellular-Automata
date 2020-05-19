@@ -19,7 +19,7 @@ export class BoundingBox {
             vertex_data.push(...v);
             let shifted_index = i.map(idx => idx+triangle_count);
             index_data.push(...shifted_index);
-            triangle_count += 8;
+            triangle_count += 24;
         }
 
         // create corner pieces

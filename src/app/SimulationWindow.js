@@ -7,7 +7,7 @@ import basic_shader from '../shaders/basic';
 import { CellularAutomaton3D } from '../simulation/CellularAutomaton3D';
 import { VoxelGrid } from './VoxelGrid';
 import { RuleBrowser } from './RuleBrowser';
-import { vec4 } from 'gl-matrix';
+import { vec4, vec3 } from 'gl-matrix';
 
 export class SimulationWindow {
   constructor(gl, size, renderer, camera) {
@@ -51,6 +51,7 @@ export class SimulationWindow {
 
     let layout = new VertexBufferLayout(gl);
     layout.add_element(3, gl.FLOAT, false);
+    layout.add_element(3, gl.FLOAT, false);
     layout.add_element(1, gl.FLOAT, false);
 
     this.vao = new VertexBufferArray(gl);
@@ -59,6 +60,8 @@ export class SimulationWindow {
     this.shader.add_uniform("uMVP", new UniformMat4f(gl, this.camera.MVP));
     // this.shader.add_uniform("uGridSize", new UniformVec3f(gl, this.size));
     this.shader.add_uniform("uStateColour", new Uniform(loc => gl.uniform4fv(loc, this.state_colours_data)));
+    this.shader.add_uniform("uLightColour", new UniformVec3f(gl, vec3.fromValues(1, 1, 1)));
+    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 1)));
   }
 
   clear() {

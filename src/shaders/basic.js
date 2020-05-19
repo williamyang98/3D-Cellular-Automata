@@ -6,16 +6,24 @@ precision mediump float;
 precision mediump int;
 
 in vec3 position;
+in vec3 normal;
 in float state;
 
 uniform mat4 uMVP;
 uniform vec4 uStateColour[${lut_size}];
 
+uniform vec3 uLightColour;
+uniform float uAmbientStrength;
+
+
 out vec4 vColour;
 
 void main() {
     int index = int(state);
-    vColour = uStateColour[index];
+    vec4 object_colour = uStateColour[index];
+    vec3 ambient = uAmbientStrength * uLightColour;
+    vColour = vec4(ambient, 1.0) * object_colour;
+
     gl_Position = uMVP * vec4(position, 1);
 }`
 )};
