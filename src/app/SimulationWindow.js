@@ -36,10 +36,9 @@ export class SimulationWindow {
     this.sim = new CellularAutomaton3D(this.size);
 
     this.init_gl(this.total_cells, this.total_states);
-
-    this.sim.listen_step(ev => this.update_vertex_buffer());
-
     this.rule_browser = new RuleBrowser();
+
+    this.sim.listen_rerender(sim => this.update_vertex_buffer_local());
   }
 
   init_gl(total_cells, total_states) {
@@ -64,12 +63,15 @@ export class SimulationWindow {
 
   clear() {
     this.sim.clear();
+    this.update_vertex_buffer();
   }
 
   randomise() {
     let entry = this.rule_browser.get_selected_entry();
     // this.clear();
     entry.randomiser.randomise(this.sim);
+    this.sim.seed_updates(entry.rule);
+
     this.update_vertex_buffer();
   }
 
@@ -103,6 +105,26 @@ export class SimulationWindow {
 
     this.vertex_buffer.bind();
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.voxels.vertex_data, 0, this.voxels.vertex_data.length);    
+  }
+
+  update_vertex_buffer_local() {
+    let gl = this.gl;
+
+    let rule = this.rule_browser.get_selected_entry().rule;
+    let max_value = rule.alive_state;
+    let scale = (this.total_states-1)/max_value;
+
+    for (let i of this.sim.should_update) {
+      let state = this.sim.cells[i];
+      let offset = i*this.voxels.total_vertices;
+      for (let v = 0; v < this.voxels.total_vertices; v++) {
+        this.voxels.states[offset+v][0] = state*scale;
+      }
+    }
+
+    this.vertex_buffer.bind();
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.voxels.vertex_data, 0, this.voxels.vertex_data.length);    
+
   }
 
   on_render() {

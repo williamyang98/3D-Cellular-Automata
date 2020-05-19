@@ -8,40 +8,59 @@ export class CellularAutomaton3D {
         this.cells = new Uint8Array(this.count);
         this.buffer = new Uint8Array(this.count);
 
-        this.should_update = new Array(this.count);
-        this.should_update.fill(false, 0, -1);
+        this.should_update = new Set();
+        this.should_update_buffer = new Set();
+        this.remove_queue = [];
 
         this.listeners = new Set();
+
+        this.i_to_xyz = new Array(this.count);
+        for (let x = 0; x < this.shape[0]; x++) {
+            for (let y = 0; y < this.shape[1]; y++) {
+                for (let z = 0; z < this.shape[2]; z++) {
+                    let i = this.xyz_to_i(x, y, z);
+                    this.i_to_xyz[i] = [x, y, z];
+                }
+            }
+        }
+
     }
 
-    listen_step(listener) {
-        return this.listeners.add(listener);
-    }
-
-    unlisten_step(listener) {
-        return this.listeners.delete(listener);
+    listen_rerender(listener) {
+        this.listeners.add(listener);
     }
 
     clear() {
         this.cells.fill(0, 0, -1);
         this.buffer.fill(0, 0, -1);
-        this.should_update.fill(false, 0, -1);
-
-        for (let listener of this.listeners) 
-            listener(this);
+        this.should_update.clear();
+        this.should_update_buffer.clear();
+        this.remove_queue = [];
     }
 
-    // O(n^3)
-    refresh_updates(rule) {
+    seed_updates(rule) {
         for (let x = 0; x < this.shape[0]; x++) {
             for (let y = 0; y < this.shape[1]; y++) {
                 for (let z = 0; z < this.shape[2]; z++) {
                     let i = this.xyz_to_i(x, y, z);
-                    if (this.cells[i] == rule.alive_state) {
+                    if (this.cells[i] !== rule.dead_state) {
                         this.update_neighbours(x, y, z);
                     }
                 }
             }
+        }
+
+        let tmp = this.should_update;
+        this.should_update = this.should_update_buffer;
+        this.should_update_buffer = tmp;
+    }
+
+    // O(n^3)
+    refresh_updates(rule) {
+        for (let i of this.should_update) {
+            let [x, y, z] = this.i_to_xyz[i];
+            if (this.cells[i] == rule.alive_state)
+                this.update_neighbours(x, y, z);
         }
     }
 
@@ -53,35 +72,48 @@ export class CellularAutomaton3D {
                     const yn = this.pos_mod(y+yoff, this.shape[1]);
                     const zn = this.pos_mod(z+zoff, this.shape[2]);
                     const i = this.xyz_to_i(xn, yn, zn);
-                    this.should_update[i] = true;
+                    this.should_update_buffer.add(i);
                 }
             }
         }
     }
 
     step(rule) {
-        this.refresh_updates(rule);
+        for (let i of this.should_update) {
+            let state = this.cells[i];
+            let neighbours = 0; 
+            let [x, y, z] = this.i_to_xyz[i];
+            neighbours = this.get_neighbours(x, y, z, rule)
 
-        for (let x = 0; x < this.shape[0]; x++) {
-            for (let y = 0; y < this.shape[1]; y++) {
-                for (let z = 0; z < this.shape[2]; z++) {
-                    let i = this.xyz_to_i(x, y, z);
-                    let state = this.cells[i];
-                    let neighbours = this.should_update[i] ? this.get_neighbours(x, y, z, rule) : 0;
-                    let next_state = rule.get_next_state(state, neighbours);
-                    this.buffer[i] = next_state; 
-                    this.should_update[i] = false;
-                }
+            let next_state = rule.get_next_state(state, neighbours);
+            this.buffer[i] = next_state; 
+
+            if (next_state == state) {
+                this.remove_queue.push(i);
+            } else {
+                this.update_neighbours(x, y, z);
             }
+        }
+
+        // rerender with changes
+        for (let listener of this.listeners) {
+            listener(this);
         }
 
         let tmp = this.cells;
         this.cells = this.buffer;
         this.buffer = tmp;
 
-        for (let listener of this.listeners) {
-            listener(this);
+        while (this.remove_queue.length > 0) {
+            let i = this.remove_queue.pop();
+            this.should_update.delete(i);
         }
+
+        let tmp_update = this.should_update;
+        this.should_update = this.should_update_buffer;
+        this.should_update_buffer = tmp_update;
+
+        console.log(this.should_update.size);
     }
 
     get_neighbours(x, y, z, rule) {
@@ -118,3 +150,46 @@ export class CellularAutomaton3D {
         return ((n % m) + m) % m;
     }
 };
+
+
+class PTimer {
+    constructor() {
+        this.t1 = 0;
+        this.t2 = 0;   
+    }
+
+    start() {
+        this.t1 = performance.now();
+    }
+
+    end() {
+        this.t2 = performance.now();
+        let dt = this.t2-this.t1;
+        return dt;
+    }
+}
+
+class Stack {
+    constructor(size) {
+        // this.i = 0;
+        // this.buffer = new Array(size);
+        this.buffer = [];
+        // this.size = size;
+    }
+
+    push(data) {
+        this.buffer.push(data);
+        // this.buffer[this.i] = data;
+        // this.i++;
+    }
+
+    pop() {
+        return this.buffer.pop();
+        // return this.buffer[this.i--];
+    }
+
+    clear() {
+        this.buffer = [];
+        // this.i = 0;
+    }
+}

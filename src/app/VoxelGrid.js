@@ -38,9 +38,9 @@ export class VoxelGrid {
     // create data
     let current_cell = 0;
     let index_mapping = n => n + 8*current_cell;
-    for (let x = 0; x < this.size[0]; x++) {
+    for (let z = 0; z < this.size[2]; z++) {
       for (let y = 0; y < this.size[1]; y++) {
-        for (let z = 0; z < this.size[2]; z++) {
+        for (let x = 0; x < this.size[0]; x++) {
           let left = x*this.scale;
           let right = (x+1)*this.scale;
           let front = (z+1)*this.scale;

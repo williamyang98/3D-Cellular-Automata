@@ -23,12 +23,14 @@ export class App {
 
     this.renderer = new Renderer(gl); 
 
-    let x = 100;
-    this.size = vec3.fromValues(x, x, x);
+    // let x = 80;
+    this.size = vec3.fromValues(300, 30, 30);
     this.border = new Border(gl, this.size, this.renderer, this.camera);
     this.simulation_window = new SimulationWindow(gl, this.size, this.renderer, this.camera);
 
-    this.camera.model_translation = vec3.fromValues(-x/2, -x/2, -x/2);
+    this.camera.model_translation = vec3.create();
+    vec3.scale(this.camera.model_translation, this.size, -0.5);
+
     this.camera.pos[2] = -this.size[2]/2 * 2.5;
   }
 
