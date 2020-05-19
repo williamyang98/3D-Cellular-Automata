@@ -7,11 +7,15 @@ export class SeedCrystal {
     }
 
     randomise(sim) {
-        let [lower, upper] = [pos_mod(0.5-this.radius, 1.0), pos_mod(0.5+this.radius, 1.0)];
+        let [lower, upper] = [Math.max(0.5-this.radius, 0.0), Math.min(0.5+this.radius, 1.0)];
 
-        let [xlower, xupper] = [Math.floor(sim.shape[0]*lower), Math.floor(sim.shape[0]*upper)];
-        let [ylower, yupper] = [Math.floor(sim.shape[1]*lower), Math.floor(sim.shape[1]*upper)];
-        let [zlower, zupper] = [Math.floor(sim.shape[2]*lower), Math.floor(sim.shape[2]*upper)];
+        let X = sim.shape[0]-1;
+        let Y = sim.shape[1]-1;
+        let Z = sim.shape[2]-1;
+
+        let [xlower, xupper] = [Math.floor(X*lower), Math.floor(X*upper)];
+        let [ylower, yupper] = [Math.floor(Y*lower), Math.floor(Y*upper)];
+        let [zlower, zupper] = [Math.floor(Z*lower), Math.floor(Z*upper)];
 
 
         for (let x = xlower; x < xupper; x++) {
