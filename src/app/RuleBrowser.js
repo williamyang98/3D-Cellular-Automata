@@ -1,5 +1,5 @@
 import { Rule3D } from "../simulation/Rule3D";
-import { RandomDensity, SeedCrystal } from "../simulation/Randomiser3D";
+import { SeedCrystal } from "../simulation/Randomiser3D";
 
 export class RuleBrowser {
   constructor() {
@@ -8,7 +8,7 @@ export class RuleBrowser {
       new RuleEntry(
         '445', '4|4|5', 
         new Rule3D(n => n === 4, n => n === 4, 5),
-        new RandomDensity()
+        new SeedCrystal(0.2, 0.2)
       ));
     this.add_entry(
       new RuleEntry(

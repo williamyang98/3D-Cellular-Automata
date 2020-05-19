@@ -4,12 +4,14 @@ export class CellularAutomaton3D {
         this.count = 1;
         this.shape.forEach(n => this.count *= n); 
 
+        this.xyz_to_i_coefficients = [this.shape[0], this.shape[1]*this.shape[0]];
         this.cells = new Uint8Array(this.count);
         this.buffer = new Uint8Array(this.count);
 
+        this.should_update = new Array(this.count);
+        this.should_update.fill(false, 0, -1);
+
         this.listeners = new Set();
-        
-        
     }
 
     listen_step(listener) {
@@ -23,27 +25,59 @@ export class CellularAutomaton3D {
     clear() {
         this.cells.fill(0, 0, -1);
         this.buffer.fill(0, 0, -1);
+        this.should_update.fill(false, 0, -1);
 
         for (let listener of this.listeners) 
             listener(this);
     }
 
-    step(rule) {
+    // O(n^3)
+    refresh_updates(rule) {
         for (let x = 0; x < this.shape[0]; x++) {
             for (let y = 0; y < this.shape[1]; y++) {
                 for (let z = 0; z < this.shape[2]; z++) {
-                    let i  = this.xyz_to_i(x, y, z);
+                    let i = this.xyz_to_i(x, y, z);
+                    if (this.cells[i] == rule.alive_state) {
+                        this.update_neighbours(x, y, z);
+                    }
+                }
+            }
+        }
+    }
+
+    update_neighbours(x, y, z) {
+        for (let xoff = -1; xoff <= 1; xoff++) {
+            for (let yoff = -1; yoff <= 1; yoff++) {
+                for (let zoff = -1; zoff <= 1; zoff++) {
+                    const xn = this.pos_mod(x+xoff, this.shape[0]);
+                    const yn = this.pos_mod(y+yoff, this.shape[1]);
+                    const zn = this.pos_mod(z+zoff, this.shape[2]);
+                    const i = this.xyz_to_i(xn, yn, zn);
+                    this.should_update[i] = true;
+                }
+            }
+        }
+    }
+
+    step(rule) {
+        this.refresh_updates(rule);
+
+        for (let x = 0; x < this.shape[0]; x++) {
+            for (let y = 0; y < this.shape[1]; y++) {
+                for (let z = 0; z < this.shape[2]; z++) {
+                    let i = this.xyz_to_i(x, y, z);
                     let state = this.cells[i];
-                    let neighbours = this.get_neighbours(x, y, z, rule);
+                    let neighbours = this.should_update[i] ? this.get_neighbours(x, y, z, rule) : 0;
                     let next_state = rule.get_next_state(state, neighbours);
                     this.buffer[i] = next_state; 
+                    this.should_update[i] = false;
                 }
             }
         }
 
         let tmp = this.cells;
         this.cells = this.buffer;
-        this.buffer = tmp; 
+        this.buffer = tmp;
 
         for (let listener of this.listeners) {
             listener(this);
@@ -59,12 +93,12 @@ export class CellularAutomaton3D {
                     if (xoff === 0 && yoff === 0 && zoff === 0) 
                         continue;
 
-                    let xn = this.pos_mod(x+xoff, this.shape[0]);
-                    let yn = this.pos_mod(y+yoff, this.shape[1]);
-                    let zn = this.pos_mod(z+zoff, this.shape[2]);
-                    let i = this.xyz_to_i(xn, yn, zn);
+                    const xn = this.pos_mod(x+xoff, this.shape[0]);
+                    const yn = this.pos_mod(y+yoff, this.shape[1]);
+                    const zn = this.pos_mod(z+zoff, this.shape[2]);
+                    const i = this.xyz_to_i(xn, yn, zn);
 
-                    let state = this.cells[i];
+                    const state = this.cells[i];
 
                     if (rule.is_neighbour(state)) {
                         total_neighbours += 1;
@@ -77,9 +111,7 @@ export class CellularAutomaton3D {
     }
 
     xyz_to_i(x, y, z) {
-        const Y = this.shape[1];
-        const Z = this.shape[1]*this.shape[0];
-        return x + y*Y + z*Z;
+        return x + y*this.xyz_to_i_coefficients[0] + z*this.xyz_to_i_coefficients[1];
     }
 
     pos_mod(n, m) {

@@ -1,22 +1,3 @@
-export class RandomDensity {
-    constructor(density=0.2) {
-        this.density = density;
-        this.alive_state = 0;
-        this.dead_state = 0;
-    }
-
-    randomise(sim) {
-        let cells = sim.cells;
-        for (let i = 0; i < cells.length; i++) {
-            if (Math.random() < this.density) {
-                cells[i] = this.alive_state; 
-            } else {
-                cells[i] = this.dead_state;
-            }
-        }
-    }
-}
-
 export class SeedCrystal {
     constructor(density=0.2, radius=0.1) {
         this.radius = radius;
@@ -36,7 +17,7 @@ export class SeedCrystal {
         for (let x = xlower; x < xupper; x++) {
             for (let y = ylower; y < yupper; y++) {
                 for (let z = zlower; z < zupper; z++) {
-                    let i = sim.calculate_index(x, y, z);
+                    let i = sim.xyz_to_i(x, y, z);
                     if (Math.random() < this.density) {
                         sim.cells[i] = this.alive_state;
                     } else {
