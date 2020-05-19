@@ -44,7 +44,8 @@ export class SimulationWindow {
   init_gl(total_cells, total_states) {
     let gl = this.gl;
 
-    let total_lights = 2;
+    // let total_lights = 3*3*3-1;
+    let total_lights = 1;
 
     let vert_src = basic_shader.vertex(total_states);
     let frag_src = basic_shader.frag(total_lights);
@@ -70,9 +71,11 @@ export class SimulationWindow {
 
     // light data
     // let i = 0;
-    // for (let x of [-1, 1]) {
-    //   for (let y of [-1, 1]) {
-    //     for (let z of [-1, 1]) {
+    // for (let x of [-1, 0, 1]) {
+    //   for (let y of [-1, 0, 1]) {
+    //     for (let z of [-1, 0, 1]) {
+    //       if (x === 0 && y === 0 && z == 0)
+    //         continue;
     //       this.shader.add_uniform(`uLights[${i}].colour`, new UniformVec3f(gl, vec3.fromValues(1, 1, 1)));
     //       let light_position = vec3.create();
     //       vec3.mul(light_position, this.size, vec3.fromValues(x, y, z));
@@ -93,11 +96,11 @@ export class SimulationWindow {
     })
 
     // lighting params
-    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 0.5)));
-    this.shader.add_uniform("uDiffuseStrength", new Uniform(loc => gl.uniform1f(loc, 0.9)));
+    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 0.35)));
+    this.shader.add_uniform("uDiffuseStrength", new Uniform(loc => gl.uniform1f(loc, 1.0)));
     this.shader.add_uniform("uSpecularStrength", new Uniform(loc => gl.uniform1f(loc, 0.6)));
     // specular lighting
-    this.shader.add_uniform("uSpecularPowerFactor", new Uniform(loc => gl.uniform1f(loc, 64.0)));
+    this.shader.add_uniform("uSpecularPowerFactor", new Uniform(loc => gl.uniform1f(loc, 16.0)));
   }
 
   clear() {

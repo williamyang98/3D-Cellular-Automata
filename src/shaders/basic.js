@@ -63,15 +63,21 @@ uniform float uSpecularPowerFactor;
 void main() {
     vec3 total_lighting = vec3(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < TOTAL_LIGHTS; i++) {
-        Light light = uLights[i];
+    vec3 normal = normalize(vNormal);
+    {
+        Light light = uLights[0];
         vec3 ambient = uAmbientStrength * light.colour;
+        total_lighting += ambient;
 
-        vec3 normal = normalize(vNormal);
         vec3 light_direction = normalize(light.position - vFragPos);
         float diff = max(dot(normal, light_direction), 0.0);
         vec3 diffuse = diff * uDiffuseStrength * light.colour;
+        total_lighting += diffuse;
+    }
 
+    for (int i = 0; i < TOTAL_LIGHTS; i++) {
+        Light light = uLights[i];
+        vec3 light_direction = normalize(light.position - vFragPos);
         vec3 view_direction = normalize(uViewPosition - vFragPos);
         vec3 reflect_direction = reflect(-light_direction, normal);
         float spec = dot(view_direction, reflect_direction);
@@ -79,8 +85,7 @@ void main() {
         spec = pow(spec, uSpecularPowerFactor);
         vec3 specular = uSpecularStrength * spec * light.colour;
 
-        vec3 combined = ambient + diffuse + specular;
-        total_lighting = total_lighting + combined;
+        total_lighting += specular;
     }
 
     // total_lighting = total_lighting / float(TOTAL_LIGHTS);
