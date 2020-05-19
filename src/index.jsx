@@ -17,11 +17,8 @@ class Main extends React.Component {
 
   componentDidMount() {
     let canvas = this.canvas_ref.current;
-    canvas.width = 500;
-    canvas.height = 500;
     const gl = canvas.getContext('webgl2', {
       premultipliedAlpha: false
-      // Other configurations
     });
     if (!gl) {
       throw new Error('WebGL not supported');
@@ -30,6 +27,12 @@ class Main extends React.Component {
     this.app = new App(gl);
     this.app.run();
     this.camera = this.app.camera;
+
+    let width = canvas.clientWidth;
+    let height = canvas.clientHeight;
+
+    this.camera.aspect_ratio = width/height;
+
     this.setState({app: this.app});
   }
   
@@ -78,6 +81,8 @@ class Main extends React.Component {
     return (
       <div className="container">
         <canvas 
+          width={1000}
+          height={800}
           ref={this.canvas_ref} 
           onMouseDown={ev => this.on_mouse_down(ev)}
           onMouseUp={ev => this.rotating = false}
