@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { App } from './app/App';
 import { vec2 } from 'gl-matrix';
 
+import './index.css';
+
 
 class Main extends React.Component {
 
@@ -79,15 +81,17 @@ class Main extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <canvas 
-          width={800}
-          height={550}
-          ref={this.canvas_ref} 
-          onMouseDown={ev => this.on_mouse_down(ev)}
-          onMouseUp={ev => this.rotating = false}
-          onMouseMove={ev => this.on_mouse_move(ev)}
-          onWheel={ev => this.on_wheel(ev)}></canvas>
+      <div>
+        <div style={{textAlign: 'center'}}>
+          <canvas 
+            width={800}
+            height={550}
+            ref={this.canvas_ref} 
+            onMouseDown={ev => this.on_mouse_down(ev)}
+            onMouseUp={ev => this.rotating = false}
+            onMouseMove={ev => this.on_mouse_move(ev)}
+            onWheel={ev => this.on_wheel(ev)}></canvas>
+        </div>
         {this.render_simulation()}
       </div>
     );
