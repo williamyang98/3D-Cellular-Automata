@@ -4,12 +4,38 @@ export class CellularAutomaton3D {
         this.count = 1;
         this.shape.forEach(n => this.count *= n); 
 
-        this.xyz_to_idx = [shape[1], shape[2]*shape[1]];
-
         this.cells = new Uint8Array(this.count);
         this.buffer = new Uint8Array(this.count);
 
         this.listeners = new Set();
+        this.i_to_xyz = new Array(this.count);
+        this.xyz_to_i = [];
+
+        for (let x = 0; x < this.shape[0]; x++) {
+            let yarr = [];
+            for (let y = 0; y < this.shape[1]; y++) {
+                let zarr = [];
+                for (let z = 0; z < this.shape[2]; z++) {
+                    let i = x + y*this.shape[1] + z*shape[2]*shape[2];
+                    this.i_to_xyz[i] = [x, y, z];
+                    zarr.push(i);
+                }
+                yarr.push(zarr);
+            }
+            this.xyz_to_i.push(yarr);
+        }
+
+        this.neighbour_delta_list = [];
+        for (let xoff = -1; xoff <= 1; xoff++) {
+            for (let yoff = -1; yoff <= 1; yoff++) {
+                for (let zoff = -1; zoff <= 1; zoff++) {
+                    if (xoff === 0 && yoff === 0 && zoff === 0) 
+                        continue;
+                    this.neighbour_delta_list.push([xoff, yoff, zoff]);
+                }
+            }
+        }
+        
     }
 
     listen_step(listener) {
@@ -28,18 +54,15 @@ export class CellularAutomaton3D {
     }
 
     step(rule) {
-        for (let x = 0; x < this.shape[0]; x++) {
-            for (let y = 0; y < this.shape[1]; y++) {
-                for (let z = 0; z < this.shape[2]; z++) {
-                    let idx = this.calculate_index(x, y, z);
-                    let state = this.cells[idx];
-                    let neighbours = this.get_neighbours(x, y, z, rule);
-                    
-                    let next_state = rule.get_next_state(state, neighbours);
-                    this.buffer[idx] = next_state; 
-                }
-            }
+        for (let i = 0; i < this.count; i++) {
+            let state = this.cells[i];
+            let [x, y, z] = this.i_to_xyz[i];
+            let neighbours = this.get_neighbours(x, y, z, rule);
+            
+            let next_state = rule.get_next_state(state, neighbours);
+            this.buffer[i] = next_state; 
         }
+
         let tmp = this.cells;
         this.cells = this.buffer;
         this.buffer = tmp; 
@@ -50,29 +73,22 @@ export class CellularAutomaton3D {
     }
 
     get_neighbours(x, y, z, rule) {
-        let i = 0;
-        for (let xoff = -1; xoff <= 1; xoff++) {
-            for (let yoff = -1; yoff <= 1; yoff++) {
-                for (let zoff = -1; zoff <= 1; zoff++) {
-                    if (xoff === 0 && yoff === 0 && zoff === 0) 
-                        continue;
+        let total_neighbours = 0;
+        for (let delta of this.neighbour_delta_list) {
+            let [xoff, yoff, zoff] = delta;
+            let xn = this.pos_mod(x+xoff, this.shape[0]);
+            let yn = this.pos_mod(y+yoff, this.shape[1]);
+            let zn = this.pos_mod(z+zoff, this.shape[2]);
+            let i = this.xyz_to_i[xn][yn][zn];
 
-                    let idx = this.calculate_index(
-                        this.pos_mod(x+xoff, this.shape[0]), 
-                        this.pos_mod(y+yoff, this.shape[1]), 
-                        this.pos_mod(z+zoff, this.shape[2]));
-                    let state = this.cells[idx];
-                    if (rule.is_neighbour(state)) {
-                        i += 1;
-                    }
-                }
+            let state = this.cells[i];
+
+            if (rule.is_neighbour(state)) {
+                total_neighbours += 1;
             }
-        }
-        return i;
-    }
-
-    calculate_index(x, y, z) {
-        return x + y*this.xyz_to_idx[0] + z*this.xyz_to_idx[1];
+        } 
+    
+        return total_neighbours;
     }
 
     pos_mod(n, m) {

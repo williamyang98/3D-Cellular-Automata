@@ -89,11 +89,15 @@ export class SimulationWindow {
   update_vertex_buffer() {
     let gl = this.gl;
 
+    let rule = this.rule_browser.get_selected_entry().rule;
+    let max_value = rule.alive_state;
+    let scale = (this.total_states-1)/max_value;
+
     for (let i = 0; i < this.sim.count; i++) {
       let state = this.sim.cells[i];
       let offset = i*this.voxels.total_vertices;
       for (let v = 0; v < this.voxels.total_vertices; v++) {
-        this.voxels.states[offset+v][0] = state;
+        this.voxels.states[offset+v][0] = state*scale;
       }
     }
 
