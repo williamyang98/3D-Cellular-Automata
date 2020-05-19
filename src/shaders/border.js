@@ -5,23 +5,20 @@ precision mediump float;
 attribute vec3 position;
 
 uniform mat4 uMVP;
-uniform vec4 uColour;
 uniform vec3 uOffset;
 
-varying vec4 vColour;
-
 void main() {
-    vColour = uColour;
     gl_Position = uMVP * vec4(position + uOffset, 1);
 }`;
 
 const frag = 
 `
 precision mediump float;
-varying vec4 vColour;
+
+uniform vec4 uColour;
 
 void main() {
-    gl_FragColor = vColour;
+    gl_FragColor = uColour;
 }`;
 
 export default {vertex: vertex, frag: frag};

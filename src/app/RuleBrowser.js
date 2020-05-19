@@ -7,7 +7,7 @@ export class RuleBrowser {
     this.add_entry(
       new RuleEntry(
         '445', '4|4|5', 
-        new Rule3D(n => n == 4, n => n == 4, 5),
+        new Rule3D(n => n === 4, n => n === 4, 5),
         new RandomDensity()
       ));
     this.add_entry(
@@ -19,7 +19,7 @@ export class RuleBrowser {
     this.add_entry(
       new RuleEntry(
         'Amoeba', '9-26|5-7,12-13,15|5',
-        new Rule3D(n => range(n,9,26), n => range(n,5,7) || range(n,12,13) || (n == 15), 5),
+        new Rule3D(n => range(n,9,26), n => range(n,5,7) || range(n,12,13) || (n === 15), 5),
         new SeedCrystal(0.3),
       ));
 

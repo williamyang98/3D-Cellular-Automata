@@ -1,13 +1,13 @@
-function vertex_data(left, right, front, back, top, bottom, props) {
+function vertex_data(left, right, front, back, top, bottom) {
   return new Float32Array([
-    left, bottom, front, ...props,
-    right, bottom, front, ...props,
-    left, top, front, ...props,
-    right, top, front, ...props,
-    left, bottom, back, ...props,
-    right, bottom, back, ...props,
-    left, top, back, ...props,
-    right, top, back, ...props,
+    left, bottom, front, 
+    right, bottom, front, 
+    left, top, front, 
+    right, top, front, 
+    left, bottom, back, 
+    right, bottom, back, 
+    left, top, back, 
+    right, top, back, 
   ]);
 }
 

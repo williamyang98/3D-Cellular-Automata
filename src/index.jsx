@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './app/App';
-import { mat4, vec3, vec2 } from 'gl-matrix';
+import { vec2 } from 'gl-matrix';
 
 
 class Main extends React.Component {
@@ -90,10 +90,6 @@ class Main extends React.Component {
 };
 
 class Controls extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   toggle_simulation() {
    this.props.sim.running = !this.props.sim.running;
    this.forceUpdate();
@@ -115,17 +111,13 @@ class Controls extends React.Component {
 }
 
 class RulesMenu extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   on_select(index) {
     this.props.browser.select_entry(index);
     this.forceUpdate();
   }
 
   render_entry(entry, index) {
-    let selected = index == this.props.browser.selected_entry;
+    let selected = index === this.props.browser.selected_entry;
     let class_name = selected ? 'active' : '';
     return (
       <li className={"list-group-item "+class_name} key={index} onClick={() => this.on_select(index)}>

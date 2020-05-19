@@ -23,7 +23,7 @@ export class BoundingBox {
         }
 
         // create corner pieces
-        var shape = vec3.fromValues(thickness, thickness, thickness);
+        let shape = vec3.fromValues(thickness, thickness, thickness);
         for (let x of [0, size[0]]) {
             for (let y of [0, size[1]]) {
                 for (let z of [0, size[2]]) {
@@ -32,7 +32,7 @@ export class BoundingBox {
             }
         }
         // create x beams
-        var shape = vec3.fromValues(size[0]-thickness, thickness, thickness);
+        shape = vec3.fromValues(size[0]-thickness, thickness, thickness);
         for (let y of [0, size[1]]) {
             for (let z of [0, size[2]]) {
                 let x = size[0]/2;
@@ -40,7 +40,7 @@ export class BoundingBox {
             }
         }
         // create y beams
-        var shape = vec3.fromValues(thickness, size[1]-thickness, thickness);
+        shape = vec3.fromValues(thickness, size[1]-thickness, thickness);
         for (let x of [0, size[0]]) {
             for (let z of [0, size[2]]) {
                 let y = size[1]/2;
@@ -48,7 +48,7 @@ export class BoundingBox {
             }
         }
         // create z beams
-        var shape = vec3.fromValues(thickness, thickness, size[2]-thickness);
+        shape = vec3.fromValues(thickness, thickness, size[2]-thickness);
         for (let x of [0, size[0]]) {
             for (let y of [0, size[1]]) {
                 let z = size[2]/2;
@@ -66,7 +66,7 @@ export class BoundingBox {
         let bottom = centre[1] - shape[1]/2;
         let front = centre[2] - shape[2]/2;
         let back = centre[2] + shape[2]/2;
-        let vertex_data = cube.vertex_data(left, right, front, back, top, bottom, []);
+        let vertex_data = cube.vertex_data(left, right, front, back, top, bottom);
         let index_data = cube.index_data;
         return [vertex_data, index_data];
     }

@@ -1,30 +1,42 @@
-const vertex = 
-`
-precision mediump float;
+function vertex(vertex_count, lut_size) { 
+return (
+`#version 300 es
 
-attribute vec3 position;
-attribute vec4 colour;
+precision mediump float;
+precision mediump int;
+
+in vec3 position;
+in float state;
 
 uniform mat4 uMVP;
-uniform vec3 uGridSize;
+uniform vec4 uStateColour[${lut_size}];
 
-varying vec4 vColour;
+out vec4 vColour;
 
 void main() {
-    vColour = colour;
+    int index = int(state);
+    vColour = uStateColour[index];
     gl_Position = uMVP * vec4(position, 1);
-}`;
+}`
+)};
 
-const frag = 
-`
+function frag(vertex_count, lut_size) {
+return (
+`#version 300 es
+
 precision mediump float;
-varying vec4 vColour;
+precision mediump int;
+
+in vec4 vColour;
+
+out vec4 fragColour;
 
 void main() {
-    gl_FragColor = vColour;
-    if (gl_FragColor.a == 0.0) {
+    fragColour = vColour;
+    if (fragColour.a == 0.0) {
         discard;
     }
-}`;
+}`
+)};
 
 export default {vertex: vertex, frag: frag};

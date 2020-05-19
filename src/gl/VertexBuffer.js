@@ -21,6 +21,7 @@ export class VertexBufferArray {
   constructor(gl) {
     this.gl = gl;
     this.vao = gl.createVertexArray();
+    this.integer_types = new Set([gl.INT, gl.UNSIGNED_INT]);
   }
 
   // vertex buffer = 1D array containing n elements
@@ -35,7 +36,11 @@ export class VertexBufferArray {
     for (let i = 0; i < elements.length; i++) {
       let element = elements[i];
       gl.enableVertexAttribArray(i);
-      gl.vertexAttribPointer(i, element.count, element.type, element.is_normalised, vertex_buffer_layout.stride, offset);
+      if (this.integer_types.has(element.type)) {
+        gl.vertexAttribIPointer(i, element.count, element.type, element.is_normalised, vertex_buffer_layout.stride, offset);
+      } else {
+        gl.vertexAttribPointer(i, element.count, element.type, element.is_normalised, vertex_buffer_layout.stride, offset);
+      }
       offset += element.count * element.size;
     }
   }
@@ -75,7 +80,9 @@ class VertexBufferElement {
 
     switch (type) {
     case gl.FLOAT: return 4;
-    default: throw new Error(`Unknown element type: ${type}$`);
+    case gl.UNSIGNED_INT: return 4;
+    case gl.INT: return 4;
+    default: throw new Error(`Unknown element type: ${type}`);
     }
   }
 }
