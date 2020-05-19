@@ -1,4 +1,4 @@
-function vertex(vertex_count, lut_size) { 
+function vertex(lut_size) { 
 return (
 `#version 300 es
 
@@ -31,9 +31,11 @@ void main() {
 }`
 )};
 
-function frag(vertex_count, lut_size) {
+function frag(total_lights) {
 return (
 `#version 300 es
+
+#define TOTAL_LIGHTS ${total_lights}
 
 precision mediump float;
 precision mediump int;
@@ -44,8 +46,12 @@ in vec3 vNormal;
 
 out vec4 fragColour;
 
-uniform vec3 uLightPos;
-uniform vec3 uLightColour;
+struct Light {
+    vec3 position;
+    vec3 colour;
+};
+
+uniform Light uLights[TOTAL_LIGHTS];
 
 uniform float uAmbientStrength;
 uniform float uDiffuseStrength;
@@ -55,22 +61,31 @@ uniform vec3 uViewPosition;
 uniform float uSpecularPowerFactor;
 
 void main() {
-    vec3 ambient = uAmbientStrength * uLightColour;
+    vec3 total_lighting = vec3(0.0, 0.0, 0.0);
 
-    vec3 normal = normalize(vNormal);
-    vec3 light_direction = normalize(uLightPos - vFragPos);
-    float diff = max(dot(normal, light_direction), 0.0);
-    vec3 diffuse = diff * uDiffuseStrength * uLightColour;
+    for (int i = 0; i < TOTAL_LIGHTS; i++) {
+        Light light = uLights[i];
+        vec3 ambient = uAmbientStrength * light.colour;
 
-    vec3 view_direction = normalize(uViewPosition - vFragPos);
-    vec3 reflect_direction = reflect(-light_direction, normal);
-    float spec = dot(view_direction, reflect_direction);
-    spec = max(spec, 0.0);
-    spec = pow(spec, uSpecularPowerFactor);
-    vec3 specular = uSpecularStrength * spec * uLightColour;
+        vec3 normal = normalize(vNormal);
+        vec3 light_direction = normalize(light.position - vFragPos);
+        float diff = max(dot(normal, light_direction), 0.0);
+        vec3 diffuse = diff * uDiffuseStrength * light.colour;
 
-    vec3 combined = ambient + diffuse + specular;
-    vec4 result = vec4(combined, 1) * vColour; 
+        vec3 view_direction = normalize(uViewPosition - vFragPos);
+        vec3 reflect_direction = reflect(-light_direction, normal);
+        float spec = dot(view_direction, reflect_direction);
+        spec = max(spec, 0.0);
+        spec = pow(spec, uSpecularPowerFactor);
+        vec3 specular = uSpecularStrength * spec * light.colour;
+
+        vec3 combined = ambient + diffuse + specular;
+        total_lighting = total_lighting + combined;
+    }
+
+    // total_lighting = total_lighting / float(TOTAL_LIGHTS);
+
+    vec4 result = vec4(total_lighting, 1) * vColour; 
 
     fragColour = result;
     if (fragColour.a == 0.0) {
