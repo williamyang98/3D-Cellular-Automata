@@ -66,7 +66,7 @@ export class SimulationWindow {
     let light_position = vec3.create();
     vec3.scale(light_position, this.size, 2);
     this.shader.add_uniform("uLightPos", new UniformVec3f(gl, light_position));
-    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 0.6)));
+    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 0.5)));
     this.shader.add_uniform("uDiffuseStrength", new Uniform(loc => gl.uniform1f(loc, 0.9)));
   }
 

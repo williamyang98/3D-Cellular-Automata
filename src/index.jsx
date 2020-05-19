@@ -50,14 +50,14 @@ class Main extends React.Component {
     vec2.sub(delta, this.mouse_start_pos, curr_pos);
     vec2.scale(delta, delta, factor);
 
-    vec2.add(this.camera.model_rotation, this.camera.model_rotation, delta);
+    this.camera.rotate(delta[0], delta[1]);
     
     this.mouse_start_pos = curr_pos;
   }
 
   on_wheel(ev) {
-    let delta_zoom = ev.deltaY * 0.01;
-    this.camera.pos[2] -= delta_zoom;
+    let delta_zoom = ev.deltaY * 0.001;
+    this.camera.zoom(delta_zoom);
     ev.stopPropagation();
   }
 
@@ -81,8 +81,8 @@ class Main extends React.Component {
     return (
       <div className="container">
         <canvas 
-          width={1000}
-          height={800}
+          width={800}
+          height={550}
           ref={this.canvas_ref} 
           onMouseDown={ev => this.on_mouse_down(ev)}
           onMouseUp={ev => this.rotating = false}
