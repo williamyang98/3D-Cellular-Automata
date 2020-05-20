@@ -1,13 +1,14 @@
 import { MooreNeighbour } from "./Neighbours3D";
 
 export class Rule3D {
-    constructor(remain_alive, become_alive, total_states) {
+    constructor(remain_alive, become_alive, total_states, neighbours) {
         this.remain_alive = remain_alive;
         this.become_alive = become_alive;
         this.total_states = total_states;
         this.alive_state = this.total_states-1;
         this.dead_state = 0;
-        this.neighbours = new MooreNeighbour();
+        
+        this.neighbours = neighbours;
     }
 
     count_neighbours(x, y, z, shape, cells) {

@@ -1,5 +1,6 @@
 import { Rule3D } from "../simulation/Rule3D";
-import { SeedCrystal } from "../simulation/Randomiser3D";
+import { SeedCrystal, SeedCrystalAbsolute } from "../simulation/Randomiser3D";
+import { MooreNeighbour, VonNeumanNeighbour } from "../simulation/Neighbours3D";
 
 export class RuleBrowser {
   constructor() {
@@ -48,6 +49,14 @@ export class RuleBrowser {
       )
     );
 
+    this.add_entry(
+      new RuleEntry(
+        'Crystal Growth 1',
+        '0-6/1,3/2/VN',
+        new SeedCrystalAbsolute(1.0, 1)
+      )
+    );
+
     this.selected_entry = 0;
   }
 
@@ -68,6 +77,11 @@ export class RuleBrowser {
   }
 }
 
+const NeighbourRules = {
+  'M': MooreNeighbour,
+  'VN': VonNeumanNeighbour
+};
+
 class RuleEntry {
   constructor(name, ca_string, randomiser) {
     this.name = name;
@@ -76,7 +90,8 @@ class RuleEntry {
     this.rule = new Rule3D(
       n => this.rule_reader.remain_alive[n],
       n => this.rule_reader.become_alive[n],
-      this.rule_reader.total_states
+      this.rule_reader.total_states,
+      this.rule_reader.neighbour_type
     );
     this.randomiser = randomiser;
   }
@@ -95,10 +110,15 @@ class RuleReader {
     }
     let [remain_alive, become_alive, total_states, neighbour_type] = substrings;
 
+
+    if (!(neighbour_type in NeighbourRules)) {
+      throw new Error(`Invalid neighbourhood rule: ${neighbour_type}`);
+    }
+
     this.total_states = Number(total_states);
     this.remain_alive = this.retrieve_rule(remain_alive);
     this.become_alive = this.retrieve_rule(become_alive);
-    this.neighbour_type = neighbour_type;
+    this.neighbour_type = new NeighbourRules[neighbour_type]();
   }
 
   retrieve_rule(number_range) {
