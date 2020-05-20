@@ -1,3 +1,5 @@
+import { MooreNeighbour } from "./Neighbours3D";
+
 export class Rule3D {
     constructor(remain_alive, become_alive, total_states) {
         this.remain_alive = remain_alive;
@@ -5,6 +7,15 @@ export class Rule3D {
         this.total_states = total_states;
         this.alive_state = this.total_states-1;
         this.dead_state = 0;
+        this.neighbours = new MooreNeighbour();
+    }
+
+    count_neighbours(x, y, z, shape, cells) {
+        return this.neighbours.count_neighbours(x, y, z, shape, cells, this);
+    }
+
+    on_location_update(x, y, z, shape, buffer) {
+        this.neighbours.on_location_update(x, y, z, shape, buffer);
     }
 
     get_next_state(state, neighbours) {

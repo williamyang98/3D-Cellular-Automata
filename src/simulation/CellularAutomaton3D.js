@@ -43,46 +43,31 @@ export class CellularAutomaton3D {
             for (let y = 0; y < this.shape[1]; y++) {
                 for (let z = 0; z < this.shape[2]; z++) {
                     let i = this.xyz_to_i(x, y, z);
-                    if (this.cells[i] !== rule.dead_state) {
-                        this.update_neighbours(x, y, z);
+                    if (this.cells[i] === rule.dead_state) {
+                        this.should_update.delete(i);
+                        continue;
                     }
-                }
-            }
-        }
-
-        let tmp = this.should_update;
-        this.should_update = this.should_update_buffer;
-        this.should_update_buffer = tmp;
-    }
-
-    update_neighbours(x, y, z) {
-        for (let xoff = -1; xoff <= 1; xoff++) {
-            for (let yoff = -1; yoff <= 1; yoff++) {
-                for (let zoff = -1; zoff <= 1; zoff++) {
-                    const xn = this.pos_mod(x+xoff, this.shape[0]);
-                    const yn = this.pos_mod(y+yoff, this.shape[1]);
-                    const zn = this.pos_mod(z+zoff, this.shape[2]);
-                    const i = this.xyz_to_i(xn, yn, zn);
-                    this.should_update_buffer.add(i);
+                    
+                    rule.on_location_update(x, y, z, this.shape, this.should_update);
                 }
             }
         }
     }
 
     step(rule) {
+        let start = performance.now();
+
         for (let i of this.should_update) {
             let state = this.cells[i];
-            let neighbours = 0; 
             let [x, y, z] = this.i_to_xyz[i];
-            neighbours = this.get_neighbours(x, y, z, rule)
-
+            let neighbours = rule.count_neighbours(x, y, z, this.shape, this.cells);
             let next_state = rule.get_next_state(state, neighbours);
             this.buffer[i] = next_state; 
 
-            if (next_state == state) {
+            if (next_state === state) {
                 this.remove_queue.push(i);
             } else {
-                this.update_neighbours(x, y, z);
+                rule.on_location_update(x, y, z, this.shape, this.should_update_buffer);
             }
         }
 
@@ -91,6 +76,7 @@ export class CellularAutomaton3D {
             listener(this);
         }
 
+        // swap buffers
         let tmp = this.cells;
         this.cells = this.buffer;
         this.buffer = tmp;
@@ -104,83 +90,12 @@ export class CellularAutomaton3D {
         this.should_update = this.should_update_buffer;
         this.should_update_buffer = tmp_update;
 
-        console.log(this.should_update.size);
-    }
-
-    get_neighbours(x, y, z, rule) {
-        let total_neighbours = 0;
-
-        for (let xoff = -1; xoff <= 1; xoff++) {
-            for (let yoff = -1; yoff <= 1; yoff++) {
-                for (let zoff = -1; zoff <= 1; zoff++) {
-                    if (xoff === 0 && yoff === 0 && zoff === 0) 
-                        continue;
-
-                    const xn = this.pos_mod(x+xoff, this.shape[0]);
-                    const yn = this.pos_mod(y+yoff, this.shape[1]);
-                    const zn = this.pos_mod(z+zoff, this.shape[2]);
-                    const i = this.xyz_to_i(xn, yn, zn);
-
-                    const state = this.cells[i];
-
-                    if (rule.is_neighbour(state)) {
-                        total_neighbours += 1;
-                    }
-                }
-            }
-        }
-    
-        return total_neighbours;
+        let end = performance.now();
+        console.log(this.should_update.size, end-start);
     }
 
     xyz_to_i(x, y, z) {
         return x + y*this.xyz_to_i_coefficients[0] + z*this.xyz_to_i_coefficients[1];
     }
-
-    pos_mod(n, m) {
-        return ((n % m) + m) % m;
-    }
 };
 
-
-class PTimer {
-    constructor() {
-        this.t1 = 0;
-        this.t2 = 0;   
-    }
-
-    start() {
-        this.t1 = performance.now();
-    }
-
-    end() {
-        this.t2 = performance.now();
-        let dt = this.t2-this.t1;
-        return dt;
-    }
-}
-
-class Stack {
-    constructor(size) {
-        // this.i = 0;
-        // this.buffer = new Array(size);
-        this.buffer = [];
-        // this.size = size;
-    }
-
-    push(data) {
-        this.buffer.push(data);
-        // this.buffer[this.i] = data;
-        // this.i++;
-    }
-
-    pop() {
-        return this.buffer.pop();
-        // return this.buffer[this.i--];
-    }
-
-    clear() {
-        this.buffer = [];
-        // this.i = 0;
-    }
-}
