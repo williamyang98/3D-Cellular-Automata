@@ -55,15 +55,6 @@ export class CellularAutomaton3D {
         this.should_update_buffer = tmp;
     }
 
-    // O(n^3)
-    refresh_updates(rule) {
-        for (let i of this.should_update) {
-            let [x, y, z] = this.i_to_xyz[i];
-            if (this.cells[i] == rule.alive_state)
-                this.update_neighbours(x, y, z);
-        }
-    }
-
     update_neighbours(x, y, z) {
         for (let xoff = -1; xoff <= 1; xoff++) {
             for (let yoff = -1; yoff <= 1; yoff++) {
