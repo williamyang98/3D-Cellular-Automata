@@ -1,5 +1,5 @@
 import { Shader } from '../gl/Shader';
-import { VertexBuffer, VertexBufferArray, VertexBufferLayout } from '../gl/VertexBuffer';
+import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../gl/VertexBuffer';
 import { IndexBuffer } from '../gl/IndexBuffer';
 import { UniformMat4f, UniformVec3f, UniformVec4f, Uniform } from '../gl/Uniform';
 
@@ -33,6 +33,7 @@ export class SimulationWindow {
     this.total_states = 6;
 
     this.voxels = new VoxelGrid(this.size, 1.0);
+    this.state_buffer = new Float32Array(this.voxels.cell_count * this.voxels.total_vertices);
     this.sim = new CellularAutomaton3D(this.size);
 
     this.init_gl(this.total_cells, this.total_states);
@@ -50,21 +51,24 @@ export class SimulationWindow {
     let vert_src = basic_shader.vertex(total_states);
     let frag_src = basic_shader.frag(total_lights);
     this.shader = new Shader(gl, vert_src, frag_src); 
-    this.vertex_buffer = new VertexBuffer(gl, this.voxels.vertex_data, gl.STREAM_COPY);
+    this.terrain_vbo = new VertexBufferObject(gl, this.voxels.vertex_data, gl.STATIC_DRAW);
+    this.state_vbo = new VertexBufferObject(gl, this.state_buffer, gl.STREAM_COPY);
     this.index_buffer = new IndexBuffer(gl, this.voxels.index_data);
 
-    let layout = new VertexBufferLayout(gl);
-    layout.add_element(3, gl.FLOAT, false);
-    layout.add_element(3, gl.FLOAT, false);
-    layout.add_element(1, gl.FLOAT, false);
+    let terrain_vbo_layout = new VertexBufferLayout(gl);
+    terrain_vbo_layout.push_attribute(0, 3, gl.FLOAT, false);
+    terrain_vbo_layout.push_attribute(1, 3, gl.FLOAT, false);
 
-    this.vao = new VertexBufferArray(gl);
-    this.vao.add_vertex_buffer(this.vertex_buffer, layout);
-    
+    let state_vbo_layout = new VertexBufferLayout(gl);
+    state_vbo_layout.push_attribute(2, 1, gl.FLOAT, false);
+
+    this.vao = new VertexArrayObject(gl);
+    this.vao.add_vertex_buffer(this.terrain_vbo, terrain_vbo_layout);
+    this.vao.add_vertex_buffer(this.state_vbo, state_vbo_layout);
+
     this.shader.add_uniform("uModel", new UniformMat4f(gl, this.camera.model));
     this.shader.add_uniform("uView", new UniformMat4f(gl, this.camera.view));
     this.shader.add_uniform("uProjection", new UniformMat4f(gl, this.camera.projection));
-    // this.shader.add_uniform("uGridSize", new UniformVec3f(gl, this.size));
     this.shader.add_uniform("uStateColour", new Uniform(loc => gl.uniform4fv(loc, this.state_colours_data)));
     // camera data
     this.shader.add_uniform("uViewPosition", new UniformVec3f(gl, this.camera.view_position));
@@ -141,12 +145,12 @@ export class SimulationWindow {
       let state = this.sim.cells[i];
       let offset = i*this.voxels.total_vertices;
       for (let v = 0; v < this.voxels.total_vertices; v++) {
-        this.voxels.states[offset+v][0] = state*scale;
+        this.state_buffer[offset+v] = state * scale;
       }
     }
 
-    this.vertex_buffer.bind();
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.voxels.vertex_data, 0, this.voxels.vertex_data.length);    
+    this.state_vbo.bind();
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.state_buffer, 0, this.state_buffer.length);    
   }
 
   update_vertex_buffer_local() {
@@ -160,13 +164,12 @@ export class SimulationWindow {
       let state = this.sim.cells[i];
       let offset = i*this.voxels.total_vertices;
       for (let v = 0; v < this.voxels.total_vertices; v++) {
-        this.voxels.states[offset+v][0] = state*scale;
+        this.state_buffer[offset+v] = state * scale;
       }
     }
 
-    this.vertex_buffer.bind();
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.voxels.vertex_data, 0, this.voxels.vertex_data.length);    
-
+    this.state_vbo.bind();
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.state_buffer, 0, this.state_buffer.length);    
   }
 
   on_render() {

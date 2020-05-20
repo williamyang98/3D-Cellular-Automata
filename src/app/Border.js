@@ -1,5 +1,5 @@
 import { Shader } from '../gl/Shader';
-import { VertexBuffer, VertexBufferArray, VertexBufferLayout } from '../gl/VertexBuffer';
+import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../gl/VertexBuffer';
 import { IndexBuffer } from '../gl/IndexBuffer';
 import { UniformMat4f, UniformVec3f, UniformVec4f } from '../gl/Uniform';
 
@@ -23,15 +23,15 @@ export class Border {
     this.border = new BoundingBox(adjusted_size, thickness);
 
     this.shader = new Shader(gl, border_shader.vertex, border_shader.frag);
-    this.vertex_buffer = new VertexBuffer(gl, this.border.vertex_data, gl.STATIC_DRAW);
+    this.vbo = new VertexBufferObject(gl, this.border.vertex_data, gl.STATIC_DRAW);
     this.index_buffer = new IndexBuffer(gl, this.border.index_data);
 
     let layout = new VertexBufferLayout(gl);
-    layout.add_element(3, gl.FLOAT, false);
-    layout.add_element(3, gl.FLOAT, false);
+    layout.push_attribute(0, 3, gl.FLOAT, false);
+    layout.push_attribute(1, 3, gl.FLOAT, false);
 
-    this.vao = new VertexBufferArray(gl);
-    this.vao.add_vertex_buffer(this.vertex_buffer, layout);
+    this.vao = new VertexArrayObject(gl);
+    this.vao.add_vertex_buffer(this.vbo, layout);
 
     this.shader.add_uniform("uModel", new UniformMat4f(gl, this.camera.model));
     this.shader.add_uniform("uView", new UniformMat4f(gl, this.camera.view));

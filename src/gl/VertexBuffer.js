@@ -1,47 +1,44 @@
 // 1D array containing n elements
 // can contain arbitary data
-export class VertexBuffer {
+export class VertexBufferObject {
   constructor(gl, data, usage) {
     this.gl = gl;
 
     this.data = data;
 
-    this.buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    this.vbo = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferData(gl.ARRAY_BUFFER, data, usage);
   }
 
   bind() {
     let gl = this.gl;
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
   }
 }
 
-export class VertexBufferArray {
+export class VertexArrayObject {
   constructor(gl) {
     this.gl = gl;
     this.vao = gl.createVertexArray();
     this.integer_types = new Set([gl.INT, gl.UNSIGNED_INT]);
   }
 
-  // vertex buffer = 1D array containing n elements
-  // layout = list of layout types (n instances of vec3f, m instance of vec4f, etc)
-  add_vertex_buffer(vertex_buffer, vertex_buffer_layout) {
+  add_vertex_buffer(vbo, layout) {
     let gl = this.gl;
 
     this.bind();
-    vertex_buffer.bind();
-    let elements = vertex_buffer_layout.elements;
+    vbo.bind();
+
     let offset = 0;
-    for (let i = 0; i < elements.length; i++) {
-      let element = elements[i];
-      gl.enableVertexAttribArray(i);
-      if (this.integer_types.has(element.type)) {
-        gl.vertexAttribIPointer(i, element.count, element.type, element.is_normalised, vertex_buffer_layout.stride, offset);
+    for (let attribute of layout.attributes) {
+      gl.enableVertexAttribArray(attribute.index);
+      if (this.integer_types.has(attribute.type)) {
+        gl.vertexAttribIPointer(attribute.index, attribute.count, attribute.type, attribute.is_normalised, layout.stride, offset);
       } else {
-        gl.vertexAttribPointer(i, element.count, element.type, element.is_normalised, vertex_buffer_layout.stride, offset);
+        gl.vertexAttribPointer(attribute.index, attribute.count, attribute.type, attribute.is_normalised, layout.stride, offset);
       }
-      offset += element.count * element.size;
+      offset += attribute.count * attribute.size;
     }
   }
 
@@ -55,24 +52,21 @@ export class VertexBufferLayout {
   constructor(gl) {
     this.gl = gl;
     this.stride = 0;
-    this.elements = [];
+    this.attributes = [];
   }
 
-  add_element(count, type, is_normalised) {
-    let element = new VertexBufferElement(this.gl, count, type, is_normalised);
-    this.elements.push(element);
-    this.stride += element.count * element.size;
+  push_attribute(index, count, type, is_normalised) {
+    let size = this.sizeof(type);
+    let attribute = new VertexBufferAttribute(index, count, type, is_normalised, size);
+    this.attributes.push(attribute);
+    this.stride += count * size;
   }
-}
 
-class VertexBufferElement {
-  constructor(gl, count, type, is_normalised) {
-    this.gl = gl;
-
-    this.count = count;
-    this.type = type;
-    this.is_normalised = is_normalised;
-    this.size = this.sizeof(this.type);
+  slice(start, end) {
+    let layout = new VertexBufferLayout();
+    layout.stride = this.stride;
+    layout.attributes = this.attributes.slice(start, end);
+    return layout;
   }
 
   sizeof(type) {
@@ -85,4 +79,19 @@ class VertexBufferElement {
     default: throw new Error(`Unknown element type: ${type}`);
     }
   }
+}
+
+// each element in the shader has an attribute index
+// layout(location = <attribute_index>) in vec3 position;
+// layout(locaiton = <attribute_index>) in vec3 normal;
+class VertexBufferAttribute {
+  constructor(index, count, type, is_normalised, size) {
+    this.index = index;
+    this.count = count;
+    this.type = type;
+    this.is_normalised = is_normalised;
+    this.size = size;
+  }
+
+  
 }
