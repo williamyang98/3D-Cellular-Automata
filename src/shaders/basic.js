@@ -61,6 +61,10 @@ uniform vec3 uViewPosition;
 uniform float uSpecularPowerFactor;
 
 void main() {
+    if (vColour.a == 0.0) {
+        discard;
+    }
+
     vec3 total_lighting = vec3(0.0, 0.0, 0.0);
 
     vec3 normal = normalize(vNormal);
@@ -93,9 +97,6 @@ void main() {
     vec4 result = vec4(total_lighting, 1) * vColour; 
 
     fragColour = result;
-    if (fragColour.a == 0.0) {
-        discard;
-    }
 }`
 )};
 
