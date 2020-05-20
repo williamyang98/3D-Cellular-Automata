@@ -6,44 +6,44 @@ export class RuleBrowser {
     this.entries = [];
     this.add_entry(
       new RuleEntry(
-        '445', '4/4/5/M', 
-        new Rule3D(n => n === 4, n => n === 4, 5),
+        '445', 
+        '4/4/5/M', 
         new SeedCrystal(0.3, 0.5)
       ));
+
     this.add_entry(
       new RuleEntry(
-        '678 678', '6-8/6-8/3/M',
-        new Rule3D(n => range(n,6,8), n => range(n,6,8), 3),
+        '678 678', 
+        '6-8/6-8/3/M',
         new SeedCrystal(0.3)
       ));
     this.add_entry(
       new RuleEntry(
-        'Amoeba', '9-26/5-7,12-13,15/5/M',
-        new Rule3D(n => range(n,9,26), n => range(n,5,7) || range(n,12,13) || (n === 15), 5),
-        new SeedCrystal(0.3),
+        'Amoeba', 
+        '9-26/5-7,12-13,15/5/M',
+        new SeedCrystal(0.3, 0.15),
       ));
 
     this.add_entry(
       new RuleEntry(
-        'Builder', '2,6,9/4,6,8-9/10/M',
-        new Rule3D(n => n === 2 || n === 6 || n === 9, n => n === 4 || n === 8 || range(n,8,9), 10),
-        new SeedCrystal(0.3, 0.15)
+        'Builder', 
+        '2,6,9/4,6,8-9/10/M',
+        new SeedCrystal(0.3, 0.25)
       )
     );
 
     this.add_entry(
       new RuleEntry(
-        'Clouds 1', '13-26/13-14,17-19/2/M',
-        new Rule3D(n => range(n,13,26), n => range(n,13,14) || range(17,19), 4),
-        new SeedCrystal(0.75, 0.5)
+        'Clouds 1', 
+        '13-26/13-14,17-19/5/M',
+        new SeedCrystal(0.60, 0.5)
       )
     );
 
     this.add_entry(
       new RuleEntry(
-        'Spiky Growth', 'Long',
-        new Rule3D(n => range(n,0,3) || range(n,7,9) || range(n,11,13) || n == 18 || range(n,21,22) || range(n,24,26),
-                   n => n === 4 || n === 13 || n === 17 || range(n,20,24) || n === 26, 4),
+        'Spiky Growth', 
+        '0-3,7-9,11-13,18,21-22,24-26/4,13,17,20-24,24/4/M',
         new SeedCrystal(0.4, 0.05)
       )
     );
@@ -69,14 +69,74 @@ export class RuleBrowser {
 }
 
 class RuleEntry {
-  constructor(name, description, rule, randomiser) {
+  constructor(name, ca_string, randomiser) {
     this.name = name;
-    this.description = description;
-    this.rule = rule;
+    this.description = ca_string;
+    this.rule_reader = new RuleReader(ca_string);
+    this.rule = new Rule3D(
+      n => this.rule_reader.remain_alive[n],
+      n => this.rule_reader.become_alive[n],
+      this.rule_reader.total_states
+    );
     this.randomiser = randomiser;
   }
 }
 
-function range(n, a, b) {
-    return (n >= a && n <= b);
+class RuleReader {
+  constructor(string) {
+    this.generate(string);
+  }
+
+  generate(string) {
+    string = string.replace(' ', '');
+    let substrings = string.split('/');
+    if (substrings.length !== 4) {
+      throw new Error(`Invalid string rule: ${string}`);
+    }
+    let [remain_alive, become_alive, total_states, neighbour_type] = substrings;
+
+    this.total_states = Number(total_states);
+    this.remain_alive = this.retrieve_rule(remain_alive);
+    this.become_alive = this.retrieve_rule(become_alive);
+    this.neighbour_type = neighbour_type;
+  }
+
+  retrieve_rule(number_range) {
+    let N = new Array(27); 
+    N.fill(false, 0, -1);
+
+    let numbers = number_range.split(',');
+    for (let number of numbers) {
+      let range = number.split('-').map(Number);
+      if (range.length === 1) {
+        let n = range[0];
+        this.assert_number(n);
+
+        N[n] = true;
+      } else if (range.length === 2) {
+        let [start, end] = range;
+        if (end < start) {
+          throw new Error(`Invalid range: ${start}-${end}. Must be ordered.`);
+        }
+        for (let n = start; n <= end; n++) {
+          this.assert_number(n);
+          N[n] = true;
+        }
+      } else {
+        throw new Error(`Too many numbers in range: ${number_range}. Must be 1 or 2`);
+      }
+    }
+
+
+    return N;
+  }
+
+  // 3**3 - 1 = 26 possible neighbours, 27 possible values 0-26
+  assert_number(n) {
+    if (n < 0 || n > 26) {
+      throw new Error(`Invalid number: ${n}. Must be between 0 to 26`);
+    }
+  }
+
+
 }
