@@ -31,8 +31,8 @@ export class CellularAutomaton3D {
     }
 
     clear() {
-        this.cells.fill(0, 0, -1);
-        this.buffer.fill(0, 0, -1);
+        this.cells.fill(0, 0, this.count);
+        this.buffer.fill(0, 0, this.count);
         this.should_update.clear();
         this.should_update_buffer.clear();
         this.remove_queue = [];
