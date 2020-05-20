@@ -8,7 +8,7 @@ export class RuleBrowser {
       new RuleEntry(
         '445', '4/4/5/M', 
         new Rule3D(n => n === 4, n => n === 4, 5),
-        new SeedCrystal(0.2, 0.2)
+        new SeedCrystal(0.3, 0.5)
       ));
     this.add_entry(
       new RuleEntry(
@@ -34,7 +34,7 @@ export class RuleBrowser {
     this.add_entry(
       new RuleEntry(
         'Clouds 1', '13-26/13-14,17-19/2/M',
-        new Rule3D(n => range(n,13,26), n => range(n,13,14) || range(17,19), 2),
+        new Rule3D(n => range(n,13,26), n => range(n,13,14) || range(17,19), 4),
         new SeedCrystal(0.75, 0.5)
       )
     );
