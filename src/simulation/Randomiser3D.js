@@ -13,14 +13,14 @@ export class SeedCrystal {
         let Y = sim.shape[1]-1;
         let Z = sim.shape[2]-1;
 
-        let [xlower, xupper] = [Math.floor(X*lower), Math.floor(X*upper)];
-        let [ylower, yupper] = [Math.floor(Y*lower), Math.floor(Y*upper)];
-        let [zlower, zupper] = [Math.floor(Z*lower), Math.floor(Z*upper)];
+        let [xlower, xupper] = [Math.floor(X*lower), Math.ceil(X*upper)];
+        let [ylower, yupper] = [Math.floor(Y*lower), Math.ceil(Y*upper)];
+        let [zlower, zupper] = [Math.floor(Z*lower), Math.ceil(Z*upper)];
 
 
-        for (let x = xlower; x < xupper; x++) {
-            for (let y = ylower; y < yupper; y++) {
-                for (let z = zlower; z < zupper; z++) {
+        for (let x = xlower; x <= xupper; x++) {
+            for (let y = ylower; y <= yupper; y++) {
+                for (let z = zlower; z <= zupper; z++) {
                     let i = sim.xyz_to_i(x, y, z);
                     if (Math.random() < this.density) {
                         sim.cells[i] = this.alive_state;
