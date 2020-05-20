@@ -96,11 +96,11 @@ export class SimulationWindow {
     })
 
     // lighting params
-    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 0.35)));
-    this.shader.add_uniform("uDiffuseStrength", new Uniform(loc => gl.uniform1f(loc, 1.0)));
-    this.shader.add_uniform("uSpecularStrength", new Uniform(loc => gl.uniform1f(loc, 0.6)));
+    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 0.4)));
+    this.shader.add_uniform("uDiffuseStrength", new Uniform(loc => gl.uniform1f(loc, 0.9)));
+    this.shader.add_uniform("uSpecularStrength", new Uniform(loc => gl.uniform1f(loc, 0.75)));
     // specular lighting
-    this.shader.add_uniform("uSpecularPowerFactor", new Uniform(loc => gl.uniform1f(loc, 16.0)));
+    this.shader.add_uniform("uSpecularPowerFactor", new Uniform(loc => gl.uniform1f(loc, 8.0)));
   }
 
   clear() {
