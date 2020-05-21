@@ -21,7 +21,8 @@ out vec3 vNormal;
 
 void main() {
     int index = int(state);
-    vColour = uStateColour[index];
+    // vColour = uStateColour[index];
+    vColour = vec4(position / 120.0, uStateColour[index].a);
 
     mat4 MVP = uProjection * uView * uModel;
     gl_Position = MVP * vec4(position, 1);
@@ -92,7 +93,7 @@ void main() {
         total_lighting += specular;
     }
 
-    // total_lighting = total_lighting / float(TOTAL_LIGHTS);
+    total_lighting = total_lighting / float(TOTAL_LIGHTS);
 
     vec4 result = vec4(total_lighting, 1) * vColour; 
 

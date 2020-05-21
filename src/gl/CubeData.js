@@ -53,8 +53,41 @@ const index_data = new Uint32Array([
     21, 23, 22,
 ]);
 
-
 export const cube = {
     vertex_data: vertex_data,
     index_data: index_data
+};
+
+function vertex_data_performance(left, right, front, back, top, bottom) {
+  return new Float32Array([
+    left, bottom, front,
+    right, bottom, front,
+    left, top, front,
+    right, top, front,
+    left, bottom, back, 
+    right, bottom, back, 
+    left, top, back, 
+    right, top, back, 
+  ]);
+}
+
+// wind triangles counter clockwise for culling
+const index_data_performance = new Uint32Array([
+  0, 1, 2,
+  1, 3, 2,
+  2, 3, 6, 
+  3, 7, 6,
+  1, 5, 3, 
+  5, 7, 3,
+  0, 2, 6, 
+  0, 6, 4, 
+  4, 1, 0, 
+  1, 4, 5, 
+  5, 6, 7, 
+  5, 4, 6,
+]);
+
+export const cube_optimized = {
+    vertex_data: vertex_data_performance,
+    index_data: index_data_performance
 };

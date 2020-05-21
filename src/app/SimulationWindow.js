@@ -4,8 +4,9 @@ import { IndexBuffer } from '../gl/IndexBuffer';
 import { UniformMat4f, UniformVec3f, UniformVec4f, Uniform } from '../gl/Uniform';
 
 import basic_shader from '../shaders/basic';
+import performance_shader from '../shaders/performance';
 import { CellularAutomaton3D } from '../simulation/CellularAutomaton3D';
-import { VoxelGrid } from './VoxelGrid';
+import { VoxelGrid, VoxelGridPerformance } from './VoxelGrid';
 import { RuleBrowser } from './RuleBrowser';
 import { vec4, vec3 } from 'gl-matrix';
 
@@ -32,7 +33,8 @@ export class SimulationWindow {
 
     this.total_states = 6;
 
-    this.voxels = new VoxelGrid(this.size, 1.0);
+    // this.voxels = new VoxelGrid(this.size, 1.0);
+    this.voxels = new VoxelGridPerformance(this.size, 1.0);
     this.state_buffer = new Float32Array(this.voxels.cell_count * this.voxels.total_vertices);
     this.sim = new CellularAutomaton3D(this.size);
 
@@ -42,54 +44,63 @@ export class SimulationWindow {
     this.sim.listen_rerender(sim => this.update_vertex_buffer_local());
   }
 
+  create_performance_shader(total_states) {
+    let gl = this.gl;
+
+    let vert_src = performance_shader.vertex(total_states);
+    let frag_src = performance_shader.frag();
+
+    this.shader = new Shader(gl, vert_src, frag_src); 
+
+    this.terrain_vbo_layout = new VertexBufferLayout(gl);
+    this.terrain_vbo_layout.push_attribute(0, 3, gl.FLOAT, false);
+
+    this.state_vbo_layout = new VertexBufferLayout(gl);
+    this.state_vbo_layout.push_attribute(1, 1, gl.FLOAT, false);
+
+  }
+
+  create_basic_shader(total_states, total_lights) {
+    let gl = this.gl;
+
+    let vert_src = basic_shader.vertex(total_states);
+    let frag_src = basic_shader.frag(total_lights);
+
+    this.shader = new Shader(gl, vert_src, frag_src); 
+
+    this.terrain_vbo_layout = new VertexBufferLayout(gl);
+    this.terrain_vbo_layout.push_attribute(0, 3, gl.FLOAT, false);
+    this.terrain_vbo_layout.push_attribute(1, 3, gl.FLOAT, false);
+
+    this.state_vbo_layout = new VertexBufferLayout(gl);
+    this.state_vbo_layout.push_attribute(2, 1, gl.FLOAT, false);
+  }
+
   init_gl(total_cells, total_states) {
     let gl = this.gl;
 
     // let total_lights = 3*3*3-1;
     let total_lights = 1;
 
-    let vert_src = basic_shader.vertex(total_states);
-    let frag_src = basic_shader.frag(total_lights);
-    this.shader = new Shader(gl, vert_src, frag_src); 
+    this.create_performance_shader(total_states);
+    // this.create_basic_shader(total_states, total_lights);
+    
     this.terrain_vbo = new VertexBufferObject(gl, this.voxels.vertex_data, gl.STATIC_DRAW);
     this.state_vbo = new VertexBufferObject(gl, this.state_buffer, gl.STREAM_COPY);
     this.index_buffer = new IndexBuffer(gl, this.voxels.index_data);
 
-    let terrain_vbo_layout = new VertexBufferLayout(gl);
-    terrain_vbo_layout.push_attribute(0, 3, gl.FLOAT, false);
-    terrain_vbo_layout.push_attribute(1, 3, gl.FLOAT, false);
-
-    let state_vbo_layout = new VertexBufferLayout(gl);
-    state_vbo_layout.push_attribute(2, 1, gl.FLOAT, false);
-
     this.vao = new VertexArrayObject(gl);
-    this.vao.add_vertex_buffer(this.terrain_vbo, terrain_vbo_layout);
-    this.vao.add_vertex_buffer(this.state_vbo, state_vbo_layout);
+    this.vao.add_vertex_buffer(this.terrain_vbo, this.terrain_vbo_layout);
+    this.vao.add_vertex_buffer(this.state_vbo, this.state_vbo_layout);
 
     this.shader.add_uniform("uModel", new UniformMat4f(gl, this.camera.model));
     this.shader.add_uniform("uView", new UniformMat4f(gl, this.camera.view));
     this.shader.add_uniform("uProjection", new UniformMat4f(gl, this.camera.projection));
     this.shader.add_uniform("uStateColour", new Uniform(loc => gl.uniform4fv(loc, this.state_colours_data)));
+    this.shader.add_uniform("uGridSize", new UniformVec3f(gl, this.size));
     // camera data
     this.shader.add_uniform("uViewPosition", new UniformVec3f(gl, this.camera.view_position));
 
-    // light data
-    // let i = 0;
-    // for (let x of [-1, 0, 1]) {
-    //   for (let y of [-1, 0, 1]) {
-    //     for (let z of [-1, 0, 1]) {
-    //       if (x === 0 && y === 0 && z == 0)
-    //         continue;
-    //       this.shader.add_uniform(`uLights[${i}].colour`, new UniformVec3f(gl, vec3.fromValues(1, 1, 1)));
-    //       let light_position = vec3.create();
-    //       vec3.mul(light_position, this.size, vec3.fromValues(x, y, z));
-    //       vec3.scale(light_position, light_position, 2);
-    //       this.shader.add_uniform(`uLights[${i}].position`, new UniformVec3f(gl, light_position));
-    //       i += 1;
-    //     }
-    //   }
-    // }
-    // let light_positions = [vec3.fromValues(-1, -1, -1), vec3.fromValues(1, 1, 1)];
     let light_positions = [vec3.fromValues(1, 1, 1)];
     light_positions.forEach((position, i) => {
         this.shader.add_uniform(`uLights[${i}].colour`, new UniformVec3f(gl, vec3.fromValues(1, 1, 1)));
@@ -99,7 +110,7 @@ export class SimulationWindow {
         this.shader.add_uniform(`uLights[${i}].position`, new UniformVec3f(gl, light_position));
     })
 
-    // lighting params
+    // // lighting params
     this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 0.4)));
     this.shader.add_uniform("uDiffuseStrength", new Uniform(loc => gl.uniform1f(loc, 0.9)));
     this.shader.add_uniform("uSpecularStrength", new Uniform(loc => gl.uniform1f(loc, 0.75)));
@@ -124,14 +135,14 @@ export class SimulationWindow {
   on_update() {
     this.camera.update();
     if (this.running) {
-      this.step();
+      this.step(false);
     }
   }
 
-  step() {
+  step(complete=true) {
     let entry = this.rule_browser.get_selected_entry();
     let rule = entry.rule;
-    this.sim.step(rule);
+    this.sim.step(rule, complete);
   }
 
   update_vertex_buffer() {
