@@ -47,17 +47,17 @@ export class SimulationWindow {
     this.sim.listen_rerender(sim => this.update_vertex_buffer_local());
   }
 
-  create_performance_shader(total_states) {
+  create_performance_shader(total_states, total_lights) {
     let gl = this.gl;
 
     let vert_src = performance_shader.vertex(total_states);
-    let frag_src = performance_shader.frag();
+    let frag_src = performance_shader.frag(total_lights);
 
     this.shader = new Shader(gl, vert_src, frag_src); 
 
     this.terrain_vbo_layout = new VertexBufferLayout(gl);
     this.terrain_vbo_layout.push_attribute(0, 3, gl.FLOAT, false);
-    // this.terrain_vbo_layout.push_attribute(1, 3, gl.FLOAT, false);
+    this.terrain_vbo_layout.push_attribute(1, 3, gl.FLOAT, false);
 
     // this.state_vbo_layout = new VertexBufferLayout(gl);
     // this.state_vbo_layout.push_attribute(1, 1, gl.FLOAT, false);
@@ -86,11 +86,11 @@ export class SimulationWindow {
     // let total_lights = 3*3*3-1;
     let total_lights = 1;
 
-    this.create_performance_shader(total_states);
+    this.create_performance_shader(total_states, total_lights);
     // this.create_basic_shader(total_states, total_lights);
 
-    this.vertex_data = cube_optimized.vertex_data(0, 1, 1, 0, 1, 0);
-    this.index_data = cube_optimized.index_data;
+    this.vertex_data = cube.vertex_data(0, 1, 1, 0, 1, 0);
+    this.index_data = cube.index_data;
     this.state_data = new Uint8Array(this.total_cells);
 
     this.terrain_vbo = new VertexBufferObject(gl, this.vertex_data, gl.STATIC_DRAW);
