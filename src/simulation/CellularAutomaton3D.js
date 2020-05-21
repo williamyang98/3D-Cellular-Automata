@@ -14,16 +14,8 @@ export class CellularAutomaton3D {
 
         this.listeners = new Set();
 
-        this.i_to_xyz = new Array(this.count);
-        for (let x = 0; x < this.shape[0]; x++) {
-            for (let y = 0; y < this.shape[1]; y++) {
-                for (let z = 0; z < this.shape[2]; z++) {
-                    let i = this.xyz_to_i(x, y, z);
-                    this.i_to_xyz[i] = [x, y, z];
-                }
-            }
-        }
-
+        this.current_slice = null;
+        this.slice_size = 10000;
     }
 
     listen_rerender(listener) {
@@ -54,12 +46,34 @@ export class CellularAutomaton3D {
         }
     }
 
-    step(rule) {
+    step(rule, complete=false) {
+        if (this.current_slice === null) {
+            this.current_slice = this.sliced_step(rule);
+        }
+
+        // forcefully iterate through all slices
+        if (complete) {
+            for (let res of this.current_slice) {
+            }
+            this.current_slice = null;
+            return;
+        }
+
+        // complete only one slice
+        let res = this.current_slice.next();
+        if (res.done) {
+            this.current_slice = null;
+        }
+    }
+
+    *sliced_step(rule) {
         let start = performance.now();
+        let cell_count = 0;
 
         for (let i of this.should_update) {
             let state = this.cells[i];
-            let [x, y, z] = this.i_to_xyz[i];
+            let [x, y, z] = this.i_to_xyz(i);
+
             let neighbours = rule.count_neighbours(x, y, z, this.shape, this.cells);
             let next_state = rule.get_next_state(state, neighbours);
             this.buffer[i] = next_state; 
@@ -69,11 +83,15 @@ export class CellularAutomaton3D {
             } else {
                 rule.on_location_update(x, y, z, this.shape, this.should_update_buffer);
             }
-        }
 
-        // rerender with changes
-        for (let listener of this.listeners) {
-            listener(this);
+            cell_count += 1;
+            // slice size at 10000
+            if (cell_count % this.slice_size === 0) {
+                cell_count = 0;
+                let now = performance.now();
+                if (now-start >= 16.6) // aim for minimum of 60ms per update
+                    yield;
+            }
         }
 
         // swap buffers
@@ -92,10 +110,24 @@ export class CellularAutomaton3D {
 
         let end = performance.now();
         console.log(this.should_update.size, end-start);
+
+        // rerender with changes
+        for (let listener of this.listeners) {
+            listener(this);
+        }
+        return;
     }
 
     xyz_to_i(x, y, z) {
         return x + y*this.xyz_to_i_coefficients[0] + z*this.xyz_to_i_coefficients[1];
+    }
+
+    i_to_xyz(i) {
+        let z = Math.floor(i / this.xyz_to_i_coefficients[1]);
+        i = i-z*this.xyz_to_i_coefficients[1];
+        let y = Math.floor(i / this.xyz_to_i_coefficients[0]);
+        let x = i-y*this.xyz_to_i_coefficients[0];
+        return [x, y, z];
     }
 };
 
