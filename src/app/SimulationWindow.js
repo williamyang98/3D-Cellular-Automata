@@ -9,6 +9,9 @@ import { CellularAutomaton3D } from '../simulation/CellularAutomaton3D';
 import { VoxelGrid, VoxelGridPerformance } from './VoxelGrid';
 import { RuleBrowser } from './RuleBrowser';
 import { vec4, vec3 } from 'gl-matrix';
+import { cube_optimized, cube } from '../gl/CubeData';
+import { Texture3D } from '../gl/Texture3D';
+import { Texture2D } from '../gl/Texture2D';
 
 export class SimulationWindow {
   constructor(gl, size, renderer, camera) {
@@ -34,8 +37,8 @@ export class SimulationWindow {
     this.total_states = 6;
 
     // this.voxels = new VoxelGrid(this.size, 1.0);
-    this.voxels = new VoxelGridPerformance(this.size, 1.0);
-    this.state_buffer = new Float32Array(this.voxels.cell_count * this.voxels.total_vertices);
+    // this.voxels = new VoxelGridPerformance(this.size, 1.0);
+    // this.state_buffer = new Float32Array(this.voxels.cell_count * this.voxels.total_vertices);
     this.sim = new CellularAutomaton3D(this.size);
 
     this.init_gl(this.total_cells, this.total_states);
@@ -54,9 +57,10 @@ export class SimulationWindow {
 
     this.terrain_vbo_layout = new VertexBufferLayout(gl);
     this.terrain_vbo_layout.push_attribute(0, 3, gl.FLOAT, false);
+    // this.terrain_vbo_layout.push_attribute(1, 3, gl.FLOAT, false);
 
-    this.state_vbo_layout = new VertexBufferLayout(gl);
-    this.state_vbo_layout.push_attribute(1, 1, gl.FLOAT, false);
+    // this.state_vbo_layout = new VertexBufferLayout(gl);
+    // this.state_vbo_layout.push_attribute(1, 1, gl.FLOAT, false);
 
   }
 
@@ -84,14 +88,17 @@ export class SimulationWindow {
 
     this.create_performance_shader(total_states);
     // this.create_basic_shader(total_states, total_lights);
-    
-    this.terrain_vbo = new VertexBufferObject(gl, this.voxels.vertex_data, gl.STATIC_DRAW);
-    this.state_vbo = new VertexBufferObject(gl, this.state_buffer, gl.STREAM_COPY);
-    this.index_buffer = new IndexBuffer(gl, this.voxels.index_data);
+
+    this.vertex_data = cube_optimized.vertex_data(0, 1, 1, 0, 1, 0);
+    this.index_data = cube_optimized.index_data;
+    this.state_data = new Uint8Array(this.total_cells);
+
+    this.terrain_vbo = new VertexBufferObject(gl, this.vertex_data, gl.STATIC_DRAW);
+    this.index_buffer = new IndexBuffer(gl, this.index_data);
 
     this.vao = new VertexArrayObject(gl);
     this.vao.add_vertex_buffer(this.terrain_vbo, this.terrain_vbo_layout);
-    this.vao.add_vertex_buffer(this.state_vbo, this.state_vbo_layout);
+    // this.vao.add_vertex_buffer(this.state_vbo, this.state_vbo_layout);
 
     this.shader.add_uniform("uModel", new UniformMat4f(gl, this.camera.model));
     this.shader.add_uniform("uView", new UniformMat4f(gl, this.camera.view));
@@ -116,6 +123,10 @@ export class SimulationWindow {
     this.shader.add_uniform("uSpecularStrength", new Uniform(loc => gl.uniform1f(loc, 0.75)));
     // specular lighting
     this.shader.add_uniform("uSpecularPowerFactor", new Uniform(loc => gl.uniform1f(loc, 8.0)));
+
+    // add texture id
+    this.state_texture = new Texture3D(gl, this.state_data, this.size);
+    this.shader.add_uniform("uStateTexture", new Uniform(loc => gl.uniform1i(loc, 0)));
   }
 
   clear() {
@@ -154,14 +165,11 @@ export class SimulationWindow {
 
     for (let i = 0; i < this.sim.count; i++) {
       let state = this.sim.cells[i];
-      let offset = i*this.voxels.total_vertices;
-      for (let v = 0; v < this.voxels.total_vertices; v++) {
-        this.state_buffer[offset+v] = state * scale;
-      }
+      this.state_data[i] = Math.floor(state * scale);
     }
 
-    this.state_vbo.bind();
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.state_buffer, 0, this.state_buffer.length);    
+    this.state_texture.bind();
+    gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RED, gl.UNSIGNED_BYTE, this.state_data, 0);
   }
 
   update_vertex_buffer_local() {
@@ -173,17 +181,23 @@ export class SimulationWindow {
 
     for (let i of this.sim.should_update) {
       let state = this.sim.cells[i];
-      let offset = i*this.voxels.total_vertices;
-      for (let v = 0; v < this.voxels.total_vertices; v++) {
-        this.state_buffer[offset+v] = state * scale;
-      }
+      this.state_data[i] = Math.floor(state * scale);
     }
 
-    this.state_vbo.bind();
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.state_buffer, 0, this.state_buffer.length);    
+    this.state_texture.bind();
+    gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RED, gl.UNSIGNED_BYTE, this.state_data, 0);
+
   }
 
   on_render() {
-    this.renderer.draw(this.vao, this.index_buffer, this.shader);
+    let gl = this.gl;
+    this.shader.bind();
+    this.state_texture.bind(0);
+    // this.test_texture.bind(0);
+    this.vao.bind();
+    this.index_buffer.bind();
+
+    gl.drawElementsInstanced(gl.TRIANGLES, this.index_buffer.count, gl.UNSIGNED_INT, this.index_data, this.total_cells); 
+    // this.renderer.draw(this.vao, this.index_buffer, this.shader);
   }
 }
