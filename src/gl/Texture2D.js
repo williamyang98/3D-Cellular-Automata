@@ -4,7 +4,7 @@ export class Texture2D {
         this.data = data;
         this.shape = shape;
         this.texture = gl.createTexture();
-        gl.activeTexture(gl.TEXTURE0+0);
+
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
         // The R32F type works only with gl.RED and gl.FLOAT
         // https://www.khronos.org/registry/webgl/specs/latest/2.0/#TEXTURE_TYPES_FORMATS_FROM_DOM_ELEMENTS_TABLE
