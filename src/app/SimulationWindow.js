@@ -108,21 +108,17 @@ export class SimulationWindow {
     // camera data
     this.shader.add_uniform("uViewPosition", new UniformVec3f(gl, this.camera.view_position));
 
-    let light_positions = [vec3.fromValues(1, 1, 1)];
-    light_positions.forEach((position, i) => {
-        this.shader.add_uniform(`uLights[${i}].colour`, new UniformVec3f(gl, vec3.fromValues(1, 1, 1)));
-        let light_position = vec3.create();
-        vec3.mul(light_position, this.size, position);
-        vec3.scale(light_position, light_position, 2);
-        this.shader.add_uniform(`uLights[${i}].position`, new UniformVec3f(gl, light_position));
-    })
+    let light_position = vec3.create();
+    vec3.scale(light_position, this.size, 2.5);
+    this.shader.add_uniform('light.position', new UniformVec3f(gl, light_position));
+    this.shader.add_uniform('light.colour', new UniformVec3f(gl, vec3.fromValues(1,1,1)));
 
     // // lighting params
-    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 0.4)));
+    this.shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, 0.3)));
     this.shader.add_uniform("uDiffuseStrength", new Uniform(loc => gl.uniform1f(loc, 0.9)));
-    this.shader.add_uniform("uSpecularStrength", new Uniform(loc => gl.uniform1f(loc, 0.75)));
+    this.shader.add_uniform("uSpecularStrength", new Uniform(loc => gl.uniform1f(loc, 0.5)));
     // specular lighting
-    this.shader.add_uniform("uSpecularPowerFactor", new Uniform(loc => gl.uniform1f(loc, 8.0)));
+    this.shader.add_uniform("uSpecularPowerFactor", new Uniform(loc => gl.uniform1f(loc, 4.0)));
 
     // add texture id
     this.state_texture = new Texture3D(gl, this.state_data, this.size);
