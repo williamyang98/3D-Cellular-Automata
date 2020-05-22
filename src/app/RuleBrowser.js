@@ -9,7 +9,7 @@ export class RuleBrowser {
       new RuleEntry(
         '445', 
         '4/4/5/M', 
-        new SeedCrystal(0.3, 0.5)
+        new SeedCrystal(0.05, 0.5)
       ));
 
     this.add_entry(
@@ -22,22 +22,32 @@ export class RuleBrowser {
       new RuleEntry(
         'Amoeba', 
         '9-26/5-7,12-13,15/5/M',
-        new SeedCrystal(0.3, 0.15),
+        new SeedCrystalAbsolute(0.3, 5),
       ));
 
     this.add_entry(
       new RuleEntry(
-        'Builder', 
+        'Builder 1', 
         '2,6,9/4,6,8-9/10/M',
-        new SeedCrystal(0.3, 0.25)
+        // '6,9/4,6,8-9/10/M',
+        new SeedCrystalAbsolute(0.35, 7) 
+      )
+    );
+
+    this.add_entry(
+      new RuleEntry(
+        'Builder 2', 
+        // '2,6,9/4,6,8-9/10/M',
+        '6,9/4,6,8-9/10/M',
+        new SeedCrystalAbsolute(0.35, 7) 
       )
     );
 
     this.add_entry(
       new RuleEntry(
         'Clouds 1', 
-        '13-26/13-14,17-19/5/M',
-        new SeedCrystal(0.60, 0.5)
+        '13-26/13-14,17-19/2/M',
+        new SeedCrystal(0.5, 0.5)
       )
     );
 
@@ -45,7 +55,7 @@ export class RuleBrowser {
       new RuleEntry(
         'Spiky Growth', 
         '0-3,7-9,11-13,18,21-22,24-26/4,13,17,20-24,24/4/M',
-        new SeedCrystal(0.4, 0.05)
+        new SeedCrystalAbsolute(0.8, 1)
       )
     );
 
@@ -54,6 +64,23 @@ export class RuleBrowser {
         'Crystal Growth 1',
         '0-6/1,3/2/VN',
         new SeedCrystalAbsolute(1.0, 1)
+      )
+    );
+
+    this.add_entry(
+      new RuleEntry(
+        'Pyroclastic',
+        '4-7/6-8/10/M',
+        new SeedCrystal(0.1, 0.1)
+      )
+    );
+
+    this.add_entry(
+      new RuleEntry(
+        'Slow Decay',
+        // '1,4,8,11,13-26/13-26/5/M',
+        '8,11,13-26/13-26/5/M',
+        new SeedCrystal(0.45, 1.0)
       )
     );
 
