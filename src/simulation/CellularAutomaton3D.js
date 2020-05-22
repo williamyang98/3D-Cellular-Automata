@@ -56,7 +56,7 @@ export class CellularAutomaton3D {
             for (let res of this.current_slice) {
             }
             this.current_slice = null;
-            return;
+            return true;
         }
 
         // complete only one slice
@@ -64,6 +64,7 @@ export class CellularAutomaton3D {
         if (res.done) {
             this.current_slice = null;
         }
+        return res.done;
     }
 
     *sliced_step(rule) {

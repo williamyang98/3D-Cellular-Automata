@@ -32,6 +32,8 @@ export class SimulationWindow {
     this.rule_browser = new RuleBrowser();
 
     this.sim.listen_rerender(sim => this.update_vertex_buffer_local());
+
+    this.total_queued_steps = 0;
   }
 
   create_shader(total_states, total_lights) {
@@ -138,14 +140,37 @@ export class SimulationWindow {
   on_update() {
     this.camera.update();
     if (this.running) {
-      this.step(false);
+      this.total_queued_steps = 1;
+    }
+
+    if (this.total_queued_steps > 0) {
+      let entry = this.rule_browser.get_selected_entry();
+      let rule = entry.rule;
+      let res = this.sim.step(rule);
+      if (res) {
+        this.total_queued_steps = 0;
+      } 
     }
   }
 
-  step(complete=true) {
-    let entry = this.rule_browser.get_selected_entry();
-    let rule = entry.rule;
-    this.sim.step(rule, complete);
+  start() {
+    this.running = true;
+  }
+
+  stop() {
+    this.running = false;
+    this.total_queued_steps = 0;
+  }
+
+  toggle() {
+    if (this.running)
+      this.stop();
+    else
+      this.start();
+  }
+
+  step() {
+    this.total_queued_steps = 1;
   }
 
   update_vertex_buffer() {
