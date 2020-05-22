@@ -4,6 +4,7 @@ return (
 
 precision mediump float;
 precision mediump sampler3D;
+precision mediump sampler2D;
 precision mediump int;
 
 in vec3 position;
@@ -14,10 +15,12 @@ uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
 uniform vec3 uGridSize;
-uniform vec4 uStateColour[${lut_size}];
+uniform int uScalingEnabled;
 
-
+uniform sampler2D uStateColourTexture;
 uniform sampler3D uStateTexture;
+
+vec3 centre = vec3(0.5, 0.5, 0.5);
 
 out vec4 vColour;
 out vec3 vNormal;
@@ -33,21 +36,30 @@ vec3 calculate_position(float index) {
 }
 
 void main() {
-    // int index = int(state);
-    // vColour = uStateColour[index];
-
     vec3 offset = calculate_position(float(gl_InstanceID));
-    vec3 new_position = position + offset;
 
     // vec3 colour = normalize(new_position / (uGridSize * 2.0));
     // vColour = vec4(colour, 1);
     vec3 state_lookup = offset / uGridSize;
     vec4 result = texture(uStateTexture, state_lookup);
-    int index = int(result[0] * 255.0);
-    vColour = uStateColour[index];
-    // vColour = vec4(1,1,1, uStateColour[index].a);
+    float index = result[0];
 
-    // vColour = vec4(new_position / (uGridSize/2.0), uStateColour[index].a);
+    float scale = max(index, float(1-uScalingEnabled));
+    vec3 to_centre = centre-position;
+
+    vec3 new_position = position + to_centre*(1.0-scale) + offset;
+
+    vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
+
+    vec3 distance = new_position-uGridSize/2.0;
+    float normalised_distance = length(distance/ (uGridSize/2.0));
+    normalised_distance = clamp(normalised_distance, 0.0, 1.0);
+    vec4 distance_colour = texture(uStateColourTexture, vec2(normalised_distance, 0));
+
+
+    vColour = state_colour; 
+    // vColour = vec4(distance_colour.xyz, state_colour.a); 
+
 
     vNormal = normal;
     vFragPos = vec3(uModel * vec4(new_position, 1));
