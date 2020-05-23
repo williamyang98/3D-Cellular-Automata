@@ -8,12 +8,6 @@ import { Border } from './Border';
 export class App {
   constructor(gl) {
     this.gl = gl;
-    
-    this.fps = 30;
-    this.frame_time_ms = 1000/this.fps;
-
-    this.camera = new Camera();
-
 
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
@@ -21,16 +15,17 @@ export class App {
     gl.cullFace(gl.BACK);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    this.renderer = new Renderer(gl); 
-
     let x = 50;
     this.size = vec3.fromValues(x, x, x);
+
+    this.renderer = new Renderer(gl); 
+    this.camera = new Camera();
+
     this.border = new Border(gl, this.size, this.renderer, this.camera);
-    this.simulation_window = new SimulationWindow(gl, this.size, this.renderer, this.camera);
+    this.sim = new SimulationWindow(gl, this.size, this.renderer, this.camera);
 
     this.camera.model_translation = vec3.create();
     vec3.scale(this.camera.model_translation, this.size, -0.5);
-
     this.camera.view_position[2] = -this.size[2] * 2.5;
   }
 
@@ -45,13 +40,13 @@ export class App {
   }
 
   on_update() {
-    this.simulation_window.on_update();
+    this.sim.on_update();
   }
     
   on_render() {
     this.renderer.clear();
     this.border.on_render();
-    this.simulation_window.on_render();
+    this.sim.on_render();
   }
 }
 
