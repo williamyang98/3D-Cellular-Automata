@@ -11,7 +11,7 @@ export function RulesBrowser() {
     let selected = index === selected_entry;
     let class_name = selected ? 'active' : '';
     return (
-      <li className={"list-group-item "+class_name} key={index} onClick={() => dispatch({type:'select', value:index})}>
+      <li className={"list-group-item "+class_name} key={index} onClick={() => dispatch({type:'rule.select', value:index})}>
         <div>Name: {entry.name}</div>
         <div>Rule: {entry.description}</div>
       </li>

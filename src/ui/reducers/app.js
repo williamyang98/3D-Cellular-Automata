@@ -18,7 +18,7 @@ export function simulation_reducer(init_sim) {
 export function rules_reducer(rules_browser) {
     const reducer = (browser=rules_browser, action) => {
         switch (action.type) {
-            case 'select':
+            case 'rule.select':
                 let index = action.value;
                 browser.select_entry(index);
                 break;
@@ -34,4 +34,19 @@ export function app_reducer(app) {
     return  (state=app, action) => {
         return state;
     }
+}
+
+export function shader_reducer(shader_manager) {
+    const reducer = (manager=shader_manager, action) => {
+        switch (action.type) {
+            case 'shader.select':
+                let index = action.value;
+                manager.select_shader(index);
+                break;
+        }
+
+        return manager;
+    }
+
+    return reducer;
 }
