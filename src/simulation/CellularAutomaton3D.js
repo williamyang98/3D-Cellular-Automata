@@ -38,8 +38,8 @@ export class CellularAutomaton3D {
                 for (let z = 0; z < this.shape[2]; z++) {
                     let i = this.xyz_to_i(x, y, z);
 
-                    let neighbours = rule.count_neighbours(x, y, z, this.shape, this.cells);
-                    this.neighbours[i] = neighbours;
+                    // let neighbours = rule.count_neighbours(x, y, z, this.shape, this.cells);
+                    // this.neighbours[i] = neighbours;
 
                     if (this.cells[i] === rule.dead_state) {
                         this.should_update.delete(i);

@@ -17,7 +17,7 @@ export class App {
     gl.cullFace(gl.BACK);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    let x = 50;
+    let x = 120;
     this.size = vec3.fromValues(x, x, x);
 
     this.renderer = new Renderer(gl); 

@@ -143,7 +143,7 @@ export class SimulationWindow {
       let state = this.sim.cells[i];
       let neighbours = this.sim.neighbours[i];
       this.cell_data[offset+0] = Math.floor(state/max_value * 255);
-      this.cell_data[offset+1] = Math.floor(Math.min(neighbours, 10)/10 * 255);
+      this.cell_data[offset+1] = Math.floor(Math.min(neighbours, 26)/26 * 255);
     }
 
     this.cell_data_texture.bind();
