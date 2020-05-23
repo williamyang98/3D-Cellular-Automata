@@ -15,13 +15,11 @@ export class Texture3D {
         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE);
         gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-        // gl.texImage3D(gl.TEXTURE_3D, 0, gl.R32F, shape[0], shape[1], shape[2], 0, gl.RED, gl.FLOAT, this.data);
-        // gl.texImage3D(gl.TEXTURE_3D, 0, gl.R32F, shape[0], shape[1], shape[2], 0, gl.RED, gl.FLOAT, this.data);
 
-        gl.texImage3D(gl.TEXTURE_3D, 0, gl.R8, shape[0], shape[1], shape[2], 0, gl.RED, gl.UNSIGNED_BYTE, this.data);
-
+        // gl.texImage3D(gl.TEXTURE_3D, 0, gl.R8, shape[0], shape[1], shape[2], 0, gl.RED, gl.UNSIGNED_BYTE, this.data);
+        // gl.texImage3D(gl.TEXTURE_3D, 0, gl.RG8, shape[0], shape[1], shape[2], 0, gl.RG, gl.UNSIGNED_BYTE, this.data);
+        gl.texImage3D(gl.TEXTURE_3D, 0, gl.RG8, shape[0], shape[1], shape[2], 0, gl.RG, gl.UNSIGNED_BYTE, this.data);
         // gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA8, shape[0], shape[1], shape[2], 0, gl.RGBA, gl.UNSIGNED_BYTE, this.data);
-        // gl.bindTexture(gl.TEXTURE_3D, gl.TEXTURE0);
     }
 
     bind(slot=0) {

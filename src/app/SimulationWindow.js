@@ -27,7 +27,7 @@ export class SimulationWindow {
     this.create_data();
     
     this.sim = new CellularAutomaton3D(this.size);
-    this.sim.listen_rerender(sim => this.update_vertex_buffer_local());
+    this.sim.listen_rerender(sim => this.update_vertex_buffer(true));
 
   }
 
@@ -40,7 +40,6 @@ export class SimulationWindow {
 
     let vertex_data = cube.vertex_data(0, 1, 1, 0, 1, 0);
     let index_data = cube.index_data;
-    this.state_data = new Uint8Array(this.total_cells);
 
     let terrain_vbo = new VertexBufferObject(gl, vertex_data, gl.STATIC_DRAW);
     this.index_buffer = new IndexBuffer(gl, index_data);
@@ -49,7 +48,10 @@ export class SimulationWindow {
     this.vao.add_vertex_buffer(terrain_vbo, terrain_vbo_layout);
 
     this.state_colour_texture = this.create_states_texture();
-    this.state_texture = new Texture3D(gl, this.state_data, this.size);
+
+    this.cell_data_width = 2;
+    this.cell_data = new Uint8Array(this.total_cells*this.cell_data_width);
+    this.cell_data_texture = new Texture3D(gl, this.cell_data, this.size);
   }
 
   create_states_texture() {
@@ -128,45 +130,40 @@ export class SimulationWindow {
     this.total_queued_steps = 1;
   }
 
-  update_vertex_buffer() {
+  update_vertex_buffer(local=false) {
     let gl = this.gl;
 
     let rule = this.rule_browser.get_selected_entry().rule;
     let max_value = rule.alive_state;
 
-    for (let i = 0; i < this.sim.count; i++) {
+    let items = local ? this.sim.should_update : range(0, this.sim.count);
+
+    for (let i of items) {
+      let offset = i*this.cell_data_width;
       let state = this.sim.cells[i];
-      this.state_data[i] = Math.floor(state/max_value * 255);
+      let neighbours = this.sim.neighbours[i];
+      this.cell_data[offset+0] = Math.floor(state/max_value * 255);
+      this.cell_data[offset+1] = Math.floor(Math.min(neighbours, 10)/10 * 255);
     }
 
-    this.state_texture.bind();
-    gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RED, gl.UNSIGNED_BYTE, this.state_data, 0);
-  }
-
-  update_vertex_buffer_local() {
-    let gl = this.gl;
-
-    let rule = this.rule_browser.get_selected_entry().rule;
-    let max_value = rule.alive_state;
-
-    for (let i of this.sim.should_update) {
-      let state = this.sim.cells[i];
-      this.state_data[i] = Math.floor(state/max_value * 255);
-    }
-
-    this.state_texture.bind();
-    gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RED, gl.UNSIGNED_BYTE, this.state_data, 0);
-
+    this.cell_data_texture.bind();
+    gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RG, gl.UNSIGNED_BYTE, this.cell_data, 0);
   }
 
   on_render() {
     let gl = this.gl;
     this.shader_manager.bind();
-    this.state_texture.bind(0);
+    this.cell_data_texture.bind(0);
     this.state_colour_texture.bind(1);
     this.vao.bind();
     this.index_buffer.bind();
 
     gl.drawElementsInstanced(gl.TRIANGLES, this.index_buffer.count, gl.UNSIGNED_INT, this.index_data, this.total_cells); 
+  }
+}
+
+function *range(start, end) {
+  for (let i = start; i < end; i++) {
+    yield i;
   }
 }

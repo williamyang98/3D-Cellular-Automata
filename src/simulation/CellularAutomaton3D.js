@@ -6,7 +6,8 @@ export class CellularAutomaton3D {
 
         this.xyz_to_i_coefficients = [this.shape[0], this.shape[1]*this.shape[0]];
         this.cells = new Uint8Array(this.count);
-        this.buffer = new Uint8Array(this.count);
+        this.cells_buffer = new Uint8Array(this.count);
+        this.neighbours = new Uint8Array(this.count);
 
         this.should_update = new Set();
         this.should_update_buffer = new Set();
@@ -24,7 +25,8 @@ export class CellularAutomaton3D {
 
     clear() {
         this.cells.fill(0, 0, this.count);
-        this.buffer.fill(0, 0, this.count);
+        this.cells_buffer.fill(0, 0, this.count);
+        this.neighbours.fill(0, 0, this.count);
         this.should_update.clear();
         this.should_update_buffer.clear();
         this.remove_queue = [];
@@ -35,12 +37,15 @@ export class CellularAutomaton3D {
             for (let y = 0; y < this.shape[1]; y++) {
                 for (let z = 0; z < this.shape[2]; z++) {
                     let i = this.xyz_to_i(x, y, z);
+
+                    let neighbours = rule.count_neighbours(x, y, z, this.shape, this.cells);
+                    this.neighbours[i] = neighbours;
+
                     if (this.cells[i] === rule.dead_state) {
                         this.should_update.delete(i);
-                        continue;
+                    } else {
+                        rule.on_location_update(x, y, z, this.shape, this.should_update);
                     }
-                    
-                    rule.on_location_update(x, y, z, this.shape, this.should_update);
                 }
             }
         }
@@ -76,8 +81,10 @@ export class CellularAutomaton3D {
             let [x, y, z] = this.i_to_xyz(i);
 
             let neighbours = rule.count_neighbours(x, y, z, this.shape, this.cells);
+            this.neighbours[i] = neighbours;
+
             let next_state = rule.get_next_state(state, neighbours);
-            this.buffer[i] = next_state; 
+            this.cells_buffer[i] = next_state; 
 
             if (next_state === state) {
                 this.remove_queue.push(i);
@@ -97,8 +104,8 @@ export class CellularAutomaton3D {
 
         // swap buffers
         let tmp = this.cells;
-        this.cells = this.buffer;
-        this.buffer = tmp;
+        this.cells = this.cells_buffer;
+        this.cells_buffer = tmp;
 
         while (this.remove_queue.length > 0) {
             let i = this.remove_queue.pop();

@@ -112,8 +112,30 @@ const radius_shading = create_vertex_shader(
     gl_Position = MVP * vec4(new_position, 1);
 }`);
 
+const neighbour_shading = create_vertex_shader(
+`void main() {
+    vec3 offset = calculate_position(float(gl_InstanceID));
+
+    vec3 state_lookup = offset / uGridSize;
+    vec4 result = texture(uStateTexture, state_lookup);
+    float index = result[1];
+
+    float scale = max(index, float(1-uScalingEnabled));
+    vec3 to_centre = centre-position;
+    vec3 new_position = position + to_centre*(1.0-scale) + offset;
+
+    vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
+    vColour = state_colour; 
+    vNormal = normal;
+    vFragPos = vec3(uModel * vec4(new_position, 1));
+
+    mat4 MVP = uProjection * uView * uModel;
+    gl_Position = MVP * vec4(new_position, 1);
+}`);
+
 export const vertex_shader_src = {
     state: state_shading,
     xyz: xyz_shading,
-    radius: radius_shading
+    radius: radius_shading,
+    neighbour: neighbour_shading
 };
