@@ -112,8 +112,8 @@ float uAmbientOcclusionRange = 100.0;
 float uSunStrength = 1.0;
 
 vec4 uFogColour = vec4(1,1,1,1);
-float uFogNear = 0.0;
-float uFogFar = 0.3;
+uniform float uFogNear;
+uniform float uFogFar;
 float uFogRange = 1000.0;
 
 vec3 get_sun_direction() {

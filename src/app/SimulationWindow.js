@@ -78,7 +78,10 @@ export class SimulationWindow {
     this.shader.add_uniform("uStateTexture", new Uniform(loc => gl.uniform1i(loc, 0)));
     this.shader.add_uniform("uStateColourTexture", new Uniform(loc => gl.uniform1i(loc, 1)));
      
-    this.shader.add_uniform("uScalingEnabled", new Uniform(loc => gl.uniform1i(loc, 1)));
+    this.shader.add_uniform("uScalingEnabled", new Uniform(loc => gl.uniform1i(loc, 0)));
+
+    this.shader.add_uniform("uFogNear", new Uniform(loc => gl.uniform1f(loc, 0)));
+    this.shader.add_uniform("uFogFar", new Uniform(loc => gl.uniform1f(loc, 0)));
   }
 
   create_state_colours() {
