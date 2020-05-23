@@ -44,7 +44,7 @@ export class Shader {
     let gl = this.gl;
     let location = gl.getUniformLocation(this.program, name);
     if (location === null) {
-      console.error(`Couldn't find location of uniform ${name}`);
+      console.warn(`Couldn't find location of uniform ${name}`);
       // throw new Error(`Couldn't find location of uniform ${name}`);
     } 
     this.uniforms.push(uniform);
@@ -65,6 +65,9 @@ export class Shader {
     for (let i = 0; i < this.uniforms.length; i++) {
       let uniform = this.uniforms[i];
       let location = this.locations[i];
+      if (location === null) {
+        continue;
+      }
       uniform.apply(location);
     }
   }
