@@ -4,6 +4,8 @@ import { vec3 } from 'gl-matrix';
 
 import { SimulationWindow } from './SimulationWindow';
 import { Border } from './Border';
+import { ShaderManager } from './ShaderManager';
+import { RuleBrowser } from './RuleBrowser';
 
 export class App {
   constructor(gl) {
@@ -21,8 +23,13 @@ export class App {
     this.renderer = new Renderer(gl); 
     this.camera = new Camera();
 
+    this.shader_manager = new ShaderManager(gl, this.camera);
+    this.shader_manager.set_size(this.size);
+
+    this.rule_browser = new RuleBrowser();
+
     this.border = new Border(gl, this.size, this.renderer, this.camera);
-    this.sim = new SimulationWindow(gl, this.size, this.renderer, this.camera);
+    this.sim = new SimulationWindow(gl, this.size, this.renderer, this.camera, this.shader_manager, this.rule_browser);
 
     this.camera.model_translation = vec3.create();
     vec3.scale(this.camera.model_translation, this.size, -0.5);
