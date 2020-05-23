@@ -1,15 +1,21 @@
-export function simulation_reducer(init_sim) {
-    const reducer = (sim=init_sim, action) => {
-        switch (action.type) {
-            case 'step': sim.step(); break;
-            case 'stop': sim.stop(); break;
-            case 'start': sim.start(); break;
-            case 'toggle': sim.toggle(); break;
-            case 'clear': sim.clear(); break;
-            case 'randomise': sim.randomise(); break;
-        }
+import { vec3 } from "gl-matrix";
 
-        return sim;
+export function app_reducer(init_app) {
+    const reducer = (app=init_app, action) => {
+        switch (action.type) {
+            case 'step': app.sim.step(); break;
+            case 'stop': app.sim.stop(); break;
+            case 'start': app.sim.start(); break;
+            case 'toggle': app.sim.toggle(); break;
+            case 'clear': app.sim.clear(); break;
+            case 'randomise': app.sim.randomise(); break;
+            case 'app.set_size':
+                let x = Number(action.value);
+                app.set_size(vec3.fromValues(x, x, x));
+                break;
+            }
+
+        return app;
     }
 
     return reducer;
@@ -28,12 +34,6 @@ export function rules_reducer(rules_browser) {
     } 
 
     return reducer;
-}
-
-export function app_reducer(app) {
-    return  (state=app, action) => {
-        return state;
-    }
 }
 
 export function shader_reducer(shader_manager) {
