@@ -69,9 +69,17 @@ export class RuleBrowser {
 
     this.add_entry(
       new RuleEntry(
+        'Crystal Growth 2',
+        '1-3/1-3/5/VN',
+        new SeedCrystalAbsolute(1.0, 1)
+      )
+    );
+
+    this.add_entry(
+      new RuleEntry(
         'Pyroclastic',
         '4-7/6-8/10/M',
-        new SeedCrystal(0.1, 0.1)
+        new SeedCrystalAbsolute(0.2, 5)
       )
     );
 
