@@ -10,8 +10,7 @@ export function app_reducer(init_app) {
             case 'clear': app.sim.clear(); break;
             case 'randomise': app.sim.randomise(); break;
             case 'app.set_size':
-                let x = Number(action.value);
-                app.set_size(vec3.fromValues(x, x, x));
+                app.set_size(action.value);
                 break;
             }
 

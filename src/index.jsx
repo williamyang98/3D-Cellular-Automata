@@ -9,6 +9,7 @@ import { SimulationView } from './ui/SimulationView';
 import { Controls } from './ui/Controls';
 import { RulesBrowser } from './ui/RulesBrowser';
 import { ShaderMenu } from './ui/ShaderMenu';
+import { SizeChanger } from './ui/SizeChanger';
 
 const redux_debugging = false;
 export const store = createStore(() => {}, redux_debugging && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
@@ -41,22 +42,7 @@ function Main() {
   )
 }
 
-function SizeChanger() {
-  const dispatch = useDispatch();
-  const size = useSelector(state => state.app.size);
 
-  function on_size_change(ev) {
-    const value = ev.target.value;
-    let size = Number(value);
-    size = Math.min(size, 120);
-    size = Math.max(size, 20); 
-    dispatch({type: 'app.set_size', value: size});
-  }
-
-  return (
-    <input type="number" value={size[0]} onChange={on_size_change} max={120} min={20}></input> 
-  );
-}
 
 ReactDOM.render(
   <Provider store={store}>
