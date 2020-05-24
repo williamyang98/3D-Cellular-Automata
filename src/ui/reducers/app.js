@@ -20,6 +20,19 @@ export function app_reducer(init_app) {
     return reducer;
 } 
 
+export function stats_reducer(init_stats) {
+    const reducer = (stats=init_stats, action) => {
+        switch (action.type) {
+            case 'stats.update':
+                return action.value;
+        }
+
+        return stats;
+    }
+
+    return reducer;
+}
+
 export function rules_reducer(rules_browser) {
     const reducer = (browser=rules_browser, action) => {
         switch (action.type) {

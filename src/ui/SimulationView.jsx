@@ -1,7 +1,7 @@
 import React from 'react';
 import { App } from '../app/App';
 
-import { rules_reducer, app_reducer, shader_reducer } from './reducers/app';
+import { rules_reducer, app_reducer, shader_reducer, stats_reducer } from './reducers/app';
 import { combineReducers } from 'redux';
 import { store } from '../index';
 
@@ -22,11 +22,12 @@ export class SimulationView extends React.Component {
       throw new Error('WebGL not supported');
     }
 
-    let app = new App(gl);
+    let app = new App(gl, store);
     let reducers = combineReducers({
       rule_browser: rules_reducer(app.rule_browser),
       shader_manager: shader_reducer(app.shader_manager),
       app: app_reducer(app),
+      stats: stats_reducer(app.stats),
     });
 
     store.replaceReducer(reducers);

@@ -2,17 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.css';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider, useSelector, useDispatch } from 'react-redux';
+import thunk from 'redux-thunk';
 
 import { SimulationView } from './ui/SimulationView';
 import { Controls } from './ui/Controls';
 import { RulesBrowser } from './ui/RulesBrowser';
 import { ShaderMenu } from './ui/ShaderMenu';
 import { SizeChanger } from './ui/SizeChanger';
+import { Statistics } from './ui/Statistics';
 
-const redux_debugging = false;
-export const store = createStore(() => {}, redux_debugging && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+export const store = createStore(
+  () => {}, 
+  compose(
+    applyMiddleware(thunk),
+    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+  )
+);
 
 function Main() {
   const state = useSelector(state => state);
@@ -23,12 +30,9 @@ function Main() {
         {state ? <div className="col-sm">
           <div>
             <Controls></Controls>
-            </div>
-            {state ? 
-              <SizeChanger></SizeChanger> :
-              <div></div>}
-            <div>
+            <SizeChanger></SizeChanger>
             <ShaderMenu></ShaderMenu>
+            <Statistics></Statistics>
           </div>
         </div> : <div></div>}
         <div className="col-sm">
