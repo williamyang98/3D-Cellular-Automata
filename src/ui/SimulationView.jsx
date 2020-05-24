@@ -63,7 +63,8 @@ export class SimulationView extends React.Component {
     let delta_zoom = ev.deltaY * 0.001;
     this.camera.zoom(delta_zoom);
     // ev.stopPropagation();
-    ev.preventDefault();
+    // ev.preventDefault();
+    // find a way to stop scrolling
   }
 
   render() {
