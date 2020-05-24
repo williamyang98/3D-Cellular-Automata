@@ -1,4 +1,4 @@
-export const fragment_shader_src =
+const basic_shading =
 `#version 300 es
 
 precision mediump float;
@@ -111,3 +111,28 @@ void main() {
 
     fragColour = result;
 }`;
+
+const no_shading =
+`#version 300 es
+
+precision mediump float;
+precision mediump int;
+
+in vec4 vColour;
+in vec3 vFragPos;
+in vec3 vNormal;
+
+out vec4 fragColour;
+
+void main() {
+    if (vColour.a == 0.0) {
+        discard;
+    }
+
+    fragColour = vColour;
+}`;
+
+export const fragment_shader_src = {
+    basic: basic_shading,
+    no_shading: no_shading,
+}

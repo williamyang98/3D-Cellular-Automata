@@ -22,13 +22,17 @@ export class ShaderManager {
   create() {
     let gl = this.gl;
     this.shaders = [];
-    for (let name in vertex_shader_src) {
-      let vert_src = vertex_shader_src[name];
-      let frag_src = fragment_shader_src;
-      let shader = new Shader(gl, vert_src, frag_src); 
-      this.add_uniforms(shader);
+    for (let vert_type in vertex_shader_src) {
+      // for (let frag_type in fragment_shader_src) {
+        let frag_type = 'basic';
+        let vert_src = vertex_shader_src[vert_type];
+        let frag_src = fragment_shader_src[frag_type];
+        let shader = new Shader(gl, vert_src, frag_src); 
+        this.add_uniforms(shader);
 
-      this.shaders.push({name:name, shader:shader});
+        // this.shaders.push({name:`${vert_type} (${frag_type})`, shader:shader});
+        this.shaders.push({name:`${vert_type}`, shader:shader});
+      // }
     }
     this.current_shader = 0;
   }
@@ -63,8 +67,9 @@ export class ShaderManager {
     shader.add_uniform("uSpecularStrength", new Uniform(loc => gl.uniform1f(loc, 0.5)));
     shader.add_uniform("uSpecularPowerFactor", new Uniform(loc => gl.uniform1f(loc, 4.0)));
     // add texture id
-    shader.add_uniform("uStateTexture", new Uniform(loc => gl.uniform1i(loc, 0)));
-    shader.add_uniform("uStateColourTexture", new Uniform(loc => gl.uniform1i(loc, 1)));
+    shader.add_uniform("uStateTexture",         new Uniform(loc => gl.uniform1i(loc, 0)));
+    shader.add_uniform("uStateColourTexture",   new Uniform(loc => gl.uniform1i(loc, 1)));
+    shader.add_uniform("uRadiusColourTexture",  new Uniform(loc => gl.uniform1i(loc, 2)));
     // post processing
     shader.add_uniform("uScalingEnabled", new Uniform(loc => gl.uniform1i(loc, 0)));
     shader.add_uniform("uFogNear", new Uniform(loc => gl.uniform1f(loc, 0)));
