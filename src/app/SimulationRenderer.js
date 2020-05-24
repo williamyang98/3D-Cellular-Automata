@@ -10,12 +10,12 @@ import { Texture2D } from '../gl/Texture2D';
 import colorsys from 'colorsys';
 
 
-export class SimulationWindow {
-  constructor(gl, size, renderer, camera, shader_manager, rule_browser) {
+export class SimulationRenderer {
+  constructor(gl, size, camera, shader_manager, rule_browser, stats) {
     this.gl = gl;
-    this.renderer = renderer;
     this.camera = camera;
     this.size = size;
+    this.stats = stats;
 
     this.total_cells = size[0] * size[1] * size[2];
 
@@ -26,9 +26,8 @@ export class SimulationWindow {
     this.rule_browser = rule_browser;
     this.create_data();
     
-    this.sim = new CellularAutomaton3D(this.size);
+    this.sim = new CellularAutomaton3D(this.size, stats);
     this.sim.listen_rerender(sim => this.update_vertex_buffer(true));
-
   }
 
   create_data() {

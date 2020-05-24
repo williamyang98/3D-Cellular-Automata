@@ -1,8 +1,8 @@
 export class CellularAutomaton3D {
-    constructor(shape) {
+    constructor(shape, stats) {
         this.shape = shape;
-        this.count = 1;
-        this.shape.forEach(n => this.count *= n); 
+        this.count = shape[0] * shape[1] * shape[2];
+        this.stats = stats;
 
         this.xyz_to_i_coefficients = [this.shape[0], this.shape[1]*this.shape[0]];
         this.cells = new Uint8Array(this.count);
@@ -49,6 +49,9 @@ export class CellularAutomaton3D {
                 }
             }
         }
+
+        this.stats.recieve({type:'completed_blocks', value: 0});
+        this.stats.recieve({type:'total_blocks', value: this.should_update.size});
     }
 
     step(rule, complete=false) {
@@ -76,6 +79,13 @@ export class CellularAutomaton3D {
         let start = performance.now();
         let cell_count = 0;
 
+        let completed = 0;
+        let total = this.should_update.size;
+
+        this.stats.recieve({type:'completed_blocks', value: completed});
+        this.stats.recieve({type:'total_blocks', value: total});
+
+        let slice_start = performance.now();
         for (let i of this.should_update) {
             let state = this.cells[i];
             let [x, y, z] = this.i_to_xyz(i);
@@ -93,14 +103,21 @@ export class CellularAutomaton3D {
             }
 
             cell_count += 1;
+            completed += 1;
             // slice size at 10000
             if (cell_count % this.slice_size === 0) {
                 cell_count = 0;
                 let now = performance.now();
-                if (now-start >= 16.6) // aim for minimum of 60ms per update
+                if (now-slice_start >= 33) {// aim for minimum of 60ms per update
+                    this.stats.recieve({type:'completed_blocks', value:completed});
+                    // console.log(`${completed} / ${total}`);
                     yield;
+                    slice_start = performance.now();
+                }
             }
         }
+
+        this.stats.recieve({type:'completed_blocks', value:completed});
 
         // swap buffers
         let tmp = this.cells;
@@ -117,7 +134,9 @@ export class CellularAutomaton3D {
         this.should_update_buffer = tmp_update;
 
         let end = performance.now();
-        console.log(this.should_update.size, end-start);
+        let dt = end-start;
+        // console.log(this.should_update.size, end-start);
+        this.stats.recieve({type:'frame_time', value: dt});
 
         // rerender with changes
         for (let listener of this.listeners) {

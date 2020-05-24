@@ -2,14 +2,16 @@ import { Renderer } from '../gl/Renderer';
 import { Camera } from './Camera';
 import { vec3 } from 'gl-matrix';
 
-import { SimulationWindow } from './SimulationWindow';
+import { SimulationRenderer } from './SimulationRenderer';
 import { Border } from './Border';
 import { ShaderManager } from './ShaderManager';
 import { RuleBrowser } from './RuleBrowser';
+import { Statistics } from './Statistics';
 
 export class App {
-  constructor(gl) {
+  constructor(gl, store) {
     this.gl = gl;
+    this.store = store;
 
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
@@ -22,10 +24,10 @@ export class App {
     this.camera = new Camera();
 
     this.shader_manager = new ShaderManager(gl, this.camera);
-
     this.rule_browser = new RuleBrowser();
+    this.stats = new Statistics(this.store);
 
-    let x = 30;
+    let x = 50;
     this.set_size(vec3.fromValues(x, x, x));
   }
 
@@ -33,8 +35,9 @@ export class App {
     let gl = this.gl;
 
     this.size = size;
+
     this.shader_manager.set_size(this.size);
-    this.sim = new SimulationWindow(gl, this.size, this.renderer, this.camera, this.shader_manager, this.rule_browser);
+    this.sim = new SimulationRenderer(gl, this.size, this.camera, this.shader_manager, this.rule_browser, this.stats);
     this.border = new Border(gl, this.size, this.renderer, this.camera);
 
     this.camera.model_translation = vec3.create();
