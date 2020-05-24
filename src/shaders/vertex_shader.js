@@ -86,8 +86,9 @@ const xyz_shading = create_vertex_shader(
     gl_Position = MVP * vec4(new_position, 1);
 }`);
 
-const radius_shading = create_vertex_shader(
-`void main() {
+const layer_shading = create_vertex_shader(
+`
+void main() {
     vec3 offset = calculate_position(float(gl_InstanceID));
 
     vec3 state_lookup = offset / uGridSize;
@@ -102,14 +103,48 @@ const radius_shading = create_vertex_shader(
 
     vec3 distance = new_position-uGridSize/2.0;
     // repeat every n blocks
-    float repeat_radius = 10.0;
-    float normalised_distance = length(distance/repeat_radius);
+    float normalised_distance = length(distance/10.0);
     normalised_distance = mod(normalised_distance, 1.0);
 
     // scale to size of grid and repeat n times
     // float normalised_distance = length(distance/ (uGridSize/2.0));
-    // float total_repeats = 5.0;
+    // float total_repeats = 1.0;
     // normalised_distance = clamp(normalised_distance, 0.0, 1.0) * total_repeats;
+
+    vec4 distance_colour = texture(uRadiusColourTexture, vec2(normalised_distance, 0));
+
+    vColour = vec4(distance_colour.xyz, state_colour.a); 
+    vNormal = normal;
+    vFragPos = vec3(uModel * vec4(new_position, 1));
+
+    mat4 MVP = uProjection * uView * uModel;
+    gl_Position = MVP * vec4(new_position, 1);
+}`);
+
+const radius_shading = create_vertex_shader(
+`
+void main() {
+    vec3 offset = calculate_position(float(gl_InstanceID));
+
+    vec3 state_lookup = offset / uGridSize;
+    vec4 result = texture(uStateTexture, state_lookup);
+    float index = result[0];
+
+    float scale = max(index, float(1-uScalingEnabled));
+    vec3 to_centre = centre-position;
+    vec3 new_position = position + to_centre*(1.0-scale) + offset;
+
+    vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
+
+    vec3 distance = new_position-uGridSize/2.0;
+    // repeat every n blocks
+    // float normalised_distance = length(distance/10.0);
+    // normalised_distance = mod(normalised_distance, 1.0);
+
+    // scale to size of grid and repeat n times
+    float normalised_distance = length(distance/ (uGridSize/2.0));
+    float total_repeats = 1.0;
+    normalised_distance = clamp(normalised_distance, 0.0, 1.0) * total_repeats;
 
     vec4 distance_colour = texture(uRadiusColourTexture, vec2(normalised_distance, 0));
 
@@ -168,6 +203,7 @@ const neighbour_and_alive_shading = create_vertex_shader(
 export const vertex_shader_src = {
     state: state_shading,
     xyz: xyz_shading,
+    layer: layer_shading,
     radius: radius_shading,
     neighbour: neighbour_shading,
     'neighbour and alive': neighbour_and_alive_shading,
