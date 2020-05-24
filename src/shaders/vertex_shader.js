@@ -18,6 +18,7 @@ uniform vec3 uGridSize;
 uniform int uScalingEnabled;
 
 uniform sampler2D uStateColourTexture;
+uniform sampler2D uRadiusColourTexture;
 uniform sampler3D uStateTexture;
 
 vec3 centre = vec3(0.5, 0.5, 0.5);
@@ -100,9 +101,17 @@ const radius_shading = create_vertex_shader(
     vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
 
     vec3 distance = new_position-uGridSize/2.0;
-    float normalised_distance = length(distance/ (uGridSize/2.0));
-    normalised_distance = clamp(normalised_distance, 0.0, 1.0);
-    vec4 distance_colour = texture(uStateColourTexture, vec2(normalised_distance, 0));
+    // repeat every n blocks
+    float repeat_radius = 10.0;
+    float normalised_distance = length(distance/repeat_radius);
+    normalised_distance = mod(normalised_distance, 1.0);
+
+    // scale to size of grid and repeat n times
+    // float normalised_distance = length(distance/ (uGridSize/2.0));
+    // float total_repeats = 5.0;
+    // normalised_distance = clamp(normalised_distance, 0.0, 1.0) * total_repeats;
+
+    vec4 distance_colour = texture(uRadiusColourTexture, vec2(normalised_distance, 0));
 
     vColour = vec4(distance_colour.xyz, state_colour.a); 
     vNormal = normal;

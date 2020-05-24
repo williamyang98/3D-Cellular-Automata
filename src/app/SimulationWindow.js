@@ -48,6 +48,7 @@ export class SimulationWindow {
     this.vao.add_vertex_buffer(terrain_vbo, terrain_vbo_layout);
 
     this.state_colour_texture = this.create_states_texture();
+    this.radius_colour_texture = this.create_radius_texture();
 
     this.cell_data_width = 2;
     this.cell_data = new Uint8Array(this.total_cells*this.cell_data_width);
@@ -77,6 +78,28 @@ export class SimulationWindow {
       state_colours_data[i] = 0;
     }
 
+    return new Texture2D(gl, state_colours_data, [total_states,1]);
+  }
+
+  create_radius_texture() {
+    let gl = this.gl;
+
+    let total_states = 360;
+    let state_colours_data = new Uint8Array(4*total_states)
+    for (let i = 0; i < total_states; i++) {
+      let offset = (i)*4;
+      
+      const hue_range = 360;
+      let hue = hue_range*(1.0-i/total_states);
+      let saturation = 100;
+      let value = 80;
+      let {r, g, b} = colorsys.hsv_to_rgb(hue, saturation, value);
+      state_colours_data[offset+0] = r;
+      state_colours_data[offset+1] = g;
+      state_colours_data[offset+2] = b;
+      state_colours_data[offset+3] = 255;
+    }
+    
     return new Texture2D(gl, state_colours_data, [total_states,1]);
   }
 
@@ -155,6 +178,7 @@ export class SimulationWindow {
     this.shader_manager.bind();
     this.cell_data_texture.bind(0);
     this.state_colour_texture.bind(1);
+    this.radius_colour_texture.bind(2);
     this.vao.bind();
     this.index_buffer.bind();
 
