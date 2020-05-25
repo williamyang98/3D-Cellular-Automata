@@ -65,7 +65,7 @@ export class SimulationRenderer {
       const hue_range = 200;
       let hue = hue_range*(1.0-i/total_states);
       let saturation = 100;
-      let value = 80;
+      let value = 100;
       let {r, g, b} = colorsys.hsv_to_rgb(hue, saturation, value);
       state_colours_data[offset+0] = r;
       state_colours_data[offset+1] = g;
