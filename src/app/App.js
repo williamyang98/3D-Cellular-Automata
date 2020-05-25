@@ -42,7 +42,9 @@ export class App {
 
     this.camera.model_translation = vec3.create();
     vec3.scale(this.camera.model_translation, this.size, -0.5);
-    this.camera.view_position[2] = -this.size[2] * 2.5;
+    // this.camera.view_position[2] = -this.size[2] * 2.5;
+    vec3.scale(this.camera.view_position, this.size, 0.5);
+    vec3.add(this.camera.view_position, this.camera.view_position, vec3.fromValues(20, 20, 20));
   }
 
   run() {
