@@ -55,6 +55,9 @@ export function shader_reducer(shader_manager) {
                 let index = action.value;
                 manager.select_shader(index);
                 break;
+            case 'shader.set_param':
+                manager.set_param(action.name, action.value);
+                break;
         }
 
         return manager;

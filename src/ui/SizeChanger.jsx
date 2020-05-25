@@ -24,7 +24,6 @@ export function SizeChanger() {
     let Y = clamp(y);
     let Z = clamp(z);
     let size = vec3.fromValues(X, Y, Z);
-    console.log(size);
     dispatch({type: 'app.set_size', value: size});
   }
 
