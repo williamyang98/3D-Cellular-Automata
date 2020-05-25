@@ -15,9 +15,9 @@ export function Statistics() {
 
   return (
     <div>
-      <div className="progress">
+      {/* <div className="progress">
         <div className="progress-bar" role="progressbar" style={{width: `${progress.toFixed(0)}%`}}></div>
-      </div>
+      </div> */}
       <div>Progress: {completed_blocks}/{total_blocks} ({progress.toFixed(2)}%)</div>
       <div>Frame Time (ms): {frame_time.toFixed(2)}</div>
     </div>
