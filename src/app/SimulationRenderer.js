@@ -155,16 +155,13 @@ export class SimulationRenderer {
   update_vertex_buffer(local=false) {
     let gl = this.gl;
 
-    let rule = this.rule_browser.get_selected_entry().rule;
-    let max_value = rule.alive_state;
-
     let items = local ? this.sim.should_update : range(0, this.sim.count);
 
     for (let i of items) {
       let offset = i*this.cell_data_width;
       let state = this.sim.cells[i];
       let neighbours = this.sim.neighbours[i];
-      this.cell_data[offset+0] = Math.floor(state/max_value * 255);
+      this.cell_data[offset+0] = Math.floor(state * 255);
       this.cell_data[offset+1] = Math.floor(Math.min(neighbours, 26)/26 * 255);
     }
 

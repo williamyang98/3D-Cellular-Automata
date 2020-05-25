@@ -5,8 +5,8 @@ export class CellularAutomaton3D {
         this.stats = stats;
 
         this.xyz_to_i_coefficients = [this.shape[0], this.shape[1]*this.shape[0]];
-        this.cells = new Uint8Array(this.count);
-        this.cells_buffer = new Uint8Array(this.count);
+        this.cells = new Float32Array(this.count);
+        this.cells_buffer = new Float32Array(this.count);
         this.neighbours = new Uint8Array(this.count);
 
         this.should_update = new Set();
