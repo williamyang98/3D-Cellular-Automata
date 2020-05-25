@@ -156,13 +156,16 @@ export class SimulationRenderer {
     let gl = this.gl;
 
     let items = local ? this.sim.should_update : range(0, this.sim.count);
+    let rule = this.rule_browser.get_selected_entry().rule;
+    let neighbour_config = rule.neighbours;
+    let max_neighbours = neighbour_config.max_neighbours;
 
     for (let i of items) {
       let offset = i*this.cell_data_width;
       let state = this.sim.cells[i];
       let neighbours = this.sim.neighbours[i];
       this.cell_data[offset+0] = Math.floor(state * 255);
-      this.cell_data[offset+1] = Math.floor(Math.min(neighbours, 26)/26 * 255);
+      this.cell_data[offset+1] = Math.floor(Math.min(neighbours, max_neighbours)/max_neighbours * 255);
     }
 
     this.cell_data_texture.bind();

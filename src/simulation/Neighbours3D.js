@@ -1,4 +1,8 @@
 export class MooreNeighbour {
+    constructor() {
+        this.max_neighbours = 26;
+    }
+
     count_neighbours(x, y, z, shape, cells, rule) {
         let total_neighbours = 0;
 
@@ -51,6 +55,7 @@ export class VonNeumanNeighbour {
             this.offsets.push(n);
             this.offsets.push(m); 
         }
+        this.max_neighbours = 6;
     }
 
     count_neighbours(x, y, z, shape, cells, rule) {
