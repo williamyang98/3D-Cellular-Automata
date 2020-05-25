@@ -15,6 +15,7 @@ uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
 uniform vec3 uGridSize;
+
 uniform int uScalingEnabled;
 
 uniform sampler2D uStateColourTexture;

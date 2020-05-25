@@ -49,8 +49,8 @@ export function ShaderMenu() {
           <div className='form-check' key={index}>
             <input 
               type='checkbox' className='form-check-input'
-              checked={true}
-              onChange={ev => console.log(ev.target.value)}></input>
+              checked={param.value}
+              onChange={ev => set_param(name, ev.target.checked)}></input>
             <label className='form-check-label'>{name}</label>
           </div>
         )
@@ -59,11 +59,11 @@ export function ShaderMenu() {
 
 
   const colouring_options = colourings.map((name, i) => {
-    return <option value={i}>{name}</option>
+    return <option value={i} key={i}>{name}</option>
   })
 
   const shading_options = shadings.map((name, i) => {
-    return <option value={i}>{name}</option>
+    return <option value={i} key={i}>{name}</option>
   })
 
   const params = Object
