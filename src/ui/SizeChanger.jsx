@@ -9,8 +9,8 @@ export function SizeChanger() {
   const [y, set_y] = useState(app_size[1]);
   const [z, set_z] = useState(app_size[2]);
 
-  const max_size = 300;
-  const min_size = 20;
+  const max_size = 1000;
+  const min_size = 10;
 
   function clamp(val) {
     let clamped = Number(val);
