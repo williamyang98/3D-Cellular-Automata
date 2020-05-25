@@ -74,5 +74,6 @@ export class ShaderManager {
     shader.add_uniform("uScalingEnabled", new Uniform(loc => gl.uniform1i(loc, 0)));
     shader.add_uniform("uFogNear", new Uniform(loc => gl.uniform1f(loc, 0)));
     shader.add_uniform("uFogFar", new Uniform(loc => gl.uniform1f(loc, 0)));
+    shader.add_uniform("uSunStrength", new Uniform(loc => gl.uniform1f(loc, 0.95)));
   }
 }
