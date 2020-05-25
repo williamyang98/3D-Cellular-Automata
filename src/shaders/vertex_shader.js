@@ -72,7 +72,7 @@ const xyz_shading = create_vertex_shader(
     float index = result[0];
 
     float scale = max(index, float(1-uScalingEnabled));
-    vec3 to_centre = centre-position;
+    vec3 to_centre = centre-offset;
     vec3 new_position = position + to_centre*(1.0-scale) + offset;
 
     vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
@@ -101,7 +101,7 @@ void main() {
 
     vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
 
-    vec3 distance = new_position-uGridSize/2.0;
+    vec3 distance = offset-uGridSize/2.0;
     // repeat every n blocks
     float normalised_distance = length(distance/10.0);
     normalised_distance = mod(normalised_distance, 1.0);
@@ -136,7 +136,7 @@ void main() {
 
     vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
 
-    vec3 distance = new_position-uGridSize/2.0;
+    vec3 distance = offset-uGridSize/2.0;
     // repeat every n blocks
     // float normalised_distance = length(distance/10.0);
     // normalised_distance = mod(normalised_distance, 1.0);
