@@ -2,19 +2,23 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 export function ShaderMenu() {
-  const shaders = useSelector(state => state.shader_manager.shaders);
-  const current_shader = useSelector(state => state.shader_manager.current_shader);
-  const shader_params = useSelector(state => state.shader_manager.params);
   const dispatch = useDispatch();
 
-  function render_entry(entry, index) {
-    let selected = current_shader === index;
-    let class_name = selected ? 'active' : '';
-    return (
-      <li className={"list-group-item "+class_name} key={index} onClick={() => dispatch({type:'shader.select', value:index})}>
-        <div>Name: {entry.name}</div>
-      </li>
-    );
+  const colourings = useSelector(state => state.shader_manager.colourings);
+  const current_colouring = useSelector(state => state.shader_manager.current_colouring);
+  const shadings = useSelector(state => state.shader_manager.shadings);
+  const current_shading = useSelector(state => state.shader_manager.current_shading);
+
+  const shader_params = useSelector(state => state.shader_manager.params);
+
+  function select_colouring(event) {
+    let index = event.target.value;
+    dispatch({type:'shader.select_colouring', value:index});
+  }
+
+  function select_shading(event) {
+    let index = event.target.value;
+    dispatch({type:'shader.select_shading', value:index});
   }
 
   function set_param(name, value) {
@@ -37,20 +41,49 @@ export function ShaderMenu() {
                 className='form-control-range' type='range' 
                 min={param.min} max={param.max} value={param.value} step={step}
                 onChange={onChange}></input> 
-            </div>);
-          }
+            </div>
+          );
+        }
+      case 'toggle':
+        return (
+          <div className='form-check' key={index}>
+            <input 
+              type='checkbox' className='form-check-input'
+              checked={true}
+              onChange={ev => console.log(ev.target.value)}></input>
+            <label className='form-check-label'>{name}</label>
+          </div>
+        )
     }
   }
 
 
-  const entries = shaders.map((e, i) => render_entry(e, i));
+  const colouring_options = colourings.map((name, i) => {
+    return <option value={i}>{name}</option>
+  })
+
+  const shading_options = shadings.map((name, i) => {
+    return <option value={i}>{name}</option>
+  })
+
   const params = Object
     .entries(shader_params)
     .map(([name, param], index) => render_param(index, name, param));
 
   return (
     <div>
-      <ul className='list-group'>{entries}</ul>
+      <form>
+        <label>Colouring: </label>
+        <select value={current_colouring} onChange={select_colouring}>
+          {colouring_options}
+        </select>
+      </form>
+      <form>
+        <label>Shading: </label>
+        <select value={current_shading} onChange={select_shading}>
+          {shading_options}
+        </select>
+      </form>
       <form>{params}</form>
     </div>
   );

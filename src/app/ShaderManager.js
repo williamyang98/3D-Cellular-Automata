@@ -24,7 +24,33 @@ export class ShaderManager {
       sky_strength: new Slider(0, 1, 0.4),
     };
 
-    this.create();
+    this.create_options();
+    this.create_shader();
+  }
+
+  create_options() {
+    this.colourings = [];
+    this.shadings = [];
+
+    for (let vert_type in vertex_shader_src) {
+      this.colourings.push(vert_type);
+    }
+    for (let frag_type in fragment_shader_src) {
+      this.shadings.push(frag_type);
+    }
+
+    this.current_colouring = 0;
+    this.current_shading = 0;
+  }
+
+  create_shader() {
+    let vert_name = this.colourings[this.current_colouring];
+    let frag_name = this.shadings[this.current_shading];
+
+    let vert_src = vertex_shader_src[vert_name];
+    let frag_src = fragment_shader_src[frag_name];
+    this.shader = new Shader(this.gl, vert_src, frag_src);
+    this.add_uniforms(this.shader);
   }
 
   set_size(size) {
@@ -33,7 +59,7 @@ export class ShaderManager {
     }
 
     vec3.scale(this.light_position, this.size, 2.5);
-}
+  }
 
   set_param(name, value) {
     let param = this.params[name];
@@ -41,32 +67,18 @@ export class ShaderManager {
     this.params = {...this.params};
   }
 
-  create() {
-    let gl = this.gl;
-    this.shaders = [];
-    for (let vert_type in vertex_shader_src) {
-      for (let frag_type in fragment_shader_src) {
-        // let frag_type = 'basic';
-        let vert_src = vertex_shader_src[vert_type];
-        let frag_src = fragment_shader_src[frag_type];
-        let shader = new Shader(gl, vert_src, frag_src); 
-        this.add_uniforms(shader);
-
-        this.shaders.push({name:`${vert_type} (${frag_type})`, shader:shader});
-        // this.shaders.push({name:`${vert_type}`, shader:shader});
-      }
-    }
-    this.current_shader = 0;
+  select_colouring(index) {
+    this.current_colouring = index;
+    this.create_shader();
   }
 
-  select_shader(index) {
-    this.current_shader = index;
+  select_shading(index) {
+    this.current_shading = index;
+    this.create_shader();
   }
 
   bind() {
-    let shader_entry = this.shaders[this.current_shader];
-    let shader = shader_entry.shader;
-    shader.bind();
+    this.shader.bind();
   }
 
   add_uniforms(shader) {

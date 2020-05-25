@@ -51,9 +51,11 @@ export function rules_reducer(rules_browser) {
 export function shader_reducer(shader_manager) {
     const reducer = (manager=shader_manager, action) => {
         switch (action.type) {
-            case 'shader.select':
-                let index = action.value;
-                manager.select_shader(index);
+            case 'shader.select_colouring':
+                manager.select_colouring(action.value);
+                break;
+            case 'shader.select_shading':
+                manager.select_shading(action.value);
                 break;
             case 'shader.set_param':
                 manager.set_param(action.name, action.value);
