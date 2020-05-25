@@ -77,7 +77,7 @@ const xyz_shading = create_vertex_shader(
     vec3 new_position = position + to_centre*(1.0-scale) + offset;
 
     vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
-    vec3 cube_colour = normalize(new_position / (uGridSize * 2.0));
+    vec3 cube_colour = normalize(offset / uGridSize);
 
     vColour = vec4(cube_colour, state_colour.a); 
     vNormal = normal;
