@@ -34,7 +34,7 @@ float uFloorHeight = 0.0;
 float uAmbientOcclusionStrength = 0.8;
 float uAmbientOcclusionRange = 100.0;
 
-float uSunStrength = 1.0;
+uniform float uSunStrength;
 
 vec4 uFogColour = vec4(1,1,1,1);
 uniform float uFogNear;
