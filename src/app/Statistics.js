@@ -1,28 +1,14 @@
 export class Statistics {
     constructor(store) {
         this.store = store;
-        this.completed_blocks = 0;
-        this.frame_time = 0;
-        this.total_blocks = 0;
+        this.data = {
+            completed_blocks: 0,
+            frame_time: 0,
+            total_blocks: 0
+        };
     }
 
-    recieve(event) {
-        switch (event.type) {
-            case 'total_blocks':
-                this.total_blocks = event.value;
-                break;
-            case 'completed_blocks':
-                this.completed_blocks = event.value;
-                break;
-            case 'frame_time': 
-                this.frame_time = event.value;
-                break;
-            case undefined:
-                throw new Error('Need to specify statistic type');
-            default:
-                console.warn(`Unknown statistics type: ${event.type}`);
-        }
-
+    force_update() {
         this.store.dispatch((dispatch) => {
             setTimeout(() => {
                 dispatch({
@@ -31,6 +17,29 @@ export class Statistics {
                 });
             }, 0);
         });
+    }
+
+    recieve(key, value=undefined) {
+        if (value !== undefined) {
+            this.recieve_key(key, value);
+        } else {
+            this.recieve_batch(key);
+        }
+    }
+
+    recieve_key(key, value) {
+        this.data[key] = value;
+        this.data = {...this.data};
+        this.force_update();
+    }
+
+    recieve_batch(data) {
+        for (let key in data) {
+            let value = data[key];
+            this.data[key] = value;
+        }
+        this.data = {...this.data};
+        this.force_update();
     }
 
 }

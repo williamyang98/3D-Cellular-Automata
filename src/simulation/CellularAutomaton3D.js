@@ -49,9 +49,11 @@ export class CellularAutomaton3D {
                 }
             }
         }
-
-        this.stats.recieve({type:'completed_blocks', value: 0});
-        this.stats.recieve({type:'total_blocks', value: this.should_update.size});
+        
+        this.stats.recieve({
+            completed_blocks: 0,
+            total_blocks: this.should_update.size
+        });
     }
 
     step(rule, complete=false) {
@@ -82,8 +84,10 @@ export class CellularAutomaton3D {
         let completed = 0;
         let total = this.should_update.size;
 
-        this.stats.recieve({type:'completed_blocks', value: completed});
-        this.stats.recieve({type:'total_blocks', value: total});
+        this.stats.recieve({
+            completed_blocks: completed,
+            total_blocks: total
+        });
 
         let slice_start = performance.now();
         for (let i of this.should_update) {
@@ -108,8 +112,8 @@ export class CellularAutomaton3D {
             if (cell_count % this.slice_size === 0) {
                 cell_count = 0;
                 let now = performance.now();
-                if (now-slice_start >= 33) {// aim for minimum of 60ms per update
-                    this.stats.recieve({type:'completed_blocks', value:completed});
+                if (now-slice_start >= 16) {// aim for minimum of 60ms per update
+                    this.stats.recieve({completed_blocks: completed});
                     // console.log(`${completed} / ${total}`);
                     yield;
                     slice_start = performance.now();
@@ -117,7 +121,7 @@ export class CellularAutomaton3D {
             }
         }
 
-        this.stats.recieve({type:'completed_blocks', value:completed});
+        this.stats.recieve({completed_blocks: completed});
 
         // swap buffers
         let tmp = this.cells;
@@ -136,7 +140,7 @@ export class CellularAutomaton3D {
         let end = performance.now();
         let dt = end-start;
         // console.log(this.should_update.size, end-start);
-        this.stats.recieve({type:'frame_time', value: dt});
+        this.stats.recieve({frame_time: dt});
 
         // rerender with changes
         for (let listener of this.listeners) {
