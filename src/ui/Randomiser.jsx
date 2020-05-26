@@ -5,14 +5,14 @@ import { RenderAdjustableValue } from './AdjustableValueViews';
 export function RandomiserMenu() {
   const dispatch = useDispatch();
   let selected_index = useSelector(state => state.randomiser.selected_index);
-  let randomisers = useSelector(state => state.randomiser.randomisers);
+  let entries = useSelector(state => state.randomiser.entries);
 
   function select_randomiser(event) {
     let index = event.target.value;
     dispatch({type: 'randomiser.select', value: index});
   }
 
-  const randomiser_options = randomisers.map((e, i) => {
+  const randomiser_options = entries.map((e, i) => {
     return (<option value={i} key={i}>{e.name}</option>);
   })
 
