@@ -7,6 +7,9 @@ export class Rule3D {
         this.alive_state = 1.0;
         this.dead_state = 0;
         this.delta = (this.alive_state-this.dead_state)/(this.total_states-1);
+
+        this.alive_threshold = this.alive_state-this.delta/2.0;
+        this.dead_threshold = this.delta/2.0;
         
         this.neighbours = neighbours;
     }
@@ -20,12 +23,8 @@ export class Rule3D {
     }
 
     get_next_state(state, neighbours) {
-        // refractory
-        if (state >= this.delta && state < this.alive_state) {
-            return state-this.delta;
-        }
         // alive to dead
-        if (state === this.alive_state) {
+        if (this.is_alive(state)) {
             if (!this.remain_alive(neighbours)) {
                 return state-this.delta;
             } else {
@@ -33,14 +32,26 @@ export class Rule3D {
             }
         }
         // dead to alive
-        if (state < this.delta && this.become_alive(neighbours)) {
-            return this.alive_state;
+        if (this.is_dead(state)) {
+            if (this.become_alive(neighbours)) {
+                return this.alive_state;
+            } else {
+                return state;
+            }
         }
-        // remain dead
-        return state;
+        // refractory
+        return state-this.delta;
     }
 
     is_neighbour(state) {
         return (state === this.alive_state);
+    }
+
+    is_alive(state) {
+        return (state > this.alive_threshold);
+    }
+
+    is_dead(state) {
+        return (state < this.dead_threshold);
     }
 }

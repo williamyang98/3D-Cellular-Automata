@@ -30,26 +30,30 @@ export class CellularAutomaton3D {
         this.should_update.clear();
         this.should_update_buffer.clear();
         this.remove_queue = [];
+
+        this.stats.recieve({
+            completed_blocks: 0,
+            total_blocks: 0
+        });
     }
 
     seed_updates(rule) {
+        this.should_update.clear();
         for (let x = 0; x < this.shape[0]; x++) {
             for (let y = 0; y < this.shape[1]; y++) {
                 for (let z = 0; z < this.shape[2]; z++) {
                     let i = this.xyz_to_i(x, y, z);
-
+                    let state = this.cells[i];
                     // let neighbours = rule.count_neighbours(x, y, z, this.shape, this.cells);
                     // this.neighbours[i] = neighbours;
 
-                    if (this.cells[i] === rule.dead_state) {
-                        this.should_update.delete(i);
-                    } else {
+                    if (rule.is_neighbour(state)) {
                         rule.on_location_update(x, y, z, this.shape, this.should_update);
                     }
                 }
             }
         }
-        
+
         this.stats.recieve({
             completed_blocks: 0,
             total_blocks: this.should_update.size
