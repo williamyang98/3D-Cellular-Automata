@@ -19,7 +19,7 @@ export class SeedCrystal extends Randomiser {
     constructor(density=0.2, radius=0.1) {
         super({
             density: new Slider(0, 1, density), 
-            radius: new Slider(0, 1, radius)
+            radius: new Slider(0, 0.5, radius)
         });
         this.type = 'Seed Crystal';
         this.alive_state = 1.0;
