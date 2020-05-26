@@ -67,3 +67,18 @@ export function shader_reducer(shader_manager) {
 
     return reducer;
 }
+
+export function randomiser_reducer(randomiser_manager) {
+    const reducer = (manager=randomiser_manager, action) => {
+        switch (action.type) {
+            case 'randomiser.select':
+                manager.select(action.value);
+                break;
+            case 'randomiser.update':
+                manager.set_params(action.value);
+                break;
+        }
+        return manager;
+    }
+    return reducer;
+}
