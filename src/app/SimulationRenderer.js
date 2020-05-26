@@ -11,7 +11,7 @@ import colorsys from 'colorsys';
 
 
 export class SimulationRenderer {
-  constructor(gl, size, camera, shader_manager, rule_browser, stats) {
+  constructor(gl, size, camera, shader_manager, rule_browser, randomiser_browser, stats) {
     this.gl = gl;
     this.camera = camera;
     this.size = size;
@@ -24,6 +24,8 @@ export class SimulationRenderer {
 
     this.shader_manager = shader_manager;
     this.rule_browser = rule_browser;
+    this.randomiser_browser = randomiser_browser;
+
     this.create_data();
     
     this.sim = new CellularAutomaton3D(this.size, stats);
@@ -108,10 +110,11 @@ export class SimulationRenderer {
   }
 
   randomise() {
-    let entry = this.rule_browser.get_selected_entry();
+    let rule = this.rule_browser.get_selected_entry().rule;
+    let randomiser = this.randomiser_browser.selected_randomiser.instance;
     // this.clear();
-    entry.randomiser.randomise(this.sim);
-    this.sim.seed_updates(entry.rule);
+    randomiser.randomise(this.sim);
+    this.sim.seed_updates(rule);
 
     this.update_vertex_buffer();
   }
