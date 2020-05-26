@@ -77,10 +77,6 @@ vec4 apply_fog(const vec4 colour, float distance) {
 }
 
 void main() {
-    if (vColour.a == 0.0) {
-        discard;
-    }
-   
     vec3 normal = normalize(vNormal);
     vec3 view_direction = normalize(uViewPosition - vFragPos);
 
@@ -126,10 +122,6 @@ uniform float uSpecularPowerFactor;
 float uSpecularScattering = 0.1;
 
 void main() {
-    if (vColour.a == 0.0) {
-        discard;
-    }
-
     vec3 normal = normalize(vNormal);
 
     vec3 ambient = uAmbientStrength * light.colour;
@@ -167,10 +159,6 @@ in vec3 vNormal;
 out vec4 fragColour;
 
 void main() {
-    if (vColour.a == 0.0) {
-        discard;
-    }
-
     fragColour = vColour;
 }`;
 

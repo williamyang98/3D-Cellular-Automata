@@ -57,6 +57,7 @@ const state_shading = create_vertex_shader(
 
     vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
     vColour = state_colour; 
+    new_position *= vColour.a;
     vNormal = normal;
     vFragPos = vec3(uModel * vec4(new_position, 1));
 
@@ -80,6 +81,7 @@ const xyz_shading = create_vertex_shader(
     vec3 cube_colour = normalize(offset / uGridSize);
 
     vColour = vec4(cube_colour, state_colour.a); 
+    new_position *= vColour.a;
     vNormal = normal;
     vFragPos = vec3(uModel * vec4(new_position, 1));
 
@@ -115,6 +117,7 @@ void main() {
     vec4 distance_colour = texture(uRadiusColourTexture, vec2(normalised_distance, 0));
 
     vColour = vec4(distance_colour.xyz, state_colour.a); 
+    new_position *= vColour.a;
     vNormal = normal;
     vFragPos = vec3(uModel * vec4(new_position, 1));
 
@@ -150,6 +153,7 @@ void main() {
     vec4 distance_colour = texture(uRadiusColourTexture, vec2(normalised_distance, 0));
 
     vColour = vec4(distance_colour.xyz, state_colour.a); 
+    new_position *= vColour.a;
     vNormal = normal;
     vFragPos = vec3(uModel * vec4(new_position, 1));
 
@@ -171,6 +175,7 @@ const neighbour_shading = create_vertex_shader(
 
     vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
     vColour = state_colour; 
+    new_position *= vColour.a;
     vNormal = normal;
     vFragPos = vec3(uModel * vec4(new_position, 1));
 
@@ -193,7 +198,9 @@ const neighbour_and_alive_shading = create_vertex_shader(
 
     vec4 state_colour =  texture(uStateColourTexture, vec2(state,0));
     vec4 neighbour_colour = texture(uStateColourTexture, vec2(neighbours, 0)); 
+    
     vColour = vec4(neighbour_colour.xyz, state_colour.a*neighbour_colour.a); 
+    new_position *= vColour.a;
     vNormal = normal;
     vFragPos = vec3(uModel * vec4(new_position, 1));
 
