@@ -9,9 +9,10 @@ import thunk from 'redux-thunk';
 import { SimulationView } from './ui/SimulationView';
 import { Controls } from './ui/Controls';
 import { RulesBrowser } from './ui/RulesBrowser';
-import { ShaderMenu } from './ui/ShaderMenu';
+import { ShaderMenu, ShaderSettings } from './ui/ShaderMenu';
 import { SizeChanger } from './ui/SizeChanger';
 import { Statistics } from './ui/Statistics';
+import { RandomiserMenu } from './ui/Randomiser';
 
 export const store = createStore(
   () => {}, 
@@ -32,6 +33,8 @@ function Main() {
             <Controls></Controls>
             <SizeChanger></SizeChanger>
             <ShaderMenu></ShaderMenu>
+            <ShaderSettings></ShaderSettings>
+            <RandomiserMenu></RandomiserMenu>
             <Statistics></Statistics>
           </div>
         </div> : <div></div>}
