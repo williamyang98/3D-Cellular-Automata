@@ -4,7 +4,8 @@ export class Statistics {
         this.data = {
             completed_blocks: 0,
             frame_time: 0,
-            total_blocks: 0
+            total_blocks: 0,
+            total_steps: 0,
         };
     }
 

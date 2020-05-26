@@ -17,6 +17,7 @@ export class CellularAutomaton3D {
 
         this.current_slice = null;
         this.slice_size = 10000;
+        this.total_steps = 0;
     }
 
     listen_rerender(listener) {
@@ -30,10 +31,12 @@ export class CellularAutomaton3D {
         this.should_update.clear();
         this.should_update_buffer.clear();
         this.remove_queue = [];
+        this.total_steps = 0;
 
         this.stats.recieve({
             completed_blocks: 0,
-            total_blocks: 0
+            total_blocks: 0,
+            total_steps: 0,
         });
     }
 
@@ -125,7 +128,12 @@ export class CellularAutomaton3D {
             }
         }
 
-        this.stats.recieve({completed_blocks: completed});
+        this.total_steps += 1;
+
+        this.stats.recieve({
+            completed_blocks: completed,
+            total_steps: this.total_steps,
+        });
 
         // swap buffers
         let tmp = this.cells;
