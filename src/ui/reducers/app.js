@@ -1,5 +1,3 @@
-import { vec3 } from "gl-matrix";
-
 export function app_reducer(init_app) {
     const reducer = (app=init_app, action) => {
         switch (action.type) {
@@ -11,6 +9,9 @@ export function app_reducer(init_app) {
             case 'randomise': app.sim.randomise(); break;
             case 'app.set_size':
                 app.set_size(action.value);
+                break;
+            case 'app.show_border':
+                app.show_border.value = action.value;
                 break;
             }
 

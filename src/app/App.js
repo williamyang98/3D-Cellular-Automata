@@ -8,6 +8,7 @@ import { ShaderManager } from './ShaderManager';
 import { RuleBrowser } from './RuleBrowser';
 import { Statistics } from './Statistics';
 import { RandomiserManager } from './RandomiserManager';
+import { Toggle } from '../ui/AdjustableValues';
 
 export class App {
   constructor(gl, store) {
@@ -31,6 +32,8 @@ export class App {
 
     let x = 50;
     this.set_size(vec3.fromValues(x, x, x));
+
+    this.show_border = new Toggle(true);
   }
 
   set_size(size) {
@@ -65,7 +68,9 @@ export class App {
     
   on_render() {
     this.renderer.clear();
-    this.border.on_render();
+    if (this.show_border.value) {
+      this.border.on_render();
+    }
     this.sim.on_render();
   }
 }

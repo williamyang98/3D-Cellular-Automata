@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import './index.css';
 import { createStore, applyMiddleware, compose } from 'redux';
-import { Provider, useSelector, useDispatch } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import { SimulationView } from './ui/SimulationView';
@@ -13,6 +13,7 @@ import { ShaderMenu, ShaderSettings } from './ui/ShaderMenu';
 import { SizeChanger } from './ui/SizeChanger';
 import { Statistics } from './ui/Statistics';
 import { RandomiserMenu } from './ui/Randomiser';
+import { BorderControls } from './ui/BorderControls';
 
 export const store = createStore(
   () => {}, 
@@ -24,30 +25,39 @@ export const store = createStore(
 
 function Main() {
   const state = useSelector(state => state);
+  
+  function render_left_panel() {
+    return (
+      <div>
+        <Controls></Controls>
+        <SizeChanger></SizeChanger>
+        <BorderControls></BorderControls>
+        <ShaderMenu></ShaderMenu>
+        <ShaderSettings></ShaderSettings>
+        <RandomiserMenu></RandomiserMenu>
+        <Statistics></Statistics>
+      </div>
+    );
+  }
+
+  function render_right_panel() {
+    return <RulesBrowser></RulesBrowser>;
+  }
 
   return (
     <div>
       <div className="row">
-        {state ? <div className="col-sm">
-          <div>
-            <Controls></Controls>
-            <SizeChanger></SizeChanger>
-            <ShaderMenu></ShaderMenu>
-            <ShaderSettings></ShaderSettings>
-            <RandomiserMenu></RandomiserMenu>
-            <Statistics></Statistics>
-          </div>
-        </div> : <div></div>}
+        {state ? <div className="col-sm">{render_left_panel()}</div> : <div></div>}
         <div className="col-sm">
           <SimulationView></SimulationView>
         </div>
-        {state ? <div className="col-sm">
-          <RulesBrowser></RulesBrowser>
-        </div> : <div></div>}
+        {state ? <div className="col-sm">{render_right_panel()}</div> : <div></div>}
       </div>
     </div>
   )
 }
+
+
 
 
 
