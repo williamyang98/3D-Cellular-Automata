@@ -1,7 +1,7 @@
 import React from 'react';
 import { App } from '../app/App';
 
-import { rules_reducer, app_reducer, shader_reducer, stats_reducer } from './reducers/app';
+import { rules_reducer, app_reducer, shader_reducer, stats_reducer, randomiser_reducer } from './reducers/app';
 import { combineReducers } from 'redux';
 import { store } from '../index';
 
@@ -28,6 +28,7 @@ export class SimulationView extends React.Component {
       shader_manager: shader_reducer(app.shader_manager),
       app: app_reducer(app),
       stats: stats_reducer(app.stats),
+      randomiser: randomiser_reducer(app.randomiser_browser),
     });
 
     store.replaceReducer(reducers);
