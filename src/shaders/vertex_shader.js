@@ -74,13 +74,13 @@ const xyz_shading = create_vertex_shader(
     float index = result[0];
 
     float scale = max(index, float(1-uScalingEnabled));
-    vec3 to_centre = centre-offset;
+    vec3 to_centre = centre-position;
     vec3 new_position = position + to_centre*(1.0-scale) + offset;
 
     vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
     vec3 cube_colour = normalize(offset / uGridSize);
 
-    vColour = vec4(cube_colour, state_colour.a); 
+    vColour = vec4(cube_colour.xyz, state_colour.a); 
     new_position *= vColour.a;
     vNormal = normal;
     vFragPos = vec3(uModel * vec4(new_position, 1));
