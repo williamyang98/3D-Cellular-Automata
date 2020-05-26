@@ -25,7 +25,7 @@ export class Camera {
     mat4.lookAt(this.view, this.view_position, this.target, [0, 1, 0]);
 
     // mat4.perspectiveFromFieldOfView(this.projection, fov, 0.01, 1000);
-    mat4.perspective(this.projection, this.fov * Math.PI / 180, this.aspect_ratio, 0.01, 1000);
+    mat4.perspective(this.projection, this.fov * Math.PI / 180, this.aspect_ratio, 0.01, 10000);
   }
 
   rotate(dx, dy) {
