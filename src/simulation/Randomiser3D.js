@@ -21,6 +21,7 @@ export class SeedCrystal extends Randomiser {
             density: new Slider(0, 1, density), 
             radius: new Slider(0, 1, radius)
         });
+        this.type = 'Seed Crystal';
         this.alive_state = 1.0;
         this.dead_state = 0;
     }
@@ -63,6 +64,7 @@ export class SeedCrystalAbsolute extends Randomiser {
             density: new Slider(0, 1, density), 
             radius: new Slider(0, 100, radius)
         });
+        this.type = 'Seed Crystal Absolute';
         this.alive_state = 1.0;
         this.dead_state = 0;
     }

@@ -31,7 +31,7 @@ export function RandomiserMenu() {
 
 export function SeedCrystalEditor() {
   const dispatch = useDispatch();
-  let params = useSelector(state => state.randomiser.selected_randomiser.instance.params);
+  let params = useSelector(state => state.randomiser.selected_randomiser.params);
 
   function change_param(name, value) {
     let new_params = {};

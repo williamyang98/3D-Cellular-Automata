@@ -24,11 +24,11 @@ export class SimulationView extends React.Component {
 
     let app = new App(gl, store);
     let reducers = combineReducers({
+      app: app_reducer(app),
       rule_browser: rules_reducer(app.rule_browser),
       shader_manager: shader_reducer(app.shader_manager),
-      app: app_reducer(app),
       stats: stats_reducer(app.stats),
-      randomiser: randomiser_reducer(app.randomiser_browser),
+      randomiser: randomiser_reducer(app.randomiser_manager),
     });
 
     store.replaceReducer(reducers);

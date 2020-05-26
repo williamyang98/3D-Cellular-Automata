@@ -111,7 +111,7 @@ export class SimulationRenderer {
 
   randomise() {
     let rule = this.rule_browser.get_selected_entry().rule;
-    let randomiser = this.randomiser_browser.selected_randomiser.instance;
+    let randomiser = this.randomiser_browser.selected_randomiser;
     // this.clear();
     randomiser.randomise(this.sim);
     this.sim.seed_updates(rule);

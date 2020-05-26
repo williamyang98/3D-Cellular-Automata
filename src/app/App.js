@@ -7,7 +7,7 @@ import { Border } from './Border';
 import { ShaderManager } from './ShaderManager';
 import { RuleBrowser } from './RuleBrowser';
 import { Statistics } from './Statistics';
-import { RandomiserBrowser } from './RandomiserBrowser';
+import { RandomiserManager } from './RandomiserManager';
 
 export class App {
   constructor(gl, store) {
@@ -25,8 +25,8 @@ export class App {
     this.camera = new Camera();
 
     this.shader_manager = new ShaderManager(gl, this.camera);
-    this.rule_browser = new RuleBrowser();
-    this.randomiser_browser = new RandomiserBrowser();
+    this.randomiser_manager = new RandomiserManager();
+    this.rule_browser = new RuleBrowser(this.randomiser_manager);
     this.stats = new Statistics(this.store);
 
     let x = 50;
@@ -39,7 +39,7 @@ export class App {
     this.size = size;
 
     this.shader_manager.set_size(this.size);
-    this.sim = new SimulationRenderer(gl, this.size, this.camera, this.shader_manager, this.rule_browser, this.randomiser_browser, this.stats);
+    this.sim = new SimulationRenderer(gl, this.size, this.camera, this.shader_manager, this.rule_browser, this.randomiser_manager, this.stats);
     this.border = new Border(gl, this.size, this.renderer, this.camera);
 
     this.camera.model_translation = vec3.create();
