@@ -13,6 +13,9 @@ export function app_reducer(init_app) {
             case 'app.show_border':
                 app.show_border.value = action.value;
                 break;
+            case 'app.show_render':
+                app.show_render.value = action.value;
+                break;
             }
 
         return app;

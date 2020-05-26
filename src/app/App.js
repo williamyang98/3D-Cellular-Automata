@@ -34,6 +34,7 @@ export class App {
     this.set_size(vec3.fromValues(x, x, x));
 
     this.show_border = new Toggle(true);
+    this.show_render = new Toggle(true);
   }
 
   set_size(size) {
@@ -71,7 +72,9 @@ export class App {
     if (this.show_border.value) {
       this.border.on_render();
     }
-    this.sim.on_render();
+    if (this.show_render.value) {
+      this.sim.on_render();
+    }
   }
 }
 
