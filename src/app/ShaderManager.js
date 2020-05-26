@@ -23,7 +23,7 @@ export class ShaderManager {
       fog_near: new Slider(0, 1, 0),
       fog_far: new Slider(0, 1, 0),
       sun_strength: new Slider(0, 1, 0.95),
-      sky_strength: new Slider(0, 1, 0.4),
+      sky_strength: new Slider(0, 1, 0.25),
     };
 
     this.create_options();

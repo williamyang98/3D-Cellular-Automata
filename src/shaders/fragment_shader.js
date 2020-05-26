@@ -25,9 +25,13 @@ uniform vec3 uViewPosition;
 uniform float uSpecularPowerFactor;
 float uSpecularScattering = 0.1;
 
-vec3 uSkyTop =  vec3( 0.1, 0.2, 0.8 ) * 0.5;
-vec3 uSkyBottom = vec3( 0.5, 0.8, 1.0 ) * 1.5;
-vec3 uSunColour = vec3(1.0, 1.2, 1.4);
+// vec3 uSkyTop =  vec3( 0.1, 0.2, 0.8 ) * 0.5;
+// vec3 uSkyBottom = vec3( 0.5, 0.8, 1.0 ) * 1.5;
+// vec3 uSunColour = vec3(1.0, 1.2, 1.4);
+
+vec3 uSkyTop =  vec3( 0.8, 0.8, 0.8 ) * 0.5;
+vec3 uSkyBottom = vec3( 0.8, 0.8, 0.8 ) * 1.5;
+vec3 uSunColour = vec3(1.0, 1.0, 1.0);
 
 
 float uFloorHeight = 0.0;

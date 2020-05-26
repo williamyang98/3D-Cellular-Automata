@@ -146,7 +146,8 @@ void main() {
     // normalised_distance = mod(normalised_distance, 1.0);
 
     // scale to size of grid and repeat n times
-    float normalised_distance = length(distance/ (uGridSize/2.0));
+    // float normalised_distance = length(distance)/length(uGridSize/2.0);
+    float normalised_distance = length(distance/(uGridSize/2.0));
     float total_repeats = 1.0;
     normalised_distance = clamp(normalised_distance, 0.0, 1.0) * total_repeats;
 
