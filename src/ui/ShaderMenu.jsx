@@ -29,24 +29,33 @@ export function ShaderMenu() {
   })
 
   return (
-    <div>
-      <form>
-        <label>Colouring: </label>
-        <select value={current_colouring} onChange={select_colouring}>
-          {colouring_options}
-        </select>
-      </form>
-      <form>
-        <label>Shading: </label>
-        <select value={current_shading} onChange={select_shading}>
-          {shading_options}
-        </select>
-      </form>
+    <div className="card">
+      <div className='card-header'>Shaders</div>
+      <div className="card-body">
+        <form className='form-inline'>
+          <div className='form-group'>
+            <label className='mr-2'>Colouring </label>
+            <select className='custom-select custom-select-sm' value={current_colouring} onChange={select_colouring}>
+              {colouring_options}
+            </select>
+          </div>
+        </form>
+        <form className='form-inline'>
+          <div className='form-group'>
+            <label className='mr-2'>Shading </label>
+            <select className='custom-select custom-select-sm' value={current_shading} onChange={select_shading}>
+              {shading_options}
+            </select>
+          </div>
+        </form>
+        <hr></hr>
+        <ShaderSettings></ShaderSettings>
+      </div>
     </div>
   );
 }
 
-export function ShaderSettings() {
+function ShaderSettings() {
   const dispatch = useDispatch();
   const shader_params = useSelector(state => state.shader_manager.params);
 
@@ -54,7 +63,6 @@ export function ShaderSettings() {
     let action = {type:'shader.set_param', name:name, value:value};
     dispatch(action);
   }
-
 
   const params = Object
     .entries(shader_params)

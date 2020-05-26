@@ -73,7 +73,7 @@ export class SimulationView extends React.Component {
     return (
       <canvas 
         width={800}
-        height={550}
+        height={800}
         ref={this.canvas_ref} 
         onMouseDown={ev => this.on_mouse_down(ev)}
         onMouseUp={ev => this.rotating = false}

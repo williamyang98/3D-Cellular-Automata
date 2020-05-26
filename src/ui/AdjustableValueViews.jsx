@@ -13,7 +13,7 @@ export function RenderAdjustableValue(adjustable, key, name, valueChanged) {
 function SliderView(slider, key, name, valueChanged) {
   let step = (slider.max-slider.min)/100.0;
   return (
-    <div className='form-group' key={key}>
+    <div className='form-inline' key={key}>
       <label>{name}: {slider.value.toFixed(2)}</label>
       <input 
         className='form-control-range' type='range' 

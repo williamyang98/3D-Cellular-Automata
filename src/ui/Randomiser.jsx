@@ -17,14 +17,20 @@ export function RandomiserMenu() {
   })
 
   return (
-    <div>
-      <form>
-        <label>Randomiser: </label>
-        <select value={selected_index} onChange={select_randomiser}>
-          {randomiser_options}
-        </select>
-      </form>
-      <SeedCrystalEditor></SeedCrystalEditor>
+    <div className='card'>
+      <div className='card-header'>Randomiser</div>
+      <div className='card-body'>
+        <form>
+          <div className='form-inline'>
+            <label className='mr-2'>Randomiser</label>
+            <select className='custom-select custom-select-sm' value={selected_index} onChange={select_randomiser}>
+              {randomiser_options}
+            </select>
+          </div>
+       </form>
+       <hr></hr>
+        <SeedCrystalEditor></SeedCrystalEditor>
+      </div>
     </div>
   );
 }

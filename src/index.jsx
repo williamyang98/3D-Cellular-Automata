@@ -9,7 +9,7 @@ import thunk from 'redux-thunk';
 import { SimulationView } from './ui/SimulationView';
 import { Controls } from './ui/Controls';
 import { RulesBrowser } from './ui/RulesBrowser';
-import { ShaderMenu, ShaderSettings } from './ui/ShaderMenu';
+import { ShaderMenu } from './ui/ShaderMenu';
 import { SizeChanger } from './ui/SizeChanger';
 import { Statistics } from './ui/Statistics';
 import { RandomiserMenu } from './ui/Randomiser';
@@ -28,12 +28,11 @@ function Main() {
   
   function render_left_panel() {
     return (
-      <div>
+      <div className='col-sm'>
         <Controls></Controls>
         <SizeChanger></SizeChanger>
         <BorderControls></BorderControls>
         <ShaderMenu></ShaderMenu>
-        <ShaderSettings></ShaderSettings>
         <RandomiserMenu></RandomiserMenu>
         <Statistics></Statistics>
       </div>
@@ -47,7 +46,7 @@ function Main() {
   return (
     <div>
       <div className="row">
-        {state ? <div className="col-sm">{render_left_panel()}</div> : <div></div>}
+        {state ? render_left_panel() : <div></div>}
         <div className="col-sm">
           <SimulationView></SimulationView>
         </div>

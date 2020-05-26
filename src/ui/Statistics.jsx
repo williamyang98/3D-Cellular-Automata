@@ -14,9 +14,12 @@ export function Statistics() {
   }
 
   return (
-    <div>
-      <div>Progress: {completed_blocks}/{total_blocks} ({progress.toFixed(2)}%)</div>
-      <div>Frame Time (ms): {frame_time.toFixed(2)}</div>
+    <div className='card'>
+      <div className='card-header'>Statistics</div>
+      <div className='card-body'>
+        <div>Progress: {completed_blocks}/{total_blocks} ({progress.toFixed(2)}%)</div>
+        <div>Frame Time (ms): {frame_time.toFixed(2)}</div>
+      </div>
     </div>
   );
 }
