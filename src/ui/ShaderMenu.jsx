@@ -28,15 +28,15 @@ export function ShaderMenu() {
   }
 
   const render_type_options = render_types.map((render_type, i) => {
-    return <option value={i} key={i}>{render_type.name}</option>
+    return <option value={i} key={`render_type_${i}`}>{render_type.name}</option>
   })
 
   const colouring_options = colourings.map((name, i) => {
-    return <option value={i} key={i}>{name}</option>
+    return <option value={i} key={`colouring_${i}`}>{name}</option>
   })
 
   const shading_options = shadings.map((name, i) => {
-    return <option value={i} key={i}>{name}</option>
+    return <option value={i} key={`shading_${i}`}>{name}</option>
   })
 
   return (
