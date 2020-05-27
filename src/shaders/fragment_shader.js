@@ -1,4 +1,4 @@
-const basic_shading =
+const basic_shading = (point_cloud) =>
 `#version 300 es
 
 precision mediump float;
@@ -16,10 +16,6 @@ struct Light {
 };
 
 uniform Light light;
-
-uniform float uAmbientStrength;
-uniform float uDiffuseStrength;
-uniform float uSpecularStrength;
 
 uniform vec3 uViewPosition;
 uniform float uSpecularPowerFactor;
@@ -98,7 +94,7 @@ void main() {
     fragColour = result;
 }`;
 
-const basic_shading_alternate =
+const basic_shading_alternate = (point_cloud) =>
 `#version 300 es
 
 precision mediump float;
@@ -130,7 +126,6 @@ void main() {
 
     vec3 ambient = uAmbientStrength * light.colour;
 
-    //vec3 light_position = light.position;
     vec3 light_position = vec3(-uViewPosition.x, uViewPosition.y, -uViewPosition.z);
     vec3 light_direction = normalize(light_position - vFragPos);
 
@@ -150,24 +145,24 @@ void main() {
     fragColour = result;
 }`;
 
-const no_shading =
+const create_no_shader = (point_cloud) => (
 `#version 300 es
 
 precision mediump float;
 precision mediump int;
 
 in vec4 vColour;
-in vec3 vFragPos;
-in vec3 vNormal;
+${point_cloud ? '' : 'in vec3 vNormal;'}
+${point_cloud ? '' : 'in vec3 vFragPos;'}
 
 out vec4 fragColour;
 
 void main() {
     fragColour = vColour;
-}`;
+}`);
 
 export const fragment_shader_src = {
-    basic: basic_shading,
-    basic_alternate: basic_shading_alternate,
-    no_shading: no_shading,
+    basic: {create: basic_shading, point_cloud: false},
+    basic_alternate: {create: basic_shading_alternate, point_cloud: false},
+    no_shading: {create: create_no_shader, point_cloud: true}
 }
