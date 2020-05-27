@@ -22,6 +22,8 @@ uniform sampler2D uStateColourTexture;
 uniform sampler2D uRadiusColourTexture;
 uniform sampler3D uStateTexture;
 
+uniform vec3 uViewPosition;
+
 vec3 centre = vec3(0.5, 0.5, 0.5);
 
 out vec4 vColour;
@@ -44,16 +46,45 @@ ${main}
 )};
 
 const state_shading = create_vertex_shader(
-`void main() {
+`
+mat3 Rx(float a) {
+    return mat3(
+        1., 0., 0.,
+        0., cos(a), sin(a),
+        0., -sin(a), cos(a)
+    );
+}
+
+mat3 Ry(float a) {
+    return mat3(
+        cos(a), 0., -sin(a),
+        0, 1., 0.,
+        sin(a), 0., cos(a)
+    );
+}
+
+vec3 calculate_point_cloud(vec3 pos, vec3 offset) {
+    vec3 center = vec3(0.5, 0.5, 0.5);
+    vec3 view_direction = normalize(uViewPosition-offset+(uGridSize/2.0)-center);
+    float ay = atan(view_direction.x, view_direction.z);
+    float r = pow(pow(view_direction.x, 2.0) + pow(view_direction.z, 2.0), 0.5);
+    float ax = -atan(view_direction.y, r);
+    mat3 R = Ry(ay) * Rx(ax);
+    return R*(position-center) + center; 
+}
+
+
+void main() {
     vec3 offset = calculate_position(float(gl_InstanceID));
+    vec3 vPosition = calculate_point_cloud(position, offset);
 
     vec3 state_lookup = offset / uGridSize;
     vec4 result = texture(uStateTexture, state_lookup);
     float index = result[0];
 
     float scale = max(index, float(1-uScalingEnabled));
-    vec3 to_centre = centre-position;
-    vec3 new_position = position + to_centre*(1.0-scale) + offset;
+    vec3 to_centre = centre-vPosition;
+    vec3 new_position = vPosition + to_centre*(1.0-scale) + offset;
 
     vec4 state_colour =  texture(uStateColourTexture, vec2(index,0));
     vColour = state_colour; 

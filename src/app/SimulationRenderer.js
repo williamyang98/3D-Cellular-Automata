@@ -39,8 +39,20 @@ export class SimulationRenderer {
     terrain_vbo_layout.push_attribute(0, 3, gl.FLOAT, false);
     terrain_vbo_layout.push_attribute(1, 3, gl.FLOAT, false);
 
-    let vertex_data = cube.vertex_data(0, 1, 1, 0, 1, 0);
-    let index_data = cube.index_data;
+    // let vertex_data = cube.vertex_data(0, 1, 1, 0, 1, 0);
+    // let index_data = cube.index_data;
+
+    // let vertex_data = new Float32Array([0, 1, 0.5, 0, 1, 0,
+    //                                     1, 1, 0.5, 0, 1, 0,
+    //                                     0, 0, 0.5, 0, 1, 0,
+    //                                     1, 0, 0.5, 0, 1, 0]);
+    // let index_data = new Uint32Array([2, 1, 0, 2, 3, 1]);
+
+    let vertex_data = new Float32Array([-0.5, -0.5, 0.5, 0, 1, 0,
+                                        1.5, -0.5, 0.5, 0, 1, 0,
+                                        0.5, -1.5, 0.5, 0, 1, 0]);
+    let index_data = new Uint32Array([2, 1, 0]);
+
 
     let terrain_vbo = new VertexBufferObject(gl, vertex_data, gl.STATIC_DRAW);
     this.index_buffer = new IndexBuffer(gl, index_data);
@@ -185,6 +197,7 @@ export class SimulationRenderer {
     this.index_buffer.bind();
 
     gl.drawElementsInstanced(gl.TRIANGLES, this.index_buffer.count, gl.UNSIGNED_INT, this.index_data, this.total_cells); 
+    // gl.drawElementsInstanced(gl.POINTS, this.index_buffer.count, gl.UNSIGNED_INT, this.index_data, this.total_cells); 
   }
 }
 
