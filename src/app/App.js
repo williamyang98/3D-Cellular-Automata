@@ -35,6 +35,10 @@ export class App {
 
     this.show_border = new Toggle(true);
     this.show_render = new Toggle(true);
+
+    // select amoeba with layer colouring
+    this.shader_manager.select_colouring(2);
+    this.rule_browser.select_entry(2);
   }
 
   set_size(size) {

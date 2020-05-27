@@ -93,7 +93,7 @@ export class RuleBrowser {
       )
     );
 
-    this.selected_entry = 0;
+    this.select_entry(0);
   }
 
   get_selected_entry() {
