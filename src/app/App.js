@@ -39,6 +39,7 @@ export class App {
     // select amoeba with layer colouring
     this.shader_manager.select_colouring(2);
     this.rule_browser.select_entry(2);
+    this.sim.randomise();
   }
 
   set_size(size) {
