@@ -29,11 +29,28 @@ export class ShaderManager {
       fog_far: new Slider(0, 1, 0),
       sun_strength: new Slider(0, 1, 0.95),
       sky_strength: new Slider(0, 1, 0.25),
+      brightness: new Slider(0, 1, 0.9),
     };
 
     this.create_options();
+    this.set_available_shadings();
     this.create_shader();
     this.create_params();
+  }
+
+  set_available_shadings() {
+    let render_type = this.render_types[this.current_render_type];
+    let shadings = [];
+    for (let i = 0; i < this.all_shadings.length; i++) {
+      let name = this.all_shadings[i];
+      let shader = fragment_shader_src[name];
+      if (render_type.point_cloud && !shader.point_cloud) {
+        continue;
+      }
+      shadings.push(name);
+    }
+    this.shadings = shadings;
+    this.current_shading = 0;
   }
 
   create_options() {
@@ -44,19 +61,20 @@ export class ShaderManager {
     ];
 
     this.colourings = [];
+    this.all_shadings = [];
     this.shadings = [];
 
-    this.shadings_params = [
-      ['sun_strength', 'sky_strength', 'fog_near', 'fog_far', 'scaling_enabled'],
-      ['ambient_strength', 'diffuse_strength', 'specular_strength', 'specular_power_factor', 'scaling_enabled'],
-      ['scaling_enabled']
-    ];
+    this.shadings_params = {
+      basic: ['sun_strength', 'sky_strength', 'fog_near', 'fog_far', 'scaling_enabled'],
+      basic_alternate: ['ambient_strength', 'diffuse_strength', 'specular_strength', 'specular_power_factor', 'scaling_enabled'],
+      no_shading: ['brightness', 'scaling_enabled']
+    };
 
     for (let vert_type in vertex_shader_src) {
       this.colourings.push(vert_type);
     }
     for (let frag_type in fragment_shader_src) {
-      this.shadings.push(frag_type);
+      this.all_shadings.push(frag_type);
     }
 
     this.current_render_type = 0;
@@ -92,7 +110,8 @@ export class ShaderManager {
   }
 
   create_params() {
-    let param_names = this.shadings_params[this.current_shading];
+    let name = this.shadings[this.current_shading];
+    let param_names = this.shadings_params[name];
     let params = {};
     for (let name of param_names) {
       let param = this.global_params[name];
@@ -119,7 +138,7 @@ export class ShaderManager {
 
   select_render_type(index) {
     this.current_render_type = index;
-    this.current_shading = 0;
+    this.set_available_shadings();
     this.create_shader();
     this.create_params();
   }  
@@ -166,6 +185,7 @@ export class ShaderManager {
     shader.add_uniform("uDiffuseStrength", new Uniform(loc => gl.uniform1f(loc, this.global_params.diffuse_strength.value)));
     shader.add_uniform("uSpecularStrength", new Uniform(loc => gl.uniform1f(loc, this.global_params.specular_strength.value)));
     shader.add_uniform("uSpecularPowerFactor", new Uniform(loc => gl.uniform1f(loc, this.global_params.specular_power_factor.value)));
+    shader.add_uniform("uBrightness", new Uniform(loc => gl.uniform1f(loc, this.global_params.brightness.value)));
     // add texture id
     shader.add_uniform("uStateTexture",         new Uniform(loc => gl.uniform1i(loc, 0)));
     shader.add_uniform("uStateColourTexture",   new Uniform(loc => gl.uniform1i(loc, 1)));
