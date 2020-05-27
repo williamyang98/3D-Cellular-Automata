@@ -16,7 +16,7 @@ export function BorderControls() {
       {RenderAdjustableValue(show_border, 0, 'Show Border', value => {
         dispatch({type: 'app.show_border', value: value});
       })}
-      {RenderAdjustableValue(show_render, 0, 'Show Render', value => {
+      {RenderAdjustableValue(show_render, 1, 'Show Render', value => {
         dispatch({type: 'app.show_render', value: value});
       })}
     </div>
