@@ -80,10 +80,10 @@ vec4 state_colour =  texture(uStateColourTexture, vec2(state,0));
 const create_inline_header = (point_cloud) => (
 `#version 300 es
 
-precision mediump float;
-precision mediump sampler3D;
-precision mediump sampler2D;
-precision mediump int;
+precision highp float;
+precision highp sampler3D;
+precision highp sampler2D;
+precision highp int;
 
 in vec3 position;
 ${point_cloud ? '' : 'in vec3 normal;'}

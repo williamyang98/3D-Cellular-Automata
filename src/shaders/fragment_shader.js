@@ -1,8 +1,8 @@
 const basic_shading = (point_cloud) =>
 `#version 300 es
 
-precision mediump float;
-precision mediump int;
+precision highp float;
+precision highp int;
 
 in vec4 vColour;
 in vec3 vFragPos;
@@ -97,8 +97,8 @@ void main() {
 const basic_shading_alternate = (point_cloud) =>
 `#version 300 es
 
-precision mediump float;
-precision mediump int;
+precision highp float;
+precision highp int;
 
 in vec4 vColour;
 in vec3 vFragPos;
@@ -148,8 +148,10 @@ void main() {
 const create_no_shader = (point_cloud) => (
 `#version 300 es
 
-precision mediump float;
-precision mediump int;
+precision highp float;
+precision highp int;
+
+uniform float uBrightness;
 
 in vec4 vColour;
 ${point_cloud ? '' : 'in vec3 vNormal;'}
@@ -158,7 +160,7 @@ ${point_cloud ? '' : 'in vec3 vFragPos;'}
 out vec4 fragColour;
 
 void main() {
-    fragColour = vColour;
+    fragColour = vec4(vColour.xyz * uBrightness, vColour.a);
 }`);
 
 export const fragment_shader_src = {
