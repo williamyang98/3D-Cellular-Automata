@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
-import { vec3 } from 'gl-matrix';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
 export function Statistics() {
-  const dispatch = useDispatch();
   const completed_blocks = useSelector(state => state.stats.data.completed_blocks);
   const total_blocks = useSelector(state => state.stats.data.total_blocks);
   const frame_time = useSelector(state => state.stats.data.frame_time);

@@ -70,7 +70,8 @@ export class CellularAutomaton3D {
 
         // forcefully iterate through all slices
         if (complete) {
-            for (let res of this.current_slice) {
+            while (!this.current_slice.next().done) {
+
             }
             this.current_slice = null;
             return true;

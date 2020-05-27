@@ -30,8 +30,6 @@ export class SimulationRenderer {
   create_data() {
     let gl = this.gl;
 
-
-
     this.state_colour_texture = this.create_states_texture();
     this.radius_colour_texture = this.create_radius_texture();
 
@@ -160,7 +158,6 @@ export class SimulationRenderer {
   }
 
   on_render() {
-    let gl = this.gl;
     this.shader_manager.bind();
     this.cell_data_texture.bind(0);
     this.state_colour_texture.bind(1);

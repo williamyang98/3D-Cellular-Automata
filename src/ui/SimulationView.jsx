@@ -79,7 +79,7 @@ export class SimulationView extends React.Component {
     let touches = ev.touches;
     this.touch_list.push(...touches);
     this.total_touches += touches.length;
-    if (this.total_touches == 1) {
+    if (this.total_touches === 1) {
       this.rotating = true;
       this.zooming = false;
       let touch = this.touch_list[this.touch_list.length-1];

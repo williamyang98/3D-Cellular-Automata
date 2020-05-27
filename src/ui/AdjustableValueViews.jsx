@@ -7,6 +7,8 @@ export function RenderAdjustableValue(adjustable, key, name, valueChanged) {
       return SliderView(adjustable, key, name, valueChanged);
     case 'toggle':
       return ToggleView(adjustable, key, name, valueChanged);
+    default:
+      return;
   }
 }
 

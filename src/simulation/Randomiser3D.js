@@ -1,4 +1,4 @@
-import  { Toggle, Slider } from '../ui/AdjustableValues';
+import  { Slider } from '../ui/AdjustableValues';
 
 class Randomiser {
     constructor(params={}) {

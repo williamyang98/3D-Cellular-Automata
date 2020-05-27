@@ -16,6 +16,8 @@ export function app_reducer(init_app) {
             case 'app.show_render':
                 app.show_render.value = action.value;
                 break;
+            default: 
+                break;
             }
 
         return app;
@@ -29,6 +31,8 @@ export function stats_reducer(init_stats) {
         switch (action.type) {
             case 'stats.update':
                 return action.value;
+            default: 
+                break;
         }
 
         return stats;
@@ -43,6 +47,8 @@ export function rules_reducer(rules_browser) {
             case 'rule.select':
                 let index = action.value;
                 browser.select_entry(index);
+                break;
+            default: 
                 break;
         }
 
@@ -67,6 +73,8 @@ export function shader_reducer(shader_manager) {
             case 'shader.set_param':
                 manager.set_param(action.name, action.value);
                 break;
+            default: 
+                break;
         }
 
         return manager;
@@ -83,6 +91,8 @@ export function randomiser_reducer(randomiser_manager) {
                 break;
             case 'randomiser.update':
                 manager.set_params(action.value);
+                break;
+            default: 
                 break;
         }
         return manager;
