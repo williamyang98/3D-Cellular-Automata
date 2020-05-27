@@ -1,5 +1,9 @@
 import { Shader } from '../gl/Shader';
 import { UniformMat4f, UniformVec3f, Uniform } from '../gl/Uniform';
+import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../gl/VertexBuffer';
+import { IndexBuffer } from '../gl/IndexBuffer';
+
+import { cube } from '../gl/CubeData';
 
 import { fragment_shader_src } from '../shaders/fragment_shader';
 import { vertex_shader_src } from '../shaders/vertex_shader';
@@ -11,6 +15,7 @@ export class ShaderManager {
   constructor(gl, camera) {
     this.gl = gl;
     this.size = vec3.create();
+    this.total_cells = 0;
     this.light_position = vec3.create();
     this.camera = camera;
 
@@ -32,6 +37,12 @@ export class ShaderManager {
   }
 
   create_options() {
+    this.render_types = [
+      create_quad_data(this.gl),
+      create_triangle_data(this.gl),
+      create_cube_data(this.gl),
+    ];
+
     this.colourings = [];
     this.shadings = [];
 
@@ -48,6 +59,7 @@ export class ShaderManager {
       this.shadings.push(frag_type);
     }
 
+    this.current_render_type = 0;
     this.current_colouring = 0;
     this.current_shading = 0;
   }
@@ -55,9 +67,26 @@ export class ShaderManager {
   create_shader() {
     let vert_name = this.colourings[this.current_colouring];
     let frag_name = this.shadings[this.current_shading];
+    let render_type = this.render_types[this.current_render_type];
 
-    let vert_src = vertex_shader_src[vert_name];
-    let frag_src = fragment_shader_src[frag_name];
+    let vert_shader = vertex_shader_src[vert_name];
+    let frag_shader = fragment_shader_src[frag_name];
+
+    // point cloud only works with no shading
+    if (render_type.point_cloud && !frag_shader.point_cloud) {
+      for (let index = 0; index < this.shadings.length; index++) {
+        let name = this.shadings[index];
+        let shader = fragment_shader_src[name];
+        if (shader.point_cloud) {
+          this.current_shading = index;
+          return this.create_shader();
+        }
+      }
+    }
+
+    let vert_src = vert_shader(render_type.point_cloud);
+    let frag_src = frag_shader.create(render_type.point_cloud);
+
     this.shader = new Shader(this.gl, vert_src, frag_src);
     this.add_uniforms(this.shader);
   }
@@ -77,6 +106,8 @@ export class ShaderManager {
       this.size[i] = size[i];
     }
 
+    this.total_cells = size[0] * size[1] * size[2];
+
     vec3.scale(this.light_position, this.size, 2.5);
   }
 
@@ -85,6 +116,13 @@ export class ShaderManager {
     param.value = value;
     this.params = {...this.params};
   }
+
+  select_render_type(index) {
+    this.current_render_type = index;
+    this.current_shading = 0;
+    this.create_shader();
+    this.create_params();
+  }  
 
   select_colouring(index) {
     this.current_colouring = index;
@@ -100,6 +138,15 @@ export class ShaderManager {
 
   bind() {
     this.shader.bind();
+    let render_type = this.render_types[this.current_render_type];
+    render_type.vao.bind();
+    render_type.index_buffer.bind();
+  }
+
+  on_render() {
+    let gl = this.gl;
+    let render_type = this.render_types[this.current_render_type];
+    gl.drawElementsInstanced(gl.TRIANGLES, render_type.index_buffer.count, gl.UNSIGNED_INT, render_type.index_data, this.total_cells); 
   }
 
   add_uniforms(shader) {
@@ -132,3 +179,74 @@ export class ShaderManager {
   }
 }
 
+const create_cube_data = (gl) => {
+  let terrain_vbo_layout = new VertexBufferLayout(gl);
+  terrain_vbo_layout.push_attribute(0, 3, gl.FLOAT, false);
+  terrain_vbo_layout.push_attribute(1, 3, gl.FLOAT, false);
+
+  let vertex_data = cube.vertex_data(0, 1, 1, 0, 1, 0);
+  let index_data = cube.index_data;
+
+  let terrain_vbo = new VertexBufferObject(gl, vertex_data, gl.STATIC_DRAW);
+  let index_buffer = new IndexBuffer(gl, index_data);
+
+  let vao = new VertexArrayObject(gl);
+  vao.add_vertex_buffer(terrain_vbo, terrain_vbo_layout);
+
+  return {
+    name: 'cube',
+    vao: vao,
+    index_buffer: index_buffer,
+    index_data: index_data,
+    point_cloud: false
+  };
+}
+
+const create_quad_data = (gl) => {
+  let terrain_vbo_layout = new VertexBufferLayout(gl);
+  terrain_vbo_layout.push_attribute(0, 3, gl.FLOAT, false);
+
+  let vertex_data = new Float32Array([0, 1, 0.5,
+                                      1, 1, 0.5,
+                                      0, 0, 0.5,
+                                      1, 0, 0.5]);
+  let index_data = new Uint32Array([2, 1, 0, 2, 3, 1]);
+
+  let terrain_vbo = new VertexBufferObject(gl, vertex_data, gl.STATIC_DRAW);
+  let index_buffer = new IndexBuffer(gl, index_data);
+
+  let vao = new VertexArrayObject(gl);
+  vao.add_vertex_buffer(terrain_vbo, terrain_vbo_layout);
+
+  return {
+    name: 'quad point cloud',
+    vao: vao,
+    index_buffer: index_buffer,
+    index_data: index_data,
+    point_cloud: true
+  };
+}
+
+const create_triangle_data = (gl) => {
+  let terrain_vbo_layout = new VertexBufferLayout(gl);
+  terrain_vbo_layout.push_attribute(0, 3, gl.FLOAT, false);
+
+  let vertex_data = new Float32Array([-0.5, -0.5, 0.5,
+                                      1.5, -0.5, 0.5,
+                                      0.5, -1.5, 0.5]);
+  let index_data = new Uint32Array([2, 1, 0]);
+
+  let terrain_vbo = new VertexBufferObject(gl, vertex_data, gl.STATIC_DRAW);
+  let index_buffer = new IndexBuffer(gl, index_data);
+
+  let vao = new VertexArrayObject(gl);
+  vao.add_vertex_buffer(terrain_vbo, terrain_vbo_layout);
+
+  return {
+    name: 'triangle point cloud',
+    vao: vao,
+    index_buffer: index_buffer,
+    index_data: index_data,
+    point_cloud: true
+  };
+}
