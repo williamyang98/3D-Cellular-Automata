@@ -30,7 +30,7 @@ export class App {
     this.rule_browser = new RuleBrowser(this.randomiser_manager);
     this.stats = new Statistics(this.store);
 
-    let x = 50;
+    let x = 100;
     this.set_size(vec3.fromValues(x, x, x));
 
     this.show_border = new Toggle(true);
