@@ -53,13 +53,16 @@ void main() {
     while (true) {
         vec4 cell = texture(uStateTexture, tex_coords);
         float state = cell[0];
+        float neighbours = cell[1];
         vec4 colour = texture(uStateColourTexture, vec2(state, 0.0));
         if (colour.a != 0.0) {
             vec3 distance = tex_coords - vec3(0.5, 0.5, 0.5);
             float radius = length(distance * uGridSize);
             float dist = mod(radius/10.0, 1.0); 
+            // float dist = length(distance) * 2.0;
             vec4 dist_colour = texture(uRadiusColourTexture, vec2(dist, 0.0));
-            vFragColour = dist_colour;
+            // vFragColour = dist_colour;
+            vFragColour = vec4(dist_colour.xyz * (1.0-neighbours), 1.0);
             return;
         }
         tex_coords -= step_size;
