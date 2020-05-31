@@ -21,10 +21,12 @@ export class SimulationRenderer {
     this.rule_browser = rule_browser;
     this.randomiser_browser = randomiser_browser;
 
+    this.data_updated = false;
     this.create_data();
     
     this.sim = new CellularAutomaton3D(this.size, stats);
     this.sim.listen_rerender(sim => this.update_vertex_buffer(true));
+
   }
 
   create_data() {
@@ -145,21 +147,30 @@ export class SimulationRenderer {
     let neighbour_config = rule.neighbours;
     let max_neighbours = neighbour_config.max_neighbours;
 
+    let total_items = 0;
     for (let i of items) {
       let offset = i*this.cell_data_width;
       let state = this.sim.cells[i];
       let neighbours = this.sim.neighbours[i];
       this.cell_data[offset+0] = Math.floor(state * 255);
       this.cell_data[offset+1] = Math.floor(Math.min(neighbours, max_neighbours)/max_neighbours * 255);
+      total_items += 1;
     }
 
-    this.cell_data_texture.bind();
-    gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RG, gl.UNSIGNED_BYTE, this.cell_data, 0);
+    this.data_updated = this.data_updated || (total_items > 0);
+
   }
 
   on_render() {
+    let gl = this.gl;
+
     this.shader_manager.bind();
     this.cell_data_texture.bind(0);
+    // this.cell_data_texture.bind();
+    if (this.data_updated) {
+      gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RG, gl.UNSIGNED_BYTE, this.cell_data, 0);
+      this.data_updated = false;
+    }
     this.state_colour_texture.bind(1);
     this.radius_colour_texture.bind(2);
 

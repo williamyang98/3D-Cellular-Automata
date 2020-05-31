@@ -3,10 +3,11 @@ import { UniformMat4f, UniformVec3f, Uniform } from '../gl/Uniform';
 import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../gl/VertexBuffer';
 import { IndexBuffer } from '../gl/IndexBuffer';
 
-import { cube } from '../gl/CubeData';
+import { cube, cube_optimized } from '../gl/CubeData';
 
 import { fragment_shader_src } from '../shaders/fragment_shader';
 import { vertex_shader_src } from '../shaders/vertex_shader';
+import { volume_shader } from '../shaders/volume';
 import { vec3 } from 'gl-matrix';
 
 import { Slider, Toggle } from '../ui/AdjustableValues';
@@ -55,27 +56,28 @@ export class ShaderManager {
 
   create_options() {
     this.render_types = [
-      create_quad_data(this.gl),
-      create_triangle_data(this.gl),
-      create_cube_data(this.gl),
+      // create_quad_data(this.gl),
+      // create_triangle_data(this.gl),
+      // create_cube_data(this.gl),
+      create_volume_data(this.gl),
     ];
 
     this.colourings = [];
     this.all_shadings = [];
     this.shadings = [];
 
-    this.shadings_params = {
-      basic: ['sun_strength', 'sky_strength', 'fog_near', 'fog_far', 'scaling_enabled'],
-      basic_alternate: ['ambient_strength', 'diffuse_strength', 'specular_strength', 'specular_power_factor', 'scaling_enabled'],
-      no_shading: ['brightness', 'scaling_enabled']
-    };
+    // this.shadings_params = {
+    //   basic: ['sun_strength', 'sky_strength', 'fog_near', 'fog_far', 'scaling_enabled'],
+    //   basic_alternate: ['ambient_strength', 'diffuse_strength', 'specular_strength', 'specular_power_factor', 'scaling_enabled'],
+    //   no_shading: ['brightness', 'scaling_enabled']
+    // };
 
-    for (let vert_type in vertex_shader_src) {
-      this.colourings.push(vert_type);
-    }
-    for (let frag_type in fragment_shader_src) {
-      this.all_shadings.push(frag_type);
-    }
+    // for (let vert_type in vertex_shader_src) {
+    //   this.colourings.push(vert_type);
+    // }
+    // for (let frag_type in fragment_shader_src) {
+    //   this.all_shadings.push(frag_type);
+    // }
 
     this.current_render_type = 0;
     this.current_colouring = 0;
@@ -83,41 +85,45 @@ export class ShaderManager {
   }
 
   create_shader() {
-    let vert_name = this.colourings[this.current_colouring];
-    let frag_name = this.shadings[this.current_shading];
-    let render_type = this.render_types[this.current_render_type];
+    // let vert_name = this.colourings[this.current_colouring];
+    // let frag_name = this.shadings[this.current_shading];
+    // let render_type = this.render_types[this.current_render_type];
 
-    let vert_shader = vertex_shader_src[vert_name];
-    let frag_shader = fragment_shader_src[frag_name];
+    // let vert_shader = vertex_shader_src[vert_name];
+    // let frag_shader = fragment_shader_src[frag_name];
 
-    // point cloud only works with no shading
-    if (render_type.point_cloud && !frag_shader.point_cloud) {
-      for (let index = 0; index < this.shadings.length; index++) {
-        let name = this.shadings[index];
-        let shader = fragment_shader_src[name];
-        if (shader.point_cloud) {
-          this.current_shading = index;
-          return this.create_shader();
-        }
-      }
-    }
+    // // point cloud only works with no shading
+    // if (render_type.point_cloud && !frag_shader.point_cloud) {
+    //   for (let index = 0; index < this.shadings.length; index++) {
+    //     let name = this.shadings[index];
+    //     let shader = fragment_shader_src[name];
+    //     if (shader.point_cloud) {
+    //       this.current_shading = index;
+    //       return this.create_shader();
+    //     }
+    //   }
+    // }
 
-    let vert_src = vert_shader(render_type.point_cloud);
-    let frag_src = frag_shader.create(render_type.point_cloud);
+    // let vert_src = vert_shader(render_type.point_cloud);
+    // let frag_src = frag_shader.create(render_type.point_cloud);
 
-    this.shader = new Shader(this.gl, vert_src, frag_src);
+    // this.shader = new Shader(this.gl, vert_src, frag_src);
+    // this.add_uniforms(this.shader);
+
+    // let render_type = this.render_types[this.current_render_type];
+    this.shader = new Shader(this.gl, volume_shader.vert_src, volume_shader.frag_src);
     this.add_uniforms(this.shader);
   }
 
   create_params() {
-    let name = this.shadings[this.current_shading];
-    let param_names = this.shadings_params[name];
-    let params = {};
-    for (let name of param_names) {
-      let param = this.global_params[name];
-      params[name] = param;
-    }
-    this.params = params;
+    // let name = this.shadings[this.current_shading];
+    // let param_names = this.shadings_params[name];
+    // let params = {};
+    // for (let name of param_names) {
+    //   let param = this.global_params[name];
+    //   params[name] = param;
+    // }
+    this.params = {};
   }
 
   set_size(size) {
@@ -165,7 +171,8 @@ export class ShaderManager {
   on_render() {
     let gl = this.gl;
     let render_type = this.render_types[this.current_render_type];
-    gl.drawElementsInstanced(gl.TRIANGLES, render_type.index_buffer.count, gl.UNSIGNED_INT, render_type.index_data, this.total_cells); 
+    // gl.drawElementsInstanced(gl.TRIANGLES, render_type.index_buffer.count, gl.UNSIGNED_INT, render_type.index_data, this.total_cells); 
+    gl.drawElementsInstanced(gl.TRIANGLES, render_type.index_buffer.count, gl.UNSIGNED_INT, render_type.index_data, 1); 
   }
 
   add_uniforms(shader) {
@@ -197,6 +204,27 @@ export class ShaderManager {
     shader.add_uniform("uSunStrength", new Uniform(loc => gl.uniform1f(loc, this.global_params.sun_strength.value)));
     shader.add_uniform("uSkyStrength", new Uniform(loc => gl.uniform1f(loc, this.global_params.sky_strength.value)));
   }
+}
+
+const create_volume_data = (gl) => {
+  let layout = new VertexBufferLayout(gl);
+  layout.push_attribute(0, 3, gl.FLOAT, false);
+  
+  let vertex_data = cube_optimized.vertex_data(0, 1, 1, 0, 1, 0);
+  let index_data = cube_optimized.index_data;
+
+  let vbo = new VertexBufferObject(gl, vertex_data, gl.STATIC_DRAW);
+  let ibo = new IndexBuffer(gl, index_data);
+
+  let vao = new VertexArrayObject(gl);
+  vao.add_vertex_buffer(vbo, layout);
+
+  return {
+    name: 'volume',
+    vao: vao,
+    index_buffer: ibo,
+    index_data: index_data,
+  };
 }
 
 const create_cube_data = (gl) => {
