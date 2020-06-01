@@ -4,7 +4,7 @@ const calculate_offset = (
     float z = floor(remain/(uGridSize.x*uGridSize.y));
     remain = remain - z*uGridSize.x*uGridSize.y;
     float y = floor(remain/uGridSize.x);
-    float x = remain-y*uGridSize.x; 
+    float x = remain - y*uGridSize.x; 
     return vec3(x, y, z);
 }`);
 
@@ -73,6 +73,7 @@ vec3 offset = calculate_offset(gl_InstanceID);
 vec4 cell = get_cell_data(offset);
 float state = cell[0];
 float neighbours = cell[1];
+float lighting = 1.0-(neighbours*uOcclusion);
 vec4 state_colour =  texture(uStateColourTexture, vec2(state,0));
 `
 );
@@ -96,6 +97,7 @@ uniform vec3 uViewPosition;
 uniform vec3 uGridSize;
 // params
 uniform int uScalingEnabled;
+uniform float uOcclusion;
 // texturing
 uniform sampler2D uStateColourTexture;
 uniform sampler2D uRadiusColourTexture;
@@ -131,7 +133,7 @@ const create_state_shader = (point_cloud) => (
 void main() {
     ${create_inline_snippet(point_cloud)}
     vec3 vPosition = scale_position(state, position);
-    vColour = state_colour;
+    vColour = vec4(state_colour.xyz*lighting, state_colour.a);
     ${create_inline_footer(point_cloud)}
 }`);
 
@@ -141,7 +143,7 @@ void main() {
     ${create_inline_snippet(point_cloud)}
     vec3 vPosition = scale_position(state, position);
     vec3 xyz_colour = offset / uGridSize;
-    vColour = vec4(xyz_colour, state_colour.a);
+    vColour = vec4(xyz_colour*lighting, state_colour.a);
     ${create_inline_footer(point_cloud)}
 }
 `);
@@ -155,7 +157,7 @@ void main() {
     float dist = length(distance/10.0);
     dist = mod(dist, 1.0);
     vec4 dist_colour = texture(uRadiusColourTexture, vec2(dist, 0.0));
-    vColour = vec4(dist_colour.xyz, state_colour.a);
+    vColour = vec4(dist_colour.xyz*lighting, state_colour.a);
     ${create_inline_footer(point_cloud)}
 }`);
 
@@ -171,7 +173,7 @@ void main() {
     vec4 radius_colour = texture(uRadiusColourTexture, vec2(radius, 0.0));
 
     vec3 vPosition = scale_position(state, position);
-    vColour = vec4(radius_colour.xyz, state_colour.a);
+    vColour = vec4(radius_colour.xyz*lighting, state_colour.a);
     ${create_inline_footer(point_cloud)}
 }`);
 
@@ -182,7 +184,7 @@ void main() {
     vec4 neighbour_colour = texture(uStateColourTexture, vec2(neighbours, 0.0));
 
     vec3 vPosition = scale_position(neighbours, position);
-    vColour = neighbour_colour;
+    vColour = vec4(neighbour_colour.xyz*lighting, neighbour_colour.a);
     ${create_inline_footer(point_cloud)}
 }`);
 
@@ -193,7 +195,7 @@ void main() {
     vec4 neighbour_colour = texture(uStateColourTexture, vec2(neighbours, 0.0));
 
     vec3 vPosition = scale_position(neighbours, position);
-    vColour = vec4(neighbour_colour.xyz, state_colour.a*neighbour_colour.a);
+    vColour = vec4(neighbour_colour.xyz*lighting, state_colour.a*neighbour_colour.a);
     ${create_inline_footer(point_cloud)}
 }`);
 
