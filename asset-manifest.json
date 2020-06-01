@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/3D-Cellular-Automata/static/css/main.573611cf.chunk.css",
-    "main.js": "/3D-Cellular-Automata/static/js/main.a39d2576.chunk.js",
-    "main.js.map": "/3D-Cellular-Automata/static/js/main.a39d2576.chunk.js.map",
+    "main.js": "/3D-Cellular-Automata/static/js/main.2c1662dd.chunk.js",
+    "main.js.map": "/3D-Cellular-Automata/static/js/main.2c1662dd.chunk.js.map",
     "runtime-main.js": "/3D-Cellular-Automata/static/js/runtime-main.ee7eacaa.js",
     "runtime-main.js.map": "/3D-Cellular-Automata/static/js/runtime-main.ee7eacaa.js.map",
-    "static/js/2.48c8c956.chunk.js": "/3D-Cellular-Automata/static/js/2.48c8c956.chunk.js",
-    "static/js/2.48c8c956.chunk.js.map": "/3D-Cellular-Automata/static/js/2.48c8c956.chunk.js.map",
+    "static/js/2.36a1312c.chunk.js": "/3D-Cellular-Automata/static/js/2.36a1312c.chunk.js",
+    "static/js/2.36a1312c.chunk.js.map": "/3D-Cellular-Automata/static/js/2.36a1312c.chunk.js.map",
     "index.html": "/3D-Cellular-Automata/index.html",
-    "precache-manifest.29d2c51f688865ed99e6abdc5cd4870d.js": "/3D-Cellular-Automata/precache-manifest.29d2c51f688865ed99e6abdc5cd4870d.js",
+    "precache-manifest.2b4fb9213901f5f6668292823456662f.js": "/3D-Cellular-Automata/precache-manifest.2b4fb9213901f5f6668292823456662f.js",
     "service-worker.js": "/3D-Cellular-Automata/service-worker.js",
     "static/css/main.573611cf.chunk.css.map": "/3D-Cellular-Automata/static/css/main.573611cf.chunk.css.map",
-    "static/js/2.48c8c956.chunk.js.LICENSE.txt": "/3D-Cellular-Automata/static/js/2.48c8c956.chunk.js.LICENSE.txt"
+    "static/js/2.36a1312c.chunk.js.LICENSE.txt": "/3D-Cellular-Automata/static/js/2.36a1312c.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.ee7eacaa.js",
-    "static/js/2.48c8c956.chunk.js",
+    "static/js/2.36a1312c.chunk.js",
     "static/css/main.573611cf.chunk.css",
-    "static/js/main.a39d2576.chunk.js"
+    "static/js/main.2c1662dd.chunk.js"
   ]
 }
