@@ -7,6 +7,8 @@ export function RenderAdjustableValue(adjustable, key, name, valueChanged) {
       return SliderView(adjustable, key, name, valueChanged);
     case 'toggle':
       return ToggleView(adjustable, key, name, valueChanged);
+    case 'dropdown':
+      return DropdownView(adjustable, key, name, valueChanged);
     default:
       return;
   }
@@ -33,6 +35,20 @@ function ToggleView(toggle, key, name, valueChanged) {
         checked={toggle.value}
         onChange={ev => valueChanged(ev.target.checked)}></input>
       <label className='form-check-label'>{name}</label>
+    </div>
+  );
+}
+
+function DropdownView(dropdown, key, name, valueChanged) {
+  let onChange = ev => valueChanged(Number(ev.target.value));
+  return (
+    <div className='form-inline' key={key}>
+      <label className='mr-2'>{name} </label>
+      <select className='custom-select custom-select-sm' value={dropdown.value} onChange={onChange}>
+        {dropdown.options.map((option, i) => (
+          <option value={i} key={`${name}_${key}_${i}`}>{option}</option>
+        ))}
+      </select>
     </div>
   );
 }
