@@ -164,7 +164,7 @@ void main() {
 }`);
 
 export const fragment_shader_src = {
-    basic: {create: basic_shading, point_cloud: false},
-    basic_alternate: {create: basic_shading_alternate, point_cloud: false},
-    no_shading: {create: create_no_shader, point_cloud: true}
+    basic: basic_shading,
+    basic_alternate: basic_shading_alternate,
+    no_shading: create_no_shader
 }
