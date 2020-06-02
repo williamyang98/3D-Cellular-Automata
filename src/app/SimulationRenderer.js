@@ -89,8 +89,9 @@ export class SimulationRenderer {
   }
 
   clear() {
-    this.sim.clear();
-    this.update_vertex_buffer();
+    this.sim.clear().then(() => {
+      this.update_vertex_buffer();
+    });
   }
 
   randomise() {

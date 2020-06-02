@@ -1,3 +1,5 @@
+import worker from 'worker-loader!../workers/worker.js'; // eslint-disable-line import/no-webpack-loader-syntax 
+
 export class CellularAutomaton3D {
     constructor(shape, stats) {
         this.shape = shape;
@@ -18,6 +20,16 @@ export class CellularAutomaton3D {
         this.current_slice = null;
         this.slice_size = 10000;
         this.total_steps = 0;
+
+        this.worker = worker();
+        this.promise = new TestPromise();
+
+        this.worker.addEventListener('message', (event) => {
+            if (event.data && event.data.length && event.data.length >= 2) {
+                [this.cells, this.cells_buffer] = event.data;
+                this.promise.emit();
+            }
+        });
     }
 
     listen_rerender(listener) {
@@ -25,8 +37,12 @@ export class CellularAutomaton3D {
     }
 
     clear() {
-        this.cells.fill(0, 0, this.count);
-        this.cells_buffer.fill(0, 0, this.count);
+        this.worker.postMessage([this.cells, this.cells_buffer, this.count], [this.cells.buffer, this.cells_buffer.buffer]);
+        // this.worker.postMessage([this.cells_buffer, this.count], [this.cells_buffer.buffer]);
+        // this.worker.clear_buffer(this.cells.buffer, this.count); 
+        // this.worker.clear_buffer(this.cells_buffer.buffer, this.count); 
+        // this.cells.fill(0, 0, this.count);
+        // this.cells_buffer.fill(0, 0, this.count);
         this.neighbours.fill(0, 0, this.count);
         this.should_update.clear();
         this.should_update_buffer.clear();
@@ -38,6 +54,8 @@ export class CellularAutomaton3D {
             total_blocks: 0,
             total_steps: 0,
         });
+
+        return this.promise;
     }
 
     seed_updates(rule) {
@@ -175,3 +193,19 @@ export class CellularAutomaton3D {
     }
 };
 
+class TestPromise {
+    constructor() {
+        this.listeners = new Set();
+    }
+
+    emit(val) {
+        for (let listener of this.listeners) {
+            listener(val);
+        }
+        this.listeners = new Set();
+    }
+
+    then(lambda) {
+        this.listeners.add(lambda);
+    }
+}
