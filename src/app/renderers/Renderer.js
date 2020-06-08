@@ -35,7 +35,8 @@ export class Renderer {
         shader.add_uniform("uModel", new UniformMat4f(gl, this.props.camera.model));
         shader.add_uniform("uView", new UniformMat4f(gl, this.props.camera.view));
         shader.add_uniform("uProjection", new UniformMat4f(gl, this.props.camera.projection));
-        shader.add_uniform("uViewPosition", new UniformVec3f(gl, this.props.camera.view_position));
+        // shader.add_uniform("uViewPosition", new UniformVec3f(gl, this.props.camera.view_position));
+        shader.add_uniform("uViewPosition", new Uniform(loc => gl.uniform3f(loc, ...this.props.camera.view_position)));
         shader.add_uniform("uGridSize", new Uniform(loc => gl.uniform3f(loc, this.props.size[0], this.props.size[1], this.props.size[2])));
         // default texture slots
         shader.add_uniform("uStateTexture",         new Uniform(loc => gl.uniform1i(loc, 0)));
