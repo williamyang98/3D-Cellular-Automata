@@ -14,22 +14,32 @@ export function RandomiserMenu() {
 
   const randomiser_options = entries.map((e, i) => {
     return (<option value={i} key={i}>{e.name}</option>);
-  })
+  });
+
+  const card_body = (
+    <div>
+      <form>
+        <div className='form-inline'>
+          <label className='mr-2'>Randomiser</label>
+          <select className='custom-select custom-select-sm' value={selected_index} onChange={select_randomiser}>
+            {randomiser_options}
+          </select>
+        </div>
+      </form>
+      <hr></hr>
+      <SeedCrystalEditor></SeedCrystalEditor>
+    </div>
+  );
 
   return (
-    <div className='card'>
-      <div className='card-header'>Randomiser</div>
-      <div className='card-body'>
-        <form>
-          <div className='form-inline'>
-            <label className='mr-2'>Randomiser</label>
-            <select className='custom-select custom-select-sm' value={selected_index} onChange={select_randomiser}>
-              {randomiser_options}
-            </select>
-          </div>
-       </form>
-       <hr></hr>
-        <SeedCrystalEditor></SeedCrystalEditor>
+    <div className="card shadow mb-2">
+      <a href="#collapseRandomiserMenu" className="card-header d-block" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseRandomiserMenu">
+        <h6 className="m-0 font-weight-bold text-primary">Randomiser</h6>
+      </a>
+      <div className="collapse show" id="collapseRandomiserMenu">
+        <div className="card-body">
+          {card_body}
+        </div>
       </div>
     </div>
   );

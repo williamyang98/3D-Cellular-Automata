@@ -1,19 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import './index.css';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider, useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import { SimulationView } from './ui/SimulationView';
-import { Controls } from './ui/Controls';
+import { SimulationView } from './ui/SimulationView/SimulationView';
 import { RulesBrowser } from './ui/RulesBrowser';
 import { ShaderMenu } from './ui/ShaderMenu';
 import { SizeChanger } from './ui/SizeChanger';
 import { Statistics } from './ui/Statistics';
 import { RandomiserMenu } from './ui/Randomiser';
-import { BorderControls } from './ui/BorderControls';
 
 export const store = createStore(
   () => {}, 
@@ -28,10 +25,8 @@ function Main() {
   
   function render_left_panel() {
     return (
-      <div className='col-sm'>
-        <Controls></Controls>
+      <div className='col-sm-3'>
         <SizeChanger></SizeChanger>
-        <BorderControls></BorderControls>
         <ShaderMenu></ShaderMenu>
         <RandomiserMenu></RandomiserMenu>
         <Statistics></Statistics>
@@ -40,25 +35,25 @@ function Main() {
   }
 
   function render_right_panel() {
-    return <RulesBrowser></RulesBrowser>;
+    return (
+      <div className="col-sm-3">
+        <RulesBrowser></RulesBrowser>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className="container-fluid">
       <div className="row">
         {state ? render_left_panel() : <div></div>}
-        <div className="col-sm">
+        <div className="col">
           <SimulationView></SimulationView>
         </div>
-        {state ? <div className="col-sm">{render_right_panel()}</div> : <div></div>}
+        {state ? render_right_panel() : <div></div>}
       </div>
     </div>
   )
 }
-
-
-
-
 
 ReactDOM.render(
   <Provider store={store}>
