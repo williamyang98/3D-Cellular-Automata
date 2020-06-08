@@ -31,12 +31,29 @@ export function SizeChanger() {
     event.preventDefault();
   }
 
-  return (
-    <form className='form-group' onSubmit={(event) => on_size_change(event)}>
+  const size_changer_form = (
+    <form onSubmit={(event) => on_size_change(event)}>
+      <div className="input-group mb-0">
         <input type="number" value={x} max={max_size} min={min_size} onChange={ev => set_x(ev.target.value)}></input> 
         <input type="number" value={y} max={max_size} min={min_size} onChange={ev => set_y(ev.target.value)}></input> 
         <input type="number" value={z} max={max_size} min={min_size} onChange={ev => set_z(ev.target.value)}></input> 
-        <button type="submit" className='btn btn-primary'>Apply</button>
+        <div className="input-group-append">
+          <button type="submit" className='btn btn-primary btn-sm' role="button">Apply</button>
+        </div>
+      </div>
     </form>
+  );
+
+  return (
+    <div className="card shadow mb-2">
+      <a href="#collapseSizeChanger" className="card-header d-block" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSizeChanger">
+        <h6 className="m-0 font-weight-bold text-primary">Size Controls</h6>
+      </a>
+      <div className="collapse show" id="collapseSizeChanger">
+        <div className="card-body">
+          {size_changer_form}
+        </div>
+      </div>
+    </div>
   );
 }
