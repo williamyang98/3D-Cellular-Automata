@@ -10,11 +10,14 @@ import { ShaderMenu } from './ui/ShaderMenu';
 import { SizeChanger } from './ui/SizeChanger';
 import { Statistics } from './ui/Statistics';
 import { RandomiserMenu } from './ui/Randomiser';
+import { gui_reducer } from './ui/reducers/app';
 
 export function App() {
   const [store, setStore] = useState(
     createStore(
-      () => {}, 
+      () => ({
+        gui: gui_reducer()
+      }), 
       compose(
         applyMiddleware(thunk),
         // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
@@ -22,15 +25,18 @@ export function App() {
     )
   );
 
+  const [canvas, setCanvas] = useState(React.createRef());
+
   return (
     <Provider store={store}>
-      <Main></Main>
+      <Main canvas={canvas}></Main>
     </Provider>
   );
 }
 
-function Main() {
-  const state = useSelector(state => state);
+function Main(props) {
+  const app = useSelector(store => store.app);
+  const fullscreen = useSelector(store => store.gui.fullscreen);
   
   function render_left_panel() {
     return (
@@ -51,12 +57,14 @@ function Main() {
     );
   }
 
+  const canvas = <SimulationView canvas={props.canvas}></SimulationView>;
+
   return (
     <div className="container-fluid">
       <div className="row">
-        {state ? render_left_panel() : <div></div>}
-        <div className="col"><SimulationView></SimulationView></div>
-        {state ? render_right_panel() : <div></div>}
+        {app && !fullscreen ? render_left_panel() : <div></div>}
+        <div className="col">{canvas}</div>
+        {app && !fullscreen ? render_right_panel() : <div></div>}
       </div>
     </div>
   );

@@ -93,3 +93,19 @@ export function randomiser_reducer(randomiser_manager) {
     }
     return reducer;
 }
+
+export function gui_reducer(init) {
+    let default_settings = init ? init : {
+        fullscreen: false,
+    };
+    const reducer = (settings=default_settings, action) => {
+        switch (action.type) {
+            case 'fullscreen':
+                return {...settings, fullscreen: action.value};
+            default:
+                break;
+        }
+        return settings;
+    }
+    return reducer;
+}
