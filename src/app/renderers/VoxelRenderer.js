@@ -14,8 +14,8 @@ import { vec3 } from "gl-matrix";
 
 
 export class VoxelRenderer extends Renderer {
-    constructor(gl, props) {
-        super(gl, props);
+    constructor(gl, props, params) {
+        super(gl, props, {});
         this.shading_params = {
             ambient_strength: new Slider(0, 1, 0.4),
             diffuse_strength: new Slider(0, 1, 0.95),
@@ -31,7 +31,7 @@ export class VoxelRenderer extends Renderer {
         };
 
         this.global_params = {
-            colouring: new Dropdown(Object.keys(vertex_shader_src)),
+            ...params,
             shading: new Dropdown(Object.keys(fragment_shader_src)),
         };
 

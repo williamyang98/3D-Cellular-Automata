@@ -2,12 +2,12 @@ import { vec3 } from "gl-matrix";
 import { UniformMat4f, UniformVec3f, Uniform } from "../../gl/Uniform";
 
 export class Renderer {
-    constructor(gl, props) {
+    constructor(gl, props, params) {
         this.gl = gl;
         this.props = {
             size: vec3.create(),
             ...props};
-        this.params = {};
+        this.params = params;
     }
 
     // arbitary values
