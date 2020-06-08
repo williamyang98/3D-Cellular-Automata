@@ -45,12 +45,17 @@ uniform sampler2D uStateColourTexture;
 uniform sampler2D uRadiusColourTexture;
 
 uniform float uOcclusion;
+uniform float uStepFactor;
 
 out vec4 vFragColour;
 
 void main() {
     vec3 view_direction = uViewPosition - vPosition;
-    vec3 step_size = normalize(view_direction)/uGridSize;
+    vec3 step_size = normalize(view_direction);
+    // vec3 resize = abs(step_size);
+    // step_size /= max(resize.x, max(resize.y, resize.z));
+    step_size = step_size / uGridSize * uStepFactor;
+
     vec3 tex_coords = vTexturePosition;
     while (true) {
         vec4 cell = texture(uStateTexture, tex_coords);
