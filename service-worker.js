@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/3D-Cellular-Automata/precache-manifest.2b4fb9213901f5f6668292823456662f.js"
+  "/3D-Cellular-Automata/precache-manifest.6d0a4b1ab09dbc3c97f9e0f1f1cbb316.js"
 );
 
 self.addEventListener('message', (event) => {
