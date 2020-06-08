@@ -67,11 +67,28 @@ export class App {
     requestAnimationFrame(this.loop.bind(this));
   }
 
+  resize() {
+    let gl = this.gl;
+    let canvas = gl.canvas;
+
+    let width = canvas.clientWidth;
+    let height = canvas.clientHeight;
+
+    if (width === canvas.width && height === canvas.height)
+      return;
+
+    canvas.width = width;
+    canvas.height = height;
+    gl.viewport(0, 0, width, height);
+    this.camera.aspect_ratio = width/height;
+  }
+
   on_update() {
     this.sim.on_update();
   }
     
   on_render() {
+    this.resize();
     this.renderer.clear();
     if (this.show_border.value) {
       this.border.on_render();
