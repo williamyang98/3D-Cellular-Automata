@@ -107,6 +107,8 @@ export class SimulationRenderer {
   }
 
   randomise() {
+    let randomiser = this.randomiser_browser.current_randomiser;
+    this.sim.set_randomiser(randomiser.to_json());
     this.sim.randomise();
   }
 
