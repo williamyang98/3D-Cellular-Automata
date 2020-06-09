@@ -1,25 +1,34 @@
+import { Neighbour } from './Neighbours3D';
+
 export class Rule3D {
+    static Create(remain, become, total_states, neighbour) {
+        neighbour = Neighbour.Create(neighbour);
+        return new Rule3D(remain, become, total_states, neighbour);
+    }
+
     constructor(remain_alive, become_alive, total_states, neighbours) {
         this.remain_alive = remain_alive;
         this.become_alive = become_alive;
         this.total_states = total_states;
-        // this.alive_state = this.total_states-1;
-        this.alive_state = 1.0;
-        this.dead_state = 0;
-        this.delta = (this.alive_state-this.dead_state)/(this.total_states-1);
 
-        this.alive_threshold = this.alive_state-this.delta/2.0;
-        this.dead_threshold = this.delta/2.0;
-        
+        this.alive_state = 255;
+        this.dead_state = 0;
+
         this.neighbours = neighbours;
+
+        let delta = (this.alive_state-this.dead_state)/(this.total_states-1);
+
+        this.alive_threshold = Math.floor(this.alive_state-delta/2.0);
+        this.dead_threshold = Math.floor(delta/2.0);
+        this.delta = Math.floor(delta);
     }
 
     count_neighbours(x, y, z, grid) {
         return this.neighbours.count_neighbours(x, y, z, grid, this);
     }
 
-    on_location_update(x, y, z, grid) {
-        this.neighbours.on_location_update(x, y, z, grid);
+    on_location_update(x, y, z, grid, updates) {
+        this.neighbours.on_location_update(x, y, z, grid, updates);
     }
 
     get_next_state(state, neighbours) {
