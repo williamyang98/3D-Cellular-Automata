@@ -1,32 +1,26 @@
-import { MooreNeighbour, VonNeumanNeighbour } from "../simulation/Neighbours3D";
+import { RuleSerialized } from "./Serialised";
 
-const NeighbourRules = {
-  'M': MooreNeighbour,
-  'VN': VonNeumanNeighbour
-};
+const NeighbourRules = new Set(['M','VN']);
 
 export class RuleReader {
-  constructor(string) {
-    this.generate(string);
-  }
-
   generate(string) {
     string = string.replace(' ', '');
     let substrings = string.split('/');
     if (substrings.length !== 4) {
       throw new Error(`Invalid string rule: ${string}`);
     }
-    let [remain_alive, become_alive, total_states, neighbour_type] = substrings;
+    let [remain_alive, become_alive, total_states, neighbour] = substrings;
 
 
-    if (!(neighbour_type in NeighbourRules)) {
-      throw new Error(`Invalid neighbourhood rule: ${neighbour_type}`);
+    if (!NeighbourRules.has(neighbour)) {
+      throw new Error(`Invalid neighbourhood rule: ${neighbour}`);
     }
 
-    this.total_states = Number(total_states);
-    this.remain_alive = this.retrieve_rule(remain_alive);
-    this.become_alive = this.retrieve_rule(become_alive);
-    this.neighbour_type = new NeighbourRules[neighbour_type]();
+    total_states = Number(total_states);
+    let remain = this.retrieve_rule(remain_alive);
+    let become = this.retrieve_rule(become_alive);
+
+    return new RuleSerialized(remain, become, total_states, neighbour);
   }
 
   retrieve_rule(number_range) {
@@ -55,7 +49,6 @@ export class RuleReader {
       }
     }
 
-
     return N;
   }
 
@@ -65,6 +58,4 @@ export class RuleReader {
       throw new Error(`Invalid number: ${n}. Must be between 0 to 26`);
     }
   }
-
-
 }
