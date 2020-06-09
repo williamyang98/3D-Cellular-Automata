@@ -37,10 +37,14 @@ export class App {
     this.show_border = new Toggle(true);
     this.show_render = new Toggle(true);
 
+    this.entry_browser.listen_select((entry) => {
+      this.randomiser_manager.update_randomiser(entry.randomiser);
+    });
+
     // select amoeba with layer colouring
     this.entry_browser.select(2);
     this.shader_manager.update_params({colouring: 2});
-    // this.sim.randomise();
+    this.sim.randomise();
   }
 
   set_size(size) {

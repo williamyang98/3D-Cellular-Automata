@@ -94,7 +94,18 @@ export class EntryBrowser {
       )
     );
 
+    this.listeners = new Set();
     this.select(0);
+  }
+
+  listen_select(listener) {
+    this.listeners.add(listener);
+  }
+
+  notify(entry) {
+    for (let listener of this.listeners) {
+      listener(entry);
+    }
   }
 
   get selected_entry() {
@@ -104,8 +115,7 @@ export class EntryBrowser {
   select(idx) {
     this.current_index = idx;
     let entry = this.selected_entry;
-    let randomiser = entry.randomiser;
-    this.randomiser_manager.update_randomiser(randomiser);
+    this.notify(entry);
   }
 
   add_entry(entry) {

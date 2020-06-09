@@ -8,6 +8,17 @@ export class RandomiserManager {
         this.add_randomiser(new SeedCrystalAbsoluteSerialized());
 
         this.current_index = 0;
+        this.listeners = new Set();
+    }
+
+    listen_select(listener) {
+        this.listeners.add(listener);
+    }
+
+    notify(randomiser) {
+        for (let listener of this.listeners) {
+            listener(randomiser);
+        }
     }
 
     add_randomiser(randomiser) {
@@ -37,6 +48,7 @@ export class RandomiserManager {
 
     select(index) {
         this.current_index = index;
+        this.notify(this.current_randomiser);
     }
 
     get current_randomiser() {

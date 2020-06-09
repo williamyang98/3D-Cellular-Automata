@@ -20,6 +20,16 @@ export class SimulationRenderer {
     this.randomiser_browser = randomiser_browser;
 
     this.data_updated = false;
+
+    this.randomiser_browser.listen_select((randomiser) => {
+      this.sim.set_randomiser(randomiser.to_json());
+    });
+
+    this.entry_browser.listen_select((entry) => {
+      this.sim.set_randomiser(entry.randomiser.to_json());
+      this.sim.set_rule(entry.rule.to_json());
+    });
+
     this.sim = new CellularAutomaton3D(stats);
     this.sim.listen_available_frame((grid, unprocessed_blocks, local) => {
       this.update_vertex_buffer(grid, unprocessed_blocks, local);
@@ -97,11 +107,6 @@ export class SimulationRenderer {
   }
 
   randomise() {
-    let entry = this.entry_browser.selected_entry;
-    let rule = entry.rule;
-    let randomiser = this.randomiser_browser.current_randomiser;
-    this.sim.set_randomiser(randomiser.to_json());
-    this.sim.set_rule(rule.to_json());
     this.sim.randomise();
   }
 
