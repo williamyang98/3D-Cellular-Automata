@@ -1,6 +1,9 @@
-import { RuleSerialized } from "./Serialised";
+import { RuleSerialized, NeighbourSerialized } from "./Serialised";
 
-const NeighbourRules = new Set(['M','VN']);
+const NeighbourRules = {
+  'M': new NeighbourSerialized('M', 26),
+  'VN': new NeighbourSerialized('VN', 6),
+};
 
 export class RuleReader {
   generate(string) {
@@ -12,11 +15,12 @@ export class RuleReader {
     let [remain_alive, become_alive, total_states, neighbour] = substrings;
 
 
-    if (!NeighbourRules.has(neighbour)) {
+    if (NeighbourRules[neighbour] === undefined) {
       throw new Error(`Invalid neighbourhood rule: ${neighbour}`);
     }
 
     total_states = Number(total_states);
+    neighbour = NeighbourRules[neighbour];
     let remain = this.retrieve_rule(remain_alive);
     let become = this.retrieve_rule(become_alive);
 

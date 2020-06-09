@@ -103,7 +103,8 @@ const Moore = new MooreNeighbour();
 const VN = new VonNeumanNeighbour();
 
 export class Neighbour {
-    static Create(type) {
+    static Create(neighbour) {
+        let type = neighbour.type;
         switch (type) {
             case 'M':
                 return Moore;

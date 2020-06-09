@@ -48,3 +48,14 @@ export class RuleSerialized {
         return this;
     }
 }
+
+export class NeighbourSerialized {
+    constructor(type, max) {
+        this.type = type;
+        this.max = max;
+    }
+    
+    to_json() {
+        return this;
+    }
+}

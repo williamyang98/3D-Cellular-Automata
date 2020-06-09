@@ -135,9 +135,7 @@ export class SimulationRenderer {
 
     let items = local ? unprocessed_blocks : range(0, grid.count);
     let rule = this.entry_browser.selected_entry.rule;
-    // let max_neighbours = rule.neighbours.max_neighbours;
-    let max_neighbours = 26;
-
+    let max_neighbours = rule.neighbour.max;
 
     let cells = grid.cells;
     let neighbours = grid.neighbours;
