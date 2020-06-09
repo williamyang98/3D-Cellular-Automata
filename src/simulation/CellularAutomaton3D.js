@@ -12,7 +12,9 @@ export class CellularAutomaton3D {
             let msg = event.data;
 
             if (msg.error) {
-                throw new Error(msg.error);
+                // throw msg.error;
+                console.error(msg.error);
+                return;
             }
 
             switch (msg.action) {
