@@ -21,18 +21,15 @@ export class SimulationRenderer {
 
     this.data_updated = false;
     this.sim = new CellularAutomaton3D(stats);
-
-    this.total_steps = 0;
+    this.sim.listen_available_frame((grid, unprocessed_blocks, local) => {
+      this.update_vertex_buffer(grid, unprocessed_blocks, local);
+    });
   }
 
   set_size(size) {
     this.size = size;
     this.total_cells = size[0] * size[1] * size[2];
-    this.sim.set_size(size)
-      .then((grid) => {
-        this.update_vertex_buffer(grid);
-        this.sim.set_grid(grid);
-      })
+    this.sim.set_size(size);
     this.create_data();
   }
 
@@ -96,50 +93,30 @@ export class SimulationRenderer {
   }
 
   clear() {
-    this.sim.clear()
-      .then((grid) => {
-        this.update_vertex_buffer(grid);
-        this.sim.set_grid(grid);
-      });
+    this.sim.clear();
   }
 
   randomise() {
     let entry = this.entry_browser.selected_entry;
     let rule = entry.rule;
     let randomiser = this.randomiser_browser.current_randomiser;
-    this.sim.set_randomiser(randomiser.to_json()).then(() => {
-      this.sim.set_rule(rule.to_json()).then(() => {
-        this.sim.randomise()
-          .then((grid) => {
-            this.update_vertex_buffer(grid, true);
-            this.sim.set_grid(grid);
-          });
-      });
-    });
+    this.sim.set_randomiser(randomiser.to_json());
+    this.sim.set_rule(rule.to_json());
+    this.sim.randomise();
   }
 
   on_update() {
     this.camera.update();
-    if (this.running) {
-      this.total_steps = 1;
-    }
-
-    if (this.total_steps > 0) {
-      this.sim.step()
-        .then((grid) => {
-          this.update_vertex_buffer(grid, true);
-          this.sim.set_grid(grid);
-        }, (err) => {});
-      this.total_steps -= 1;
-    }
   }
 
   start() {
     this.running = true;
+    this.sim.start();
   }
 
   stop() {
     this.running = false;
+    this.sim.stop();
   }
 
   toggle() {
@@ -150,13 +127,13 @@ export class SimulationRenderer {
   }
 
   step() {
-    this.total_steps = 1;
+    this.sim.step();
   }
 
-  update_vertex_buffer(grid, local=false) {
+  update_vertex_buffer(grid, unprocessed_blocks, local=false) {
     let gl = this.gl;
 
-    let items = local ? grid.updates : range(0, grid.count);
+    let items = local ? unprocessed_blocks : range(0, grid.count);
     let rule = this.entry_browser.selected_entry.rule;
     // let max_neighbours = rule.neighbours.max_neighbours;
     let max_neighbours = 26;
@@ -187,6 +164,8 @@ export class SimulationRenderer {
 
     this.shader_manager.bind();
     this.cell_data_texture.bind(0);
+    this.sim.request_frame();
+
     if (this.data_updated) {
       gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RG, gl.UNSIGNED_BYTE, this.cell_data, 0);
       this.data_updated = false;
