@@ -1,4 +1,4 @@
-export class MooreNeighbour {
+class MooreNeighbour {
     constructor() {
         this.max_neighbours = 26;
     }
@@ -28,7 +28,7 @@ export class MooreNeighbour {
 
     }
 
-    on_location_update(x, y, z, grid) {
+    on_location_update(x, y, z, grid, updates) {
         for (let xoff = -1; xoff <= 1; xoff++) {
             for (let yoff = -1; yoff <= 1; yoff++) {
                 for (let zoff = -1; zoff <= 1; zoff++) {
@@ -37,14 +37,14 @@ export class MooreNeighbour {
                     const zn = pos_mod(z+zoff, grid.shape[2]); 
 
                     const i = grid.xyz_to_i(xn, yn, zn);
-                    grid.should_update[i] = true;
+                    updates[i] = true;
                 }
             }
         }
     }
 }
 
-export class VonNeumanNeighbour {
+class VonNeumanNeighbour {
     constructor() {
         this.offsets = [];
         for (let dim = 0; dim < 3; dim++) {
@@ -76,9 +76,9 @@ export class VonNeumanNeighbour {
         return total_neighbours;
     }
 
-    on_location_update(x, y, z, grid) {
+    on_location_update(x, y, z, grid, updates) {
         let i = grid.xyz_to_i(x, y, z);
-        grid.should_update[i] = true;
+        updates[i] = true;
 
         for (let off of this.offsets) {
             const xn = pos_mod(x+off[0], grid.shape[0]);
@@ -86,7 +86,7 @@ export class VonNeumanNeighbour {
             const zn = pos_mod(z+off[2], grid.shape[2]); 
 
             i = grid.xyz_to_i(xn, yn, zn);
-            grid.should_update[i] = true;
+            updates[i] = true;
         }
     }
 }
@@ -94,4 +94,20 @@ export class VonNeumanNeighbour {
 
 function pos_mod(n, m) {
     return (((n % m) + m) % m);
+}
+
+const Moore = new MooreNeighbour();
+const VN = new VonNeumanNeighbour();
+
+export class Neighbour {
+    static Create(type) {
+        switch (type) {
+            case 'M':
+                return Moore;
+            case 'VN':
+                return VN;
+            default:
+                throw new Error(`Unknown neighbour type: ${type}`);
+        }
+    }
 }
