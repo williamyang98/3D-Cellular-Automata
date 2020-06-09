@@ -10,10 +10,9 @@ import { vertex_shader_src } from "../../shaders/vertex_shader";
 import { Uniform } from "../../gl/Uniform";
 
 export class PointCloudRenderer extends Renderer {
-    constructor(gl, props) {
-        super(gl, props);
+    constructor(gl, props, params) {
+        super(gl, props, params);
         this.add_params({
-            colouring: new Dropdown(Object.keys(vertex_shader_src)),
             point_type: new Dropdown(['quad', 'tri']),
             brightness: new Slider(0, 1, 1),
             occlusion: new Slider(0, 1, 0.65),

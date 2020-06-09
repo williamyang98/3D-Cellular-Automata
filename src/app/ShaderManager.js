@@ -4,6 +4,7 @@ import { Dropdown } from '../ui/AdjustableValues';
 import { VolumeRenderer } from './renderers/VolumeRenderer';
 import { PointCloudRenderer } from './renderers/PointCloudRenderer';
 import { VoxelRenderer } from './renderers/VoxelRenderer';
+import { vertex_shader_src } from '../shaders/vertex_shader';
 
 export class ShaderManager {
   constructor(gl, camera) {
@@ -16,10 +17,14 @@ export class ShaderManager {
       camera: this.camera
     };
 
+    this.global_params = {
+      colouring: new Dropdown(Object.keys(vertex_shader_src)),
+    };
+
     this.renderers = {
-      volume: new VolumeRenderer(gl, props),
-      point: new PointCloudRenderer(gl, props),
-      voxel: new VoxelRenderer(gl, props),
+      volume: new VolumeRenderer(gl, props, this.global_params),
+      point: new PointCloudRenderer(gl, props, this.global_params),
+      voxel: new VoxelRenderer(gl, props, this.global_params),
     };
 
     this.renderer_type = new Dropdown(Object.keys(this.renderers));

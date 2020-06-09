@@ -10,12 +10,12 @@ import { volume_shader } from "../../shaders/volume";
 import { Toggle, Slider, Dropdown } from "../../ui/AdjustableValues";
 
 export class VolumeRenderer extends Renderer {
-    constructor(gl, props) {
-        super(gl, props);
+    constructor(gl, props, params) {
+        super(gl, props, params);
         [this.vao, this.ibo, this.index_data] = create_volume_data(gl);
         this.add_params({
-            colouring: new Dropdown(Object.keys(volume_shader.frag_src)),
-            occlusion: new Slider(0, 1, 0.65)
+            occlusion: new Slider(0, 1, 0.65),
+            step_factor: new Slider(0.1, 2, 1)
         });
         this.create_shader();
         this.params.colouring.listen(() => {
@@ -35,6 +35,7 @@ export class VolumeRenderer extends Renderer {
         super.add_uniforms(shader);
         let gl = this.gl;
         shader.add_uniform("uOcclusion", new Uniform(loc => gl.uniform1f(loc, this.params.occlusion.value)));
+        shader.add_uniform("uStepFactor", new Uniform(loc => gl.uniform1f(loc, this.params.step_factor.value)));
     }
 
     bind() {

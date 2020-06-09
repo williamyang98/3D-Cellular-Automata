@@ -38,6 +38,7 @@ export class App {
 
     // select amoeba with layer colouring
     this.rule_browser.select_entry(2);
+    this.shader_manager.update_params({colouring: 2});
     this.sim.randomise();
   }
 
@@ -53,8 +54,19 @@ export class App {
     this.camera.model_translation = vec3.create();
     vec3.scale(this.camera.model_translation, this.size, -0.5);
     // this.camera.view_position[2] = -this.size[2] * 2.5;
-    vec3.scale(this.camera.view_position, this.size, 0.5);
-    vec3.add(this.camera.view_position, this.camera.view_position, vec3.fromValues(20, 20, 20));
+    // zoom along minimum axis
+    // zoom by maximum axis
+    let distance = Math.max(...size);
+    let min_index = argmin([...size]); 
+
+    this.camera.view_position = vec3.create();
+    this.camera.view_position[min_index] = distance*1.5;
+    // glitchy around y axis due to euler angle rotation, so add offset
+    if (min_index === 1) {
+      this.camera.view_position[2] = 1;
+    }
+    // vec3.scale(this.camera.view_position, this.size, 0.5);
+    // vec3.add(this.camera.view_position, this.camera.view_position, vec3.fromValues(20, 20, 20));
   }
 
   run() {
@@ -67,11 +79,28 @@ export class App {
     requestAnimationFrame(this.loop.bind(this));
   }
 
+  resize() {
+    let gl = this.gl;
+    let canvas = gl.canvas;
+
+    let width = canvas.clientWidth;
+    let height = canvas.clientHeight;
+
+    if (width === canvas.width && height === canvas.height)
+      return;
+
+    canvas.width = width;
+    canvas.height = height;
+    gl.viewport(0, 0, width, height);
+    this.camera.aspect_ratio = width/height;
+  }
+
   on_update() {
     this.sim.on_update();
   }
     
   on_render() {
+    this.resize();
     this.renderer.clear();
     if (this.show_border.value) {
       this.border.on_render();
@@ -82,6 +111,18 @@ export class App {
   }
 }
 
+function argmin(list) {
+  let min_i = 0;
+  let min_val = list[0];
+  for (let i = 1; i < list.length; i++) {
+    let val = list[i];
+    if (val < min_val) {
+      min_val = val;
+      min_i = i;
+    }
+  } 
+  return min_i;
+}
 
 
 

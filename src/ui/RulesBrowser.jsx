@@ -21,6 +21,13 @@ export function RulesBrowser() {
   const rule_items = browser.entries.map((e, i) => render_entry(e, i));
 
   return (
-    <ul className="list-group">{rule_items}</ul>
+    <div className="card shadow mb-2">
+      <a href="#collapseRulesBrowser" className="card-header d-block" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseRulesBrowser">
+        <h6 className="m-0 font-weight-bold text-primary">Rules</h6>
+      </a>
+      <div className="collapse show" id="collapseRulesBrowser">
+        <ul className="list-group">{rule_items}</ul>
+      </div>
+    </div>
   );
 }

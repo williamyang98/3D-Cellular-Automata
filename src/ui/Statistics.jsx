@@ -12,13 +12,23 @@ export function Statistics() {
     progress = completed_blocks/total_blocks * 100;
   }
 
+  const stats = (
+    <div>
+      <div>Total Steps: {total_steps}</div>
+      <div>Progress: {completed_blocks}/{total_blocks} ({progress.toFixed(2)}%)</div>
+      <div>Frame Time (ms): {frame_time.toFixed(2)}</div>
+    </div>
+  );
+
   return (
-    <div className='card'>
-      <div className='card-header'>Statistics</div>
-      <div className='card-body'>
-        <div>Total Steps: {total_steps}</div>
-        <div>Progress: {completed_blocks}/{total_blocks} ({progress.toFixed(2)}%)</div>
-        <div>Frame Time (ms): {frame_time.toFixed(2)}</div>
+    <div className="card shadow">
+      <a href="#collapseStatsMenu" className="card-header d-block" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseStatsMenu">
+        <h6 className="m-0 font-weight-bold text-primary">Statistics</h6>
+      </a>
+      <div className="collapse show" id="collapseStatsMenu">
+        <div className="card-body">
+          {stats}
+        </div>
       </div>
     </div>
   );
