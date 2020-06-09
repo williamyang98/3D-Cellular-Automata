@@ -155,7 +155,7 @@ export class SimulationRenderer {
       cell_data[offset+1] = Math.floor(Math.min(neighbour, max_neighbours)/max_neighbours * 255);
       total_items += 1;
     }
-    console.log('Vertex update took', performance.now()-start, 'ms @', total_items);
+    // console.log('Vertex update took', performance.now()-start, 'ms @', total_items);
     this.data_updated = this.data_updated || (total_items > 0);
   }
 
