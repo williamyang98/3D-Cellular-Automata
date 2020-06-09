@@ -37,7 +37,8 @@ class MooreNeighbour {
                     const zn = pos_mod(z+zoff, grid.shape[2]); 
 
                     const i = grid.xyz_to_i(xn, yn, zn);
-                    updates[i] = true;
+                    updates.add(i);
+                    // updates[i] = true;
                 }
             }
         }
@@ -78,7 +79,8 @@ class VonNeumanNeighbour {
 
     on_location_update(x, y, z, grid, updates) {
         let i = grid.xyz_to_i(x, y, z);
-        updates[i] = true;
+        updates.add(i);
+        // updates[i] = true;
 
         for (let off of this.offsets) {
             const xn = pos_mod(x+off[0], grid.shape[0]);
@@ -86,7 +88,8 @@ class VonNeumanNeighbour {
             const zn = pos_mod(z+off[2], grid.shape[2]); 
 
             i = grid.xyz_to_i(xn, yn, zn);
-            updates[i] = true;
+            updates.add(i);
+            // updates[i] = true;
         }
     }
 }

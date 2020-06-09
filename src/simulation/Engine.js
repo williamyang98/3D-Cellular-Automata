@@ -47,9 +47,9 @@ export class Engine {
         let count = this.grid.count;
         cells.fill(0, 0, count);
         cells_buffer.fill(0, 0, count);
-        updates.fill(0, 0, count);
-        updates_buffer.fill(0, 0, count);
         neighbours.fill(0, 0, count);
+        updates.clear();
+        updates_buffer.clear();
         this.total_steps = 0;
         this.notify({total_steps: this.total_steps, total_blocks: 0, completed_blocks: 0, frame_time: 0});
     }
@@ -57,8 +57,7 @@ export class Engine {
     randomise() {
         if (!this.randomiser) throw new Error('Randomiser not set');
         this.randomiser.randomise(this.grid, this.rule);
-        let total_blocks = 0;
-        for (let i of this.grid.updates) total_blocks += i;
+        let total_blocks = this.grid.updates.size;
         this.notify({total_blocks, completed_blocks:0});
     }
 
@@ -70,17 +69,14 @@ export class Engine {
 
         let {cells, cells_buffer, updates, updates_buffer, neighbours} = grid;
 
-        let total_blocks = 0;
-        for (let i of updates) total_blocks += i;
-
+        let total_blocks = updates.size;
         let completed_blocks = 0;
         this.notify({total_blocks, completed_blocks});
 
+        let remove_stack = [];
         let start_dt = performance.now();
 
-        for (let i = 0; i < updates.length; i++) {
-            if (!updates[i]) 
-                continue;
+        for (let i of updates) {
             let [x, y, z] = grid.i_to_xyz(i);
             let ncount = rule.count_neighbours(x, y, z, grid);
             neighbours[i] = ncount;
@@ -90,7 +86,7 @@ export class Engine {
             cells_buffer[i] = next_state;
 
             if (state === next_state) {
-                updates[i] = false;
+                remove_stack.push(i);
             } else {
                 rule.on_location_update(x, y, z, grid, updates_buffer);
             }
@@ -99,6 +95,10 @@ export class Engine {
             if (completed_blocks % 10000 === 0) {
                 this.notify({completed_blocks});
             }
+        }
+
+        for (let i of remove_stack) {
+            updates.delete(i);
         }
 
         grid.swap_buffers();

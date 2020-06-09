@@ -10,15 +10,17 @@ export class Grid3D {
         sk.cells = new Uint8Array(sk.count);
         sk.cells_buffer = new Uint8Array(sk.count);
         sk.neighbours = new Uint8Array(sk.count);
-        sk.updates = new Uint8Array(sk.count);
-        sk.updates_buffer = new Uint8Array(sk.count);
+        sk.updates = new Set();
+        sk.updates_buffer = new Set();
+        // sk.updates = new Uint8Array(sk.count);
+        // sk.updates_buffer = new Uint8Array(sk.count);
 
         sk.transferables = [
             sk.cells.buffer,
             sk.cells_buffer.buffer,
             sk.neighbours.buffer,
-            sk.updates.buffer,
-            sk.updates_buffer.buffer,
+            // sk.updates.buffer,
+            // sk.updates_buffer.buffer,
         ];
 
         return new Grid3D(sk);
@@ -33,9 +35,9 @@ export class Grid3D {
 
         this.cells = sk.cells
         this.cells_buffer = sk.cells_buffer;
+        this.neighbours = sk.neighbours;
         this.updates = sk.updates;
         this.updates_buffer = sk.updates_buffer;
-        this.neighbours = sk.neighbours;
 
         this.transferables = sk.transferables;
     }

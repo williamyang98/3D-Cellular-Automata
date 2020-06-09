@@ -156,6 +156,7 @@ export class SimulationRenderer {
   update_vertex_buffer(grid, local=false) {
     let gl = this.gl;
 
+    let items = local ? grid.updates : range(0, grid.count);
     let rule = this.entry_browser.selected_entry.rule;
     // let max_neighbours = rule.neighbours.max_neighbours;
     let max_neighbours = 26;
@@ -169,32 +170,13 @@ export class SimulationRenderer {
     let start = performance.now();
     const width = this.cell_data_width;
     let cell_data = this.cell_data;
-
-    if (local) {
-      let updates = grid.updates;
-      const N = updates.length;
-      for (let i = 0; i < N; i++) {
-        if (!updates[i]) {
-          continue;
-        }
-
-        let offset = i*width;
-        let state = cells[i];
-        let neighbour = neighbours[i];
-        cell_data[offset+0] = state;
-        cell_data[offset+1] = Math.floor(Math.min(neighbour, max_neighbours)/max_neighbours * 255);
-        total_items += 1;
-      }
-    } else {
-      const N = grid.count;
-      for (let i = 0; i < N; i++) {
-        let offset = i*width;
-        let state = cells[i];
-        let neighbour = neighbours[i];
-        cell_data[offset+0] = state;
-        cell_data[offset+1] = Math.floor(Math.min(neighbour, max_neighbours)/max_neighbours * 255);
-        total_items += 1;
-      }
+    for (let i of items) {
+      let offset = i*width;
+      let state = cells[i];
+      let neighbour = neighbours[i];
+      cell_data[offset+0] = state;
+      cell_data[offset+1] = Math.floor(Math.min(neighbour, max_neighbours)/max_neighbours * 255);
+      total_items += 1;
     }
     console.log('Vertex update took', performance.now()-start, 'ms @', total_items);
     this.data_updated = this.data_updated || (total_items > 0);
