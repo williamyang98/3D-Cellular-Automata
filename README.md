@@ -25,7 +25,7 @@ A more detailed explanation can be found [here](https://softologyblog.wordpress.
 ## Instructions
 1. Press run to begin the simulation using the floating controls in the middle. 
 2. You can pause, reset (clear), and randomise the simulation also using the floating controls.
-3. In the rules panel you can change it to a different cellular automata rule by clicking on them. You will need to clear and randomise the simulation to get it to work again.
+3. In the rules panel you can change it to a different cellular automata rule by clicking on them. You can switch between different rules in realtime, however it can produce artifacts.
 4. In the randomiser panel, you can change how the world is populated.
    - Seed crystal absolute places a blob in the middle with radius in blocks.
    - Seed crystal places a blob in the middle with radius as a fraction of maximum radius.
