@@ -34,6 +34,7 @@ A more detailed explanation can be found [here](https://softologyblog.wordpress.
    - Volume is the fastest but worst quality ***(Also doesn't support zooming inside the box)***
    - Point is slower and has decent quality 
    - Voxel is the slowest and has the best quality (Very intensive)
+   - To speed up the simulation, you can disable rendering (show render), and re-enable it later
 6. To change the size of the world use the size controls panel. This will adjust the width, length and height of the simulation. (For large sizes this can become very intensive).
 
 ## Gallery
