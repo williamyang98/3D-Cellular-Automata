@@ -4,16 +4,16 @@ import { RenderAdjustableValue } from './AdjustableValueViews';
 
 export function RandomiserMenu() {
   const dispatch = useDispatch();
-  let selected_index = useSelector(state => state.randomiser.selected_index);
+  let current_index = useSelector(state => state.randomiser.current_index);
   let entries = useSelector(state => state.randomiser.entries);
 
   function select_randomiser(event) {
     let index = event.target.value;
-    dispatch({type: 'randomiser.select', value: index});
+    dispatch({type:'randomiser.select', value:index});
   }
 
   const randomiser_options = entries.map((e, i) => {
-    return (<option value={i} key={i}>{e.name}</option>);
+    return (<option value={i} key={i}>{e.type}</option>);
   });
 
   const card_body = (
@@ -21,7 +21,7 @@ export function RandomiserMenu() {
       <form>
         <div className='form-inline'>
           <label className='mr-2'>Randomiser</label>
-          <select className='custom-select custom-select-sm' value={selected_index} onChange={select_randomiser}>
+          <select className='custom-select custom-select-sm' value={current_index} onChange={select_randomiser}>
             {randomiser_options}
           </select>
         </div>
@@ -47,14 +47,13 @@ export function RandomiserMenu() {
 
 export function SeedCrystalEditor() {
   const dispatch = useDispatch();
-  let params = useSelector(state => state.randomiser.selected_randomiser.params);
+  let params = useSelector(state => state.randomiser.current_randomiser.params);
 
   function change_param(name, value) {
-    let new_params = {};
-    new_params[name] = Number(value);
     dispatch({
       type: 'randomiser.update', 
-      value: new_params
+      name: name,
+      value: value,
     });
   }
 
