@@ -25,7 +25,6 @@ export class SimulationRenderer {
     this.create_data();
     
     this.sim = new CellularAutomaton3D(this.size, stats);
-    this.sim.listen_rerender(sim => this.update_vertex_buffer(true));
 
   }
 
@@ -97,27 +96,14 @@ export class SimulationRenderer {
   randomise() {
     let rule = this.rule_browser.get_selected_entry().rule;
     let randomiser = this.randomiser_browser.selected_randomiser;
-    // this.clear();
-    randomiser.randomise(this.sim);
-    this.sim.seed_updates(rule);
-
-    this.update_vertex_buffer();
+    this.sim.randomise(randomiser, rule).then(() => {
+      this.update_vertex_buffer(true);
+    });
   }
 
   on_update() {
     this.camera.update();
-    if (this.running) {
-      this.total_queued_steps = 1;
-    }
-
-    if (this.total_queued_steps > 0) {
-      let entry = this.rule_browser.get_selected_entry();
-      let rule = entry.rule;
-      let res = this.sim.step(rule);
-      if (res) {
-        this.total_queued_steps = 0;
-      } 
-    }
+    
   }
 
   start() {
@@ -126,7 +112,6 @@ export class SimulationRenderer {
 
   stop() {
     this.running = false;
-    this.total_queued_steps = 0;
   }
 
   toggle() {
@@ -137,26 +122,31 @@ export class SimulationRenderer {
   }
 
   step() {
-    this.total_queued_steps = 1;
+
   }
 
   update_vertex_buffer(local=false) {
     let gl = this.gl;
+    let grid = this.sim.grid;
 
-    let items = local ? this.sim.should_update : range(0, this.sim.count);
+    let items = local ? should_update(grid.should_update) : range(0, grid.count);
     let rule = this.rule_browser.get_selected_entry().rule;
-    let neighbour_config = rule.neighbours;
-    let max_neighbours = neighbour_config.max_neighbours;
+    let max_neighbours = rule.neighbours.max_neighbours;
 
     let total_items = 0;
+
+    let cells = grid.cells;
+    let neighbours = grid.neighbours;
     for (let i of items) {
       let offset = i*this.cell_data_width;
-      let state = this.sim.cells[i];
-      let neighbours = this.sim.neighbours[i];
+      let state = cells[i];
+      let neighbour = neighbours[i];
       this.cell_data[offset+0] = Math.floor(state * 255);
-      this.cell_data[offset+1] = Math.floor(Math.min(neighbours, max_neighbours)/max_neighbours * 255);
+      this.cell_data[offset+1] = Math.floor(Math.min(neighbour, max_neighbours)/max_neighbours * 255);
       total_items += 1;
     }
+
+    console.log('Updated items:', total_items);
 
     this.data_updated = this.data_updated || (total_items > 0);
 
@@ -167,7 +157,6 @@ export class SimulationRenderer {
 
     this.shader_manager.bind();
     this.cell_data_texture.bind(0);
-    // this.cell_data_texture.bind();
     if (this.data_updated) {
       gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RG, gl.UNSIGNED_BYTE, this.cell_data, 0);
       this.data_updated = false;
@@ -176,13 +165,19 @@ export class SimulationRenderer {
     this.radius_colour_texture.bind(2);
 
     this.shader_manager.on_render();
-    // gl.drawElementsInstanced(gl.TRIANGLES, this.index_buffer.count, gl.UNSIGNED_INT, this.index_data, this.total_cells); 
-    // gl.drawElementsInstanced(gl.POINTS, this.index_buffer.count, gl.UNSIGNED_INT, this.index_data, this.total_cells); 
   }
 }
 
 function *range(start, end) {
   for (let i = start; i < end; i++) {
     yield i;
+  }
+}
+
+function *should_update(list) {
+  for (let i = 0; i < list.length; i++) {
+    if (list[i]) {
+      yield i;
+    }
   }
 }

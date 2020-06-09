@@ -1,3 +1,5 @@
+import { Grid3D } from "./Grid3DWrapper";
+
 onmessage = (ev) => {
     let {grid, id, action, data} = ev.data;
     try {
@@ -29,6 +31,7 @@ function clear_grid(grid) {
 }
 
 function randomise_grid(grid, randomiser, rule) {
+    grid = new Grid3D(grid);
     switch (randomiser.type) {
         case 'Seed Crystal':
             return relative_randomiser(grid, randomiser, rule);
@@ -38,9 +41,8 @@ function randomise_grid(grid, randomiser, rule) {
 }
 
 function relative_randomiser(grid, randomiser, rule) {
-    console.log('Relative randomiser');
-    const radius = randomiser.params.radius.value;
-    const density = randomiser.params.density.value; 
+    const radius = randomiser.params.radius._value;
+    const density = randomiser.params.density._value; 
 
     let [lower, upper] = [
         Math.max(0.5-radius, 0.0),  
@@ -72,9 +74,8 @@ function relative_randomiser(grid, randomiser, rule) {
 }
 
 function absolute_randomiser(grid, randomiser, rule) {
-    console.log('Absolute randomiser');
-    const radius = randomiser.params.radius.value;
-    const density =  randomiser.params.density.value;
+    const radius = randomiser.params.radius._value;
+    const density =  randomiser.params.density._value;
 
     let X = Math.floor(grid.shape[0]/2);
     let Y = Math.floor(grid.shape[1]/2);
@@ -100,3 +101,4 @@ function absolute_randomiser(grid, randomiser, rule) {
         }
     }
 }
+

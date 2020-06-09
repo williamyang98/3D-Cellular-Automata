@@ -3,7 +3,7 @@ export class MooreNeighbour {
         this.max_neighbours = 26;
     }
 
-    count_neighbours(x, y, z, shape, cells, rule) {
+    count_neighbours(x, y, z, grid, rule) {
         let total_neighbours = 0;
 
         for (let xoff = -1; xoff <= 1; xoff++) {
@@ -12,12 +12,12 @@ export class MooreNeighbour {
                     if (xoff === 0 && yoff === 0 && zoff === 0)
                         continue;
 
-                    const xn = pos_mod(x+xoff, shape[0]);
-                    const yn = pos_mod(y+yoff, shape[1]);
-                    const zn = pos_mod(z+zoff, shape[2]); 
+                    const xn = pos_mod(x+xoff, grid.shape[0]);
+                    const yn = pos_mod(y+yoff, grid.shape[1]);
+                    const zn = pos_mod(z+zoff, grid.shape[2]); 
 
-                    const i = xyz_to_i(xn, yn, zn, shape);
-                    const state = cells[i]; 
+                    const i = grid.xyz_to_i(xn, yn, zn);
+                    const state = grid.cells[i]; 
                     if (rule.is_neighbour(state)) 
                         total_neighbours += 1;
                 }
@@ -28,16 +28,16 @@ export class MooreNeighbour {
 
     }
 
-    on_location_update(x, y, z, shape, buffer) {
+    on_location_update(x, y, z, grid) {
         for (let xoff = -1; xoff <= 1; xoff++) {
             for (let yoff = -1; yoff <= 1; yoff++) {
                 for (let zoff = -1; zoff <= 1; zoff++) {
-                    const xn = pos_mod(x+xoff, shape[0]);
-                    const yn = pos_mod(y+yoff, shape[1]);
-                    const zn = pos_mod(z+zoff, shape[2]); 
+                    const xn = pos_mod(x+xoff, grid.shape[0]);
+                    const yn = pos_mod(y+yoff, grid.shape[1]);
+                    const zn = pos_mod(z+zoff, grid.shape[2]); 
 
-                    const i = xyz_to_i(xn, yn, zn, shape);
-                    buffer.add(i);
+                    const i = grid.xyz_to_i(xn, yn, zn);
+                    grid.should_update[i] = true;
                 }
             }
         }
@@ -58,17 +58,17 @@ export class VonNeumanNeighbour {
         this.max_neighbours = 6;
     }
 
-    count_neighbours(x, y, z, shape, cells, rule) {
+    count_neighbours(x, y, z, grid, rule) {
         let total_neighbours = 0;
 
         for (let off of this.offsets) {
-            const xn = pos_mod(x+off[0], shape[0]);
-            const yn = pos_mod(y+off[1], shape[1]);
-            const zn = pos_mod(z+off[2], shape[2]); 
+            const xn = pos_mod(x+off[0], grid.shape[0]);
+            const yn = pos_mod(y+off[1], grid.shape[1]);
+            const zn = pos_mod(z+off[2], grid.shape[2]); 
 
-            const i = xyz_to_i(xn, yn, zn, shape);
+            const i = grid.xyz_to_i(xn, yn, zn);
 
-            const state = cells[i]; 
+            const state = grid.cells[i]; 
             if (rule.is_neighbour(state)) 
                 total_neighbours += 1;
         }
@@ -76,26 +76,21 @@ export class VonNeumanNeighbour {
         return total_neighbours;
     }
 
-    on_location_update(x, y, z, shape, buffer) {
-        let i = xyz_to_i(x, y, z, shape);
-        buffer.add(i);
+    on_location_update(x, y, z, grid) {
+        let i = grid.xyz_to_i(x, y, z);
+        grid.should_update[i] = true;
 
         for (let off of this.offsets) {
-            const xn = pos_mod(x+off[0], shape[0]);
-            const yn = pos_mod(y+off[1], shape[1]);
-            const zn = pos_mod(z+off[2], shape[2]); 
+            const xn = pos_mod(x+off[0], grid.shape[0]);
+            const yn = pos_mod(y+off[1], grid.shape[1]);
+            const zn = pos_mod(z+off[2], grid.shape[2]); 
 
-            i = xyz_to_i(xn, yn, zn, shape);
-            buffer.add(i);
+            i = grid.xyz_to_i(xn, yn, zn);
+            grid.should_update[i] = true;
         }
     }
 }
 
-function xyz_to_i(x, y, z, shape) {
-    const Y = shape[0];
-    const Z = shape[0]*shape[1];
-    return x + y*Y + z*Z;
-}
 
 function pos_mod(n, m) {
     return (((n % m) + m) % m);

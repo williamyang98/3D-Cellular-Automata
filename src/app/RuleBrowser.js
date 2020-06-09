@@ -119,12 +119,12 @@ class RuleEntry {
   constructor(name, ca_string, randomiser) {
     this.name = name;
     this.description = ca_string;
-    this.rule_reader = new RuleReader(ca_string);
+    let rule_reader = new RuleReader(ca_string);
     this.rule = new Rule3D(
-      n => this.rule_reader.remain_alive[n],
-      n => this.rule_reader.become_alive[n],
-      this.rule_reader.total_states,
-      this.rule_reader.neighbour_type
+      rule_reader.remain_alive,
+      rule_reader.become_alive,
+      rule_reader.total_states,
+      rule_reader.neighbour_type,
     );
     this.randomiser = randomiser;
   }

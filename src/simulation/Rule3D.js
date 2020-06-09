@@ -14,18 +14,18 @@ export class Rule3D {
         this.neighbours = neighbours;
     }
 
-    count_neighbours(x, y, z, shape, cells) {
-        return this.neighbours.count_neighbours(x, y, z, shape, cells, this);
+    count_neighbours(x, y, z, grid) {
+        return this.neighbours.count_neighbours(x, y, z, grid, this);
     }
 
-    on_location_update(x, y, z, shape, buffer) {
-        this.neighbours.on_location_update(x, y, z, shape, buffer);
+    on_location_update(x, y, z, grid) {
+        this.neighbours.on_location_update(x, y, z, grid);
     }
 
     get_next_state(state, neighbours) {
         // alive to dead
         if (this.is_alive(state)) {
-            if (!this.remain_alive(neighbours)) {
+            if (!this.remain_alive[neighbours]) {
                 return state-this.delta;
             } else {
                 return state;
@@ -33,7 +33,7 @@ export class Rule3D {
         }
         // dead to alive
         if (this.is_dead(state)) {
-            if (this.become_alive(neighbours)) {
+            if (this.become_alive[neighbours]) {
                 return this.alive_state;
             } else {
                 return state;
