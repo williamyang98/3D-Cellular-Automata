@@ -166,8 +166,12 @@ export class Engine {
         let remove_stack = [];
         let start_dt = performance.now();
 
+        // let xyz = [0,0,0];
         for (let i of updates) {
             let [x, y, z] = grid.i_to_xyz(i);
+            // grid.i_to_xyz_inplace(i, xyz);
+            // let [x,y,z] = xyz;
+
             let ncount = rule.count_neighbours(x, y, z, grid);
             neighbours[i] = ncount;
 

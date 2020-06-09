@@ -63,4 +63,15 @@ export class Grid3D {
         let x = i-y*this.X;
         return [x, y, z];
     }
+
+    i_to_xyz_inplace(i, xyz) {
+        let z = Math.floor(i/this.XY);
+        i = i-z*this.XY;
+        let y = Math.floor(i/this.X);
+        let x = i-y*this.X;
+
+        xyz[0] = x;
+        xyz[1] = y;
+        xyz[2] = z;
+    }
 }
