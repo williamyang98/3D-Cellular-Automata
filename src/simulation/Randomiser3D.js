@@ -1,34 +1,25 @@
-import  { Slider } from '../ui/AdjustableValues';
-
-class Randomiser {
+export class Randomiser {
     constructor(params={}) {
         this.params = params;
-    }
-
-    update(params) {
-        for (let key in params) {
-            let value = params[key];
-            this.params[key].value = value;
-        }
-
-        this.params = {...this.params};
-    }
-}
-
-export class SeedCrystal extends Randomiser {
-    constructor(density=0.2, radius=0.1) {
-        super({
-            density: new Slider(0, 1, density), 
-            radius: new Slider(0, 0.5, radius)
-        });
-        this.type = 'Seed Crystal';
-        this.alive_state = 1.0;
+        this.alive_state = 255;
         this.dead_state = 0;
     }
 
+    static Create(type, params) {
+        switch (type) {
+            case 'Seed Crystal':
+                return new SeedCrystal(params);
+            case 'Seed Crystal Absolute':
+                return new SeedCrystalAbsolute(params);
+            default:
+                throw new Error(`Invalid randomiser type: ${type}`);
+        }
+    }
+}
+
+class SeedCrystal extends Randomiser {
     randomise(grid, rule) {
-        const radius = this.params.radius.value;
-        const density = this.params.density.value; 
+        let {radius, density} = this.params;
 
         let [lower, upper] = [
             Math.max(0.5-radius, 0.0),  
@@ -49,7 +40,7 @@ export class SeedCrystal extends Randomiser {
                     let i = grid.xyz_to_i(x, y, z);
                     if (Math.random() < density) {
                         grid.cells[i] = this.alive_state;
-                        rule.on_location_update(x, y, z, grid, rule)
+                        rule.on_location_update(x, y, z, grid, grid.updates);
                     } else {
                         // grid.cells[i] = this.dead_state;
                     }
@@ -59,20 +50,9 @@ export class SeedCrystal extends Randomiser {
     }
 }
 
-export class SeedCrystalAbsolute extends Randomiser {
-    constructor(density=0.2, radius=3) {
-        super({
-            density: new Slider(0, 1, density), 
-            radius: new Slider(0, 100, radius)
-        });
-        this.type = 'Seed Crystal Absolute';
-        this.alive_state = 1.0;
-        this.dead_state = 0;
-    }
-
+class SeedCrystalAbsolute extends Randomiser {
     randomise(grid, rule) {
-        const radius = this.params.radius.value;
-        const density =  this.params.density.value;
+        let {radius, density} = this.params;
 
         let X = Math.floor(grid.shape[0]/2);
         let Y = Math.floor(grid.shape[1]/2);
@@ -82,14 +62,13 @@ export class SeedCrystalAbsolute extends Randomiser {
         let [ylower, yupper] = [Math.max(Y-radius, 0), Math.min(Y+radius, grid.shape[1]-1)];
         let [zlower, zupper] = [Math.max(Z-radius, 0), Math.min(Z+radius, grid.shape[2]-1)];
 
-
         for (let x = xlower; x <= xupper; x++) {
             for (let y = ylower; y <= yupper; y++) {
                 for (let z = zlower; z <= zupper; z++) {
                     let i = grid.xyz_to_i(x, y, z);
                     if (Math.random() < density) {
                         grid.cells[i] = this.alive_state;
-                        rule.on_location_update(x, y, z, grid, rule)
+                        rule.on_location_update(x, y, z, grid, grid.updates)
                     } else {
                         // sim.cells[i] = this.dead_state;
                     }
