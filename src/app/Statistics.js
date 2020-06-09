@@ -6,6 +6,9 @@ export class Statistics {
             frame_time: 0,
             total_blocks: 0,
             total_steps: 0,
+            texture_data_update: 0,
+            texture_data_upload: 0,
+            draw_time: 0,
         };
     }
 

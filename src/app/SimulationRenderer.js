@@ -155,7 +155,10 @@ export class SimulationRenderer {
       cell_data[offset+1] = Math.floor(Math.min(neighbour, max_neighbours)/max_neighbours * 255);
       total_items += 1;
     }
+    let end = performance.now();
+    this.stats.recieve('texture_data_update', end-start);
     // console.log('Vertex update took', performance.now()-start, 'ms @', total_items);
+
     this.data_updated = this.data_updated || (total_items > 0);
   }
 
@@ -167,13 +170,21 @@ export class SimulationRenderer {
     this.sim.request_frame();
 
     if (this.data_updated) {
+      let start = performance.now();
       gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RG, gl.UNSIGNED_BYTE, this.cell_data, 0);
+      let end = performance.now();
+      this.stats.recieve('texture_data_upload', end-start);
       this.data_updated = false;
     }
     this.state_colour_texture.bind(1);
     this.radius_colour_texture.bind(2);
 
-    this.shader_manager.on_render();
+    {
+      let start = performance.now();
+      this.shader_manager.on_render();
+      let end = performance.now();
+      this.stats.recieve('draw_time', end-start);
+    }
   }
 }
 

@@ -6,6 +6,9 @@ export function Statistics() {
   const total_blocks = useSelector(state => state.stats.data.total_blocks);
   const frame_time = useSelector(state => state.stats.data.frame_time);
   const total_steps = useSelector(state => state.stats.data.total_steps);
+  const texture_data_update = useSelector(state => state.stats.data.texture_data_update);
+  const texture_data_upload = useSelector(state => state.stats.data.texture_data_upload);
+  const draw_time = useSelector(state => state.stats.data.draw_time);
 
   let progress = 0;
   if (total_blocks > 0) {
@@ -14,9 +17,20 @@ export function Statistics() {
 
   const stats = (
     <div>
-      <div>Total Steps: {total_steps}</div>
-      <div>Progress: {completed_blocks}/{total_blocks} ({progress.toFixed(2)}%)</div>
-      <div>Frame Time (ms): {frame_time.toFixed(2)}</div>
+      <div className="row">
+        <div className="col">
+          <div>Total Steps: {total_steps}</div>
+          <div>Frame Time (ms): {frame_time.toFixed(2)}</div>
+          <div>Draw Time (ms): {draw_time.toFixed(2)}</div>
+        </div>
+        <div className="col">
+          <div>Tex Update (ms): {texture_data_update.toFixed(2)}</div>
+          <div>Tex Upload (ms): {texture_data_upload.toFixed(2)}</div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col">Progress: {completed_blocks}/{total_blocks} ({progress.toFixed(2)}%)</div>
+      </div>
     </div>
   );
 
