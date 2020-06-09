@@ -6,26 +6,34 @@ import { Texture2D } from '../gl/Texture2D';
 import colorsys from 'colorsys';
 
 export class SimulationRenderer {
-  constructor(gl, size, camera, shader_manager, rule_browser, randomiser_browser, stats) {
+  constructor(gl, camera, shader_manager, entry_browser, randomiser_browser, stats) {
     this.gl = gl;
     this.camera = camera;
-    this.size = size;
     this.stats = stats;
 
-    this.total_cells = size[0] * size[1] * size[2];
 
     this.running = false;
     this.total_queued_steps = 0;
 
     this.shader_manager = shader_manager;
-    this.rule_browser = rule_browser;
+    this.entry_browser = entry_browser;
     this.randomiser_browser = randomiser_browser;
 
     this.data_updated = false;
-    this.create_data();
-    
-    this.sim = new CellularAutomaton3D(this.size, stats);
+    this.sim = new CellularAutomaton3D(stats);
 
+    this.total_steps = 0;
+  }
+
+  set_size(size) {
+    this.size = size;
+    this.total_cells = size[0] * size[1] * size[2];
+    this.sim.set_size(size)
+      .then((grid) => {
+        this.update_vertex_buffer(grid);
+        this.sim.set_grid(grid);
+      })
+    this.create_data();
   }
 
   create_data() {
@@ -88,22 +96,42 @@ export class SimulationRenderer {
   }
 
   clear() {
-    this.sim.clear().then(() => {
-      this.update_vertex_buffer();
-    });
+    this.sim.clear()
+      .then((grid) => {
+        this.update_vertex_buffer(grid);
+        this.sim.set_grid(grid);
+      });
   }
 
   randomise() {
-    let rule = this.rule_browser.get_selected_entry().rule;
-    let randomiser = this.randomiser_browser.selected_randomiser;
-    this.sim.randomise(randomiser, rule).then(() => {
-      this.update_vertex_buffer(true);
+    let entry = this.entry_browser.selected_entry;
+    let rule = entry.rule;
+    let randomiser = this.randomiser_browser.current_randomiser;
+    this.sim.set_randomiser(randomiser.to_json()).then(() => {
+      this.sim.set_rule(rule.to_json()).then(() => {
+        this.sim.randomise()
+          .then((grid) => {
+            this.update_vertex_buffer(grid, true);
+            this.sim.set_grid(grid);
+          });
+      });
     });
   }
 
   on_update() {
     this.camera.update();
-    
+    if (this.running) {
+      this.total_steps = 1;
+    }
+
+    if (this.total_steps > 0) {
+      this.sim.step()
+        .then((grid) => {
+          this.update_vertex_buffer(grid, true);
+          this.sim.set_grid(grid);
+        }, (err) => {});
+      this.total_steps -= 1;
+    }
   }
 
   start() {
@@ -122,34 +150,54 @@ export class SimulationRenderer {
   }
 
   step() {
-
+    this.total_steps = 1;
   }
 
-  update_vertex_buffer(local=false) {
+  update_vertex_buffer(grid, local=false) {
     let gl = this.gl;
-    let grid = this.sim.grid;
 
-    let items = local ? should_update(grid.should_update) : range(0, grid.count);
-    let rule = this.rule_browser.get_selected_entry().rule;
-    let max_neighbours = rule.neighbours.max_neighbours;
+    let rule = this.entry_browser.selected_entry.rule;
+    // let max_neighbours = rule.neighbours.max_neighbours;
+    let max_neighbours = 26;
 
-    let total_items = 0;
 
     let cells = grid.cells;
     let neighbours = grid.neighbours;
-    for (let i of items) {
-      let offset = i*this.cell_data_width;
-      let state = cells[i];
-      let neighbour = neighbours[i];
-      this.cell_data[offset+0] = Math.floor(state * 255);
-      this.cell_data[offset+1] = Math.floor(Math.min(neighbour, max_neighbours)/max_neighbours * 255);
-      total_items += 1;
+
+    let total_items = 0;
+
+    let start = performance.now();
+    const width = this.cell_data_width;
+    let cell_data = this.cell_data;
+
+    if (local) {
+      let updates = grid.updates;
+      const N = updates.length;
+      for (let i = 0; i < N; i++) {
+        if (!updates[i]) {
+          continue;
+        }
+
+        let offset = i*width;
+        let state = cells[i];
+        let neighbour = neighbours[i];
+        cell_data[offset+0] = state;
+        cell_data[offset+1] = Math.floor(Math.min(neighbour, max_neighbours)/max_neighbours * 255);
+        total_items += 1;
+      }
+    } else {
+      const N = grid.count;
+      for (let i = 0; i < N; i++) {
+        let offset = i*width;
+        let state = cells[i];
+        let neighbour = neighbours[i];
+        cell_data[offset+0] = state;
+        cell_data[offset+1] = Math.floor(Math.min(neighbour, max_neighbours)/max_neighbours * 255);
+        total_items += 1;
+      }
     }
-
-    console.log('Updated items:', total_items);
-
+    console.log('Vertex update took', performance.now()-start, 'ms @', total_items);
     this.data_updated = this.data_updated || (total_items > 0);
-
   }
 
   on_render() {
