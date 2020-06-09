@@ -2,35 +2,57 @@ import worker from 'worker-loader!./worker.js'; // eslint-disable-line import/no
 import { Grid3D } from './Grid3D';
 
 export class CellularAutomaton3D {
-    constructor(shape, stats) {
-        
+    constructor(stats) {
         this.stats = stats;
-        this.grid = new Grid3D(shape);
-
-        this.should_update = new Set();
-        this.should_update_buffer = new Set();
-        this.remove_queue = [];
-
 
         this.worker = worker();
-        this.worker_busy = false;
         this.promises = {};
         this.promise_id = 0;
 
         this.worker.addEventListener('message', (event) => {
-            if (event.data.id !== undefined) {
-                let {grid, id, action, err} = event.data;
+            let msg = event.data;
+            if (msg.id !== undefined) {
+                let action = msg.action;
+                let id = msg.id;
+
                 let promise = this.promises[id];
                 let {resolve, reject} = promise;
-                if (err) {
-                    return reject(err);
-                }
-                console.log('Finished:', action, id);
-                this.grid = grid;
                 this.promises[id] = undefined;
                 this.worker_busy = false;
-                resolve(true);
+
+                if (msg.error) {
+                    return reject(msg.error);
+                }
+
+                resolve(msg.grid);
+                return;
             }
+
+            switch (msg.action) {
+                case 'stats':
+                    this.stats.recieve(msg.data);
+                    return;
+                default:
+                    break;
+            }
+        });
+    }
+
+    set_size(size) {
+        return new Promise((resolve, reject) => {
+            this.use_worker('set_size', resolve, reject, size);
+        });
+    }
+
+    set_rule(rule) {
+        return new Promise((resolve, reject) => {
+            this.use_worker('set_rule', resolve, reject, rule);
+        });
+    }
+
+    set_randomiser(randomiser) {
+        return new Promise((resolve, reject) => {
+            this.use_worker('set_randomiser', resolve, reject, randomiser);
         });
     }
 
@@ -40,31 +62,38 @@ export class CellularAutomaton3D {
         });
     }
 
-    randomise(randomiser, rule) {
+    randomise() {
         return new Promise((resolve, reject) => {
-            this.use_worker('randomise', resolve, reject, {
-                randomiser, rule
-            });
-        })
+            this.use_worker('randomise', resolve, reject);
+        });
     }
 
-    use_worker(action, resolve, reject, data={}) {
+    step() {
+        return new Promise((resolve, reject) => {
+            if (this.worker_busy) {
+                return reject('Busy');
+            }
+            this.use_worker('step', resolve, reject);
+        });
+    }
+
+    set_grid(grid) {
+        return new Promise((resolve, reject) => {
+            this.use_worker('set_grid', resolve, reject, grid, grid.transferables);
+        });
+    }
+
+    use_worker(action, resolve, reject, data={}, transferables=[]) {
         // only send if worker available
         if (this.worker_busy) {
-            return reject('worker busy');
+            // return reject('worker busy');
         }
 
         let id = this.promise_id;
         this.promises[id] = {resolve, reject}; 
 
         this.promise_id += 1;
-        this.worker.postMessage({
-            grid:this.grid,
-            id: id,
-            action: action, 
-            data: data,
-        }, this.grid.transferables);
-        console.log('Sent:', action, id);
+        this.worker.postMessage({action, id, data}, transferables);
         this.worker_busy = true;
     }
 };
