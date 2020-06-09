@@ -41,12 +41,12 @@ export function stats_reducer(init_stats) {
     return reducer;
 }
 
-export function rules_reducer(rules_browser) {
-    const reducer = (browser=rules_browser, action) => {
+export function entry_reducer(entry_browser) {
+    const reducer = (browser=entry_browser, action) => {
         switch (action.type) {
-            case 'rule.select':
+            case 'entry.select':
                 let index = action.value;
-                browser.select_entry(index);
+                browser.select(index);
                 break;
             default: 
                 break;
@@ -84,7 +84,7 @@ export function randomiser_reducer(randomiser_manager) {
                 manager.select(action.value);
                 break;
             case 'randomiser.update':
-                manager.set_params(action.value);
+                manager.update_current(action.name, action.value);
                 break;
             default: 
                 break;

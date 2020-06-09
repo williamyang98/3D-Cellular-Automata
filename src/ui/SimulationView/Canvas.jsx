@@ -1,7 +1,7 @@
 import React from 'react';
 import { App } from '../../app/App';
 
-import { rules_reducer, app_reducer, shader_reducer, stats_reducer, randomiser_reducer, gui_reducer } from '../reducers/app';
+import { app_reducer, shader_reducer, stats_reducer, randomiser_reducer, gui_reducer, entry_reducer } from '../reducers/app';
 import { combineReducers } from 'redux';
 
 import { MouseController } from './MouseController';
@@ -36,7 +36,7 @@ export class Canvas extends React.Component {
     app = new App(gl, store);
     let reducers = combineReducers({
       app: app_reducer(app),
-      rule_browser: rules_reducer(app.rule_browser),
+      entry_browser: entry_reducer(app.entry_browser),
       shader_manager: shader_reducer(app.shader_manager),
       stats: stats_reducer(app.stats),
       randomiser: randomiser_reducer(app.randomiser_manager),

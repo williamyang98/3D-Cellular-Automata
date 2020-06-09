@@ -5,7 +5,7 @@ import { Provider, useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import { SimulationView } from './ui/SimulationView/SimulationView';
-import { RulesBrowser } from './ui/RulesBrowser';
+import { EntryBrowser } from './ui/EntryBrowser';
 import { ShaderMenu } from './ui/ShaderMenu';
 import { SizeChanger } from './ui/SizeChanger';
 import { Statistics } from './ui/Statistics';
@@ -52,7 +52,7 @@ function Main(props) {
   function render_right_panel() {
     return (
       <div className="col-sm-3">
-        <RulesBrowser></RulesBrowser>
+        <EntryBrowser></EntryBrowser>
       </div>
     );
   }

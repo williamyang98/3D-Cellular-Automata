@@ -5,7 +5,7 @@ import { vec3 } from 'gl-matrix';
 import { SimulationRenderer } from './SimulationRenderer';
 import { Border } from './Border';
 import { ShaderManager } from './ShaderManager';
-import { RuleBrowser } from './RuleBrowser';
+import { EntryBrowser } from './EntryBrowser';
 import { Statistics } from './Statistics';
 import { RandomiserManager } from './RandomiserManager';
 import { Toggle } from '../ui/AdjustableValues';
@@ -27,8 +27,9 @@ export class App {
 
     this.shader_manager = new ShaderManager(gl, this.camera);
     this.randomiser_manager = new RandomiserManager();
-    this.rule_browser = new RuleBrowser(this.randomiser_manager);
+    this.entry_browser = new EntryBrowser(this.randomiser_manager);
     this.stats = new Statistics(this.store);
+    this.sim = new SimulationRenderer(gl, this.camera, this.shader_manager, this.entry_browser, this.randomiser_manager, this.stats);
 
     let x = 100;
     this.set_size(vec3.fromValues(x, x, x));
@@ -37,18 +38,16 @@ export class App {
     this.show_render = new Toggle(true);
 
     // select amoeba with layer colouring
-    this.rule_browser.select_entry(2);
+    this.entry_browser.select(2);
     this.shader_manager.update_params({colouring: 2});
-    this.sim.randomise();
+    // this.sim.randomise();
   }
 
   set_size(size) {
     let gl = this.gl;
-
     this.size = size;
-
-    this.shader_manager.set_size(this.size);
-    this.sim = new SimulationRenderer(gl, this.size, this.camera, this.shader_manager, this.rule_browser, this.randomiser_manager, this.stats);
+    this.sim.set_size(size);
+    this.shader_manager.set_size(size);
     this.border = new Border(gl, this.size, this.renderer, this.camera);
 
     this.camera.model_translation = vec3.create();
