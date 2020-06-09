@@ -70,14 +70,15 @@ export class Engine {
 
     loop() {
         const dt = 15;
-        if (this.grid_available && (this.running || this.requested_step)) {
-            this.calculate_frame();
-            this.requested_step = false;
-        }
 
         for (let key in this.tasks) {
             let task = this.tasks[key];
             if (task.queued) task.callback();
+        }
+
+        if (this.grid_available && (this.running || this.requested_step)) {
+            this.calculate_frame();
+            this.requested_step = false;
         }
 
         setTimeout(() => this.loop(), dt);
