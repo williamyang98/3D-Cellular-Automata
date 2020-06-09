@@ -2,16 +2,16 @@ import React from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 
-export function RulesBrowser() {
-  const browser = useSelector(state => state.rule_browser);
-  const selected_entry = useSelector(state => state.rule_browser.selected_entry);
+export function EntryBrowser() {
   const dispatch = useDispatch();
+  const browser = useSelector(state => state.entry_browser);
+  const current_index = useSelector(state => state.entry_browser.current_index);
 
   function render_entry(entry, index) {
-    let selected = index === selected_entry;
+    let selected = index === current_index;
     let class_name = selected ? 'active' : '';
     return (
-      <li className={"list-group-item "+class_name} key={index} onClick={() => dispatch({type:'rule.select', value:index})}>
+      <li className={"list-group-item "+class_name} key={index} onClick={() => dispatch({type:'entry.select', value:index})}>
         <div>Name: {entry.name}</div>
         <div>Rule: {entry.description}</div>
       </li>
