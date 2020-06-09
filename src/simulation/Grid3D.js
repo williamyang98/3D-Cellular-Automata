@@ -1,28 +1,53 @@
 export class Grid3D {
-    constructor(shape) {
-        this.shape = shape;
-        this.count = shape[0] * shape[1] * shape[2];
+    static Create(shape) {
+        let sk = {}
+        sk.shape = shape;
+        sk.count = shape[0] * shape[1] * shape[2];
 
-        this.XY = this.shape[0]*this.shape[1];
-        this.X = this.shape[0];
+        sk.XY = shape[0]*shape[1];
+        sk.X = shape[0];
 
-        this.cells = new Float32Array(this.count);
-        this.cells_buffer = new Float32Array(this.count);
-        this.neighbours = new Uint8Array(this.count);
-        this.should_update = new Uint8Array(this.count);
+        sk.cells = new Uint8Array(sk.count);
+        sk.cells_buffer = new Uint8Array(sk.count);
+        sk.neighbours = new Uint8Array(sk.count);
+        sk.updates = new Uint8Array(sk.count);
+        sk.updates_buffer = new Uint8Array(sk.count);
 
-        this.transferables = [
-            this.cells.buffer,
-            this.cells_buffer.buffer,
-            this.neighbours.buffer,
-            this.should_update.buffer,
+        sk.transferables = [
+            sk.cells.buffer,
+            sk.cells_buffer.buffer,
+            sk.neighbours.buffer,
+            sk.updates.buffer,
+            sk.updates_buffer.buffer,
         ];
+
+        return new Grid3D(sk);
     }
 
-    swap_buffer() {
+    constructor(sk) {
+        this.shape = sk.shape;
+        this.count = sk.count;
+
+        this.XY = sk.XY;
+        this.X = sk.X;
+
+        this.cells = sk.cells
+        this.cells_buffer = sk.cells_buffer;
+        this.updates = sk.updates;
+        this.updates_buffer = sk.updates_buffer;
+        this.neighbours = sk.neighbours;
+
+        this.transferables = sk.transferables;
+    }
+
+    swap_buffers() {
         let tmp = this.cells;
         this.cells = this.cells_buffer;
         this.cells_buffer = tmp;
+
+        tmp = this.updates;
+        this.updates = this.updates_buffer;
+        this.updates_buffer = tmp;
     }
 
     xyz_to_i(x, y, z) {
