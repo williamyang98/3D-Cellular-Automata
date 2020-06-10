@@ -59,6 +59,7 @@ function create_program(gl, vertex_shader_src, fragment_shader_src) {
   gl.compileShader(fragment_shader);
   if (!gl.getShaderParameter(fragment_shader, gl.COMPILE_STATUS)) {
     console.error(gl.getShaderInfoLog(fragment_shader));
+    console.error(prepend_line_numbers(fragment_shader_src));
     throw new Error('Unable to compile fragment shader');
   }
 
@@ -68,7 +69,6 @@ function create_program(gl, vertex_shader_src, fragment_shader_src) {
   gl.linkProgram(program);
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
     console.error(gl.getProgramInfoLog(program));
-    console.error(prepend_line_numbers(fragment_shader_src));
     throw new Error('Unable to construct shader program');
   }
 
