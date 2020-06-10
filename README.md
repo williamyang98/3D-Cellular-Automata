@@ -31,7 +31,7 @@ A more detailed explanation can be found [here](https://softologyblog.wordpress.
    - Seed crystal places a blob in the middle with radius as a fraction of maximum radius.
 5. To change how the world is rendered, you can change the parameters in the graphics panel.
    - Renderer can be selected from volume, point, voxel
-   - Volume is the fastest but worst quality ***(Also doesn't support zooming inside the box)***
+   - Volume is the fastest but worst quality 
    - Point is slower and has decent quality 
    - Voxel is the slowest and has the best quality (Very intensive)
    - To speed up the simulation, you can disable rendering (show render), and re-enable it later
