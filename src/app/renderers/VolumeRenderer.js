@@ -46,6 +46,16 @@ export class VolumeRenderer extends Renderer {
 
     on_render() {
         let gl = this.gl;
+        gl.enable(gl.CULL_FACE);
+        // perform culling check depending on whether camera is inside the viewing box
+        let size = this.props.size.map(n => Math.abs(n/2));
+        let position = this.props.camera.view_position.map(Math.abs);
+        if (position[0] < size[0] && position[1] < size[1] && position[2] < size[2]) {
+            gl.cullFace(gl.FRONT);
+        } else {
+            gl.cullFace(gl.BACK);
+        }
+
         gl.drawElements(gl.TRIANGLES, this.ibo.count, gl.UNSIGNED_INT, 0);
     }
 }
