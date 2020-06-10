@@ -102,6 +102,8 @@ export class VoxelRenderer extends Renderer {
         let gl = this.gl;
         let size = this.props.size;
         let total_cells = size[0]*size[1]*size[2];
+        gl.enable(gl.CULL_FACE);
+        gl.cullFace(gl.BACK);
         gl.drawElementsInstanced(gl.TRIANGLES, this.ibo.count, gl.UNSIGNED_INT, this.index_data, total_cells); 
     }
 }
