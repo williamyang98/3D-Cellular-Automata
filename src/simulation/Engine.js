@@ -85,7 +85,6 @@ export class Engine {
 
     set_shape(shape) {
         this.grid = Grid3D.Create(shape);
-        this.unprocessed_blocks.clear();
         this.total_steps = 0;
         this.notify({total_steps: this.total_steps, total_blocks: 0, completed_blocks: 0, frame_time: 0});
         this.completed_frame = true;
