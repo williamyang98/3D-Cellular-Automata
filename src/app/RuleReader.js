@@ -1,4 +1,4 @@
-import { RuleSerialized, NeighbourSerialized } from "./Serialised";
+import { RuleSerialized, NeighbourSerialized } from "../simulation/Serialised";
 
 const NeighbourRules = {
   'M': new NeighbourSerialized('M', 26),

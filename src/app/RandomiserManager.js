@@ -1,4 +1,4 @@
-import { SeedCrystalSerialized, SeedCrystalAbsoluteSerialized } from "./Serialised";
+import { SeedCrystalSerialized, SeedCrystalAbsoluteSerialized } from "../simulation/Serialised";
 
 export class RandomiserManager {
     constructor() {

@@ -1,6 +1,5 @@
-import { Rule3D } from "../simulation/Rule3D";
 import { RuleReader } from './RuleReader';
-import { SeedCrystalSerialized, SeedCrystalAbsoluteSerialized } from "./Serialised";
+import { SeedCrystalSerialized, SeedCrystalAbsoluteSerialized } from "../simulation/Serialised";
 
 export class EntryBrowser {
   constructor(randomiser_manager) {
