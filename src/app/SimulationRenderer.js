@@ -26,8 +26,12 @@ export class SimulationRenderer {
     });
 
     this.entry_browser.listen_select((entry) => {
-      this.sim.set_randomiser(entry.randomiser.to_json());
-      this.sim.set_rule(entry.rule.to_json());
+      let randomiser = entry.randomiser;
+      if (randomiser) {
+        this.sim.set_randomiser(randomiser.to_json());
+      }
+      let rule = entry.rule;
+      this.sim.set_rule(rule.to_json());
     });
 
     this.sim = new CellularAutomaton3D(stats);

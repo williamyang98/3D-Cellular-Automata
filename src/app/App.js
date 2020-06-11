@@ -25,7 +25,7 @@ export class App {
 
     this.shader_manager = new ShaderManager(gl, this.camera);
     this.randomiser_manager = new RandomiserManager();
-    this.entry_browser = new EntryBrowser(this.randomiser_manager);
+    this.entry_browser = new EntryBrowser();
     this.stats = new Statistics(this.store);
     this.sim = new SimulationRenderer(gl, this.camera, this.shader_manager, this.entry_browser, this.randomiser_manager, this.stats);
 
@@ -36,7 +36,10 @@ export class App {
     this.show_render = new Toggle(true);
 
     this.entry_browser.listen_select((entry) => {
-      this.randomiser_manager.update_randomiser(entry.randomiser);
+      let randomiser = entry.randomiser;
+      if (randomiser) {
+        this.randomiser_manager.update_randomiser(randomiser);
+      }
     });
 
     // select amoeba with layer colouring
