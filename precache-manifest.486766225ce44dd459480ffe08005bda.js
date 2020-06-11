@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/3D-Cellular-Automata/c6e30ad16229c283ffae.worker.js"
   },
   {
-    "revision": "9f03a9398c1d2582504d9c0064638eae",
+    "revision": "b60565bda299d69f80d72752d92f71d1",
     "url": "/3D-Cellular-Automata/index.html"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/3D-Cellular-Automata/static/js/2.becc7354.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "a834f01120a390e58be7",
-    "url": "/3D-Cellular-Automata/static/js/main.9ae23499.chunk.js"
+    "revision": "1534d3a0fa5dc55d2d77",
+    "url": "/3D-Cellular-Automata/static/js/main.ee4da8fb.chunk.js"
   },
   {
     "revision": "49edabd49db8f4c0413b",

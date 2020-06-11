@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/3D-Cellular-Automata/static/js/main.9ae23499.chunk.js",
-    "main.js.map": "/3D-Cellular-Automata/static/js/main.9ae23499.chunk.js.map",
+    "main.js": "/3D-Cellular-Automata/static/js/main.ee4da8fb.chunk.js",
+    "main.js.map": "/3D-Cellular-Automata/static/js/main.ee4da8fb.chunk.js.map",
     "runtime-main.js": "/3D-Cellular-Automata/static/js/runtime-main.ee7eacaa.js",
     "runtime-main.js.map": "/3D-Cellular-Automata/static/js/runtime-main.ee7eacaa.js.map",
     "static/js/2.becc7354.chunk.js": "/3D-Cellular-Automata/static/js/2.becc7354.chunk.js",
@@ -9,13 +9,13 @@
     "c6e30ad16229c283ffae.worker.js": "/3D-Cellular-Automata/c6e30ad16229c283ffae.worker.js",
     "c6e30ad16229c283ffae.worker.js.map": "/3D-Cellular-Automata/c6e30ad16229c283ffae.worker.js.map",
     "index.html": "/3D-Cellular-Automata/index.html",
-    "precache-manifest.1342a4a6070e5fc06ef5f0ce503a2b74.js": "/3D-Cellular-Automata/precache-manifest.1342a4a6070e5fc06ef5f0ce503a2b74.js",
+    "precache-manifest.486766225ce44dd459480ffe08005bda.js": "/3D-Cellular-Automata/precache-manifest.486766225ce44dd459480ffe08005bda.js",
     "service-worker.js": "/3D-Cellular-Automata/service-worker.js",
     "static/js/2.becc7354.chunk.js.LICENSE.txt": "/3D-Cellular-Automata/static/js/2.becc7354.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.ee7eacaa.js",
     "static/js/2.becc7354.chunk.js",
-    "static/js/main.9ae23499.chunk.js"
+    "static/js/main.ee4da8fb.chunk.js"
   ]
 }
