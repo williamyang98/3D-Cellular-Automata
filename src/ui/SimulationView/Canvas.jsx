@@ -72,7 +72,7 @@ export class Canvas extends React.Component {
 
   render() {
     return (
-      <div className='w-100 h-100' onMouseMove={ev => this.on_mouse_move()}>
+      <div className='w-100 h-100' onMouseMove={ev => this.on_mouse_move()} onMouseDown={ev => this.on_mouse_move()}>
         <canvas 
           className="w-100 h-100" ref={this.props.canvas} 
           {...this.mouse_controller.listeners} {...this.touch_controller.listeners}></canvas>
