@@ -9,11 +9,13 @@ export function EntryBrowser() {
   const selected_browser_key = useSelector(state => state.entry_browser.current_browser_key);
   const selected_index = useSelector(state => state.entry_browser.selected_browser.current_index);
 
-  const browsers = useSelector(state => state.entry_browser.browsers);
-
   let [browser_key, set_browser_key] = useState(selected_browser_key);
 
-  const entries = browsers[browser_key].entries;
+  const browsers = useSelector(state => state.entry_browser.browsers);
+  const entries = useSelector(state => state.entry_browser.get_entries(browser_key));
+
+  let can_delete = (browser_key === 'User');
+
 
   let browser_keys = [];
   for (let key in browsers) {
@@ -34,20 +36,37 @@ export function EntryBrowser() {
   function render_entry(entry, index) {
     let selected = selected_index === index && selected_browser_key === browser_key;
     let class_name = selected ? 'active' : '';
-    function onClick() {
-      let data = {key: browser_key, index: index};
+    let data = {key: browser_key, index: index};
+
+    function select_entry(ev) {
       dispatch({type:'entry.select', value:data});
+      ev.preventDefault();
     }
+
+    function delete_entry(ev) {
+      dispatch({type:'entry.delete', value:data});
+      ev.preventDefault();
+    }
+
     return (
-      <li className={"list-group-item "+class_name} key={index} onClick={onClick}>
+      <li className={"list-group-item "+class_name} key={index} onClick={select_entry}>
         <div>Name: {entry.name}</div>
         <div>Rule: {entry.description}</div>
+        {can_delete ? <button className="btn btn-danger btn-sm" onClick={delete_entry}>Delete</button> : <div></div>}
+      </li>
+    );
+  }
+
+  function render_no_entries() {
+    return (
+      <li className="list-group-item" style={{textAlign:'center'}}>
+        <h5 className="m-0">No Entries</h5>
       </li>
     );
   }
 
 
-  const controls = (
+  const render_controls = (
     <div className="d-flex flex-row">
       {/* Add button */}
       {/* <i className={`fas fa-plus-square mr-2`}></i> */}
@@ -75,10 +94,12 @@ export function EntryBrowser() {
     <div className="card shadow mb-2">
       <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 className="m-0 font-weight-bold text-primary">Rules ({browser_key})</h6>
-        {controls}
+        {render_controls}
       </div>
       <div className="collapse show" id="collapseRulesBrowser">
-        <ul className="list-group">{rule_items}</ul>
+        <ul className="list-group">
+          {rule_items.length > 0 ? rule_items : render_no_entries()}
+        </ul>
       </div>
     </div>
   );
