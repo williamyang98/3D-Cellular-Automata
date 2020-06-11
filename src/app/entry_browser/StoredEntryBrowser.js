@@ -63,7 +63,7 @@ export class StoredEntryBrowser {
 
   purge_corrupted_ids(ids) {
     let cfg = this.db_cfg;
-    let store = this.db.transaction(cfg.store).objectStore(cfg.store);
+    let store = this.db.transaction([cfg.store], 'readwrite').objectStore(cfg.store);
     for (let id of ids) {
       let request = store.delete(id);
     }
@@ -114,16 +114,16 @@ export class StoredEntryBrowser {
     transaction.oncomplete = () => {
       this.entries.splice(idx, 1);
       this.entries = [...this.entries];
-      this.current_index = current_index;
+      // always try to figure out a viable selection before defaulting to nothing
+      this.current_index = Math.max(current_index, 0);
+      this.current_index = Math.min(this.current_index, this.entries.length-1);
+      // if no entries left, then undefined entry
       if (this.entries.length === 0) {
         this.current_index = -1;
-        return;
       }
       this.select(this.current_index);
     }
   }
-
-
 
   get selected_entry() {
     return this.entries[this.current_index];
@@ -132,6 +132,7 @@ export class StoredEntryBrowser {
   select(idx) {
     this.current_index = idx;
     if (this.current_index < 0 || this.current_index >= this.entries.length) {
+      this.notify(undefined);
       return;
     }
     let entry = this.selected_entry;
