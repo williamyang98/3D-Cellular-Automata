@@ -46,10 +46,16 @@ export class EntryBrowser {
     this.selected_browser.select(index);
   }
 
+  // wrap around stored database
+  delete_entry(index) {
+    let stored = this.browsers['User'];
+    stored.delete(index);
+  }
+
   create_entry(name, ca_string) {
     try {
       let stored = this.browsers['User'];
-      stored.create_entry(name, ca_string);
+      stored.create(name, ca_string);
       this.create_errors = undefined;
     } catch (ex) {
       this.create_errors = String(ex.message);

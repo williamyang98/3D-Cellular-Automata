@@ -26,6 +26,16 @@ export class StoredEntryBrowser {
     }
   }
 
+  listen_select(listener) {
+    this.listeners.add(listener);
+  }
+
+  notify(entry) {
+    for (let listener of this.listeners) {
+      listener(entry);
+    }
+  }
+
   on_db_load() {
     // this.add_user_entry('Test', '0-6/1,3/2/VN');
     let cfg = this.db_cfg;
@@ -36,7 +46,7 @@ export class StoredEntryBrowser {
       if (cursor) {
         let {name, ca_string, id} = cursor.value;
         try {
-          let entry = new Entry(name, ca_string);
+          let entry = new StoredEntry(name, ca_string, id);
           this.add_entry(entry);
         } catch (ex) {
           corrupted_ids.push(id);
@@ -58,8 +68,9 @@ export class StoredEntryBrowser {
     }
   }
 
-  create_entry(name, ca_string) {
-    let entry = new Entry(name, ca_string);
+  create(name, ca_string) {
+    // id is undefined, add in later
+    let entry = new StoredEntry(name, ca_string);
 
     let db = this.db;
     if (!db) {
@@ -70,7 +81,10 @@ export class StoredEntryBrowser {
     let transaction = db.transaction(['entries_os'], 'readwrite');
     let store = transaction.objectStore('entries_os');
     let request = store.add(data);
-    request.onsuccess = () => {
+    request.onsuccess = (ev) => {
+      let id = ev.target.result;
+      console.log(id);
+      entry.id = id;
       this.add_entry(entry);
     }
     request.onerror = () => {
@@ -78,15 +92,34 @@ export class StoredEntryBrowser {
     }
   }
 
-  listen_select(listener) {
-    this.listeners.add(listener);
-  }
+  delete(idx) {
+    // map expected current index after removal
+    let current_index = this.current_index;
+    if (this.current_index === idx) {
+      current_index = 0;
+    } else if (this.current_index > idx) {
+      current_index = this.current_index-1;
+    } else {
+      current_index = this.current_index;
+    }
+    // remove from db
+    let entry = this.entries[idx];
+    let cfg = this.db_cfg;
+    let store = this.db.transaction(cfg.store).objectStore(cfg.store);
+    let request = store.delete(entry.id);
 
-  notify(entry) {
-    for (let listener of this.listeners) {
-      listener(entry);
+    // if request was successful, then modify entries array inplace
+    // send notification
+    request.oncomplete = () => {
+      this.entries = this.entries.splice(idx, 1);
+      if (this.entries.length === 0) {
+        return;
+      }
+      this.notify(current_index);
     }
   }
+
+
 
   get selected_entry() {
     return this.entries[this.current_index];
@@ -99,7 +132,13 @@ export class StoredEntryBrowser {
   }
 
   add_entry(entry) {
-    this.entries = [...this.entries, entry]; // dont mutate, create a new instance
-    // this.entries.push(entry);
+    this.entries = [...this.entries, entry]; 
+  }
+}
+
+class StoredEntry extends Entry {
+  constructor(name, ca_string, id) {
+    super(name, ca_string);
+    this.id = id;
   }
 }
