@@ -13,7 +13,15 @@ export function EntryEditor() {
   }
 
   let err_fmt = error ? 'is-invalid' : '';
-  
+ 
+  function render_errors(str) {
+    let lines = String(str).split('\n');
+    return (
+      <div className="invalid-feedback">
+        {lines.map((line, i) => <div key={i}>{line}</div>)}
+      </div>
+    );
+  }
 
   return (
     <form className="px-4 pb-4" onSubmit={on_submit}>
@@ -29,7 +37,7 @@ export function EntryEditor() {
         <label className="col-sm col-form-label">Rule</label>
         <div className="col-sm-10">
           <input type="text" className={`form-control form-control-sm ${err_fmt}`} id="ca_string" value={ca_string} onChange={ev => set_ca_string(ev.target.value)}/>
-          {error ? <div className="invalid-feedback">{error}</div> : <div></div>}
+          {error ? render_errors(error) : <div></div>}
         </div>
       </div>
       <button type="submit" className="btn btn-primary btn-sm" style={{float:'right'}}>Add</button>
