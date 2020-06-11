@@ -11,7 +11,6 @@ export class EntryBrowser {
     };
 
     this.current_browser_key = 'System';
-    this.selected_browser_key = 'System';
     this.create_errors = undefined;
 
     for (let key in this.browsers) {
@@ -33,23 +32,18 @@ export class EntryBrowser {
   }
 
   get selected_entry() {
-    let browser = this.browsers[this.selected_browser_key];
-    let entry = browser.selected_entry;
+    let entry = this.selected_browser.selected_entry;
     return entry;
   }
 
-  get current_browser() {
+  get selected_browser() {
     let browser = this.browsers[this.current_browser_key];
     return browser;
   }
 
-  select_browser(key) {
+  select(key, index) {
     this.current_browser_key = key;
-  }
-
-  select(idx) {
-    this.selected_browser_key = `${this.current_browser_key}`;
-    this.current_browser.select(idx);
+    this.selected_browser.select(index);
   }
 
   create_entry(name, ca_string) {

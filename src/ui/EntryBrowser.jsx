@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { EntryEditor } from './EntryEditor';
 
 export function EntryBrowser() {
   const dispatch = useDispatch();
-  const browser = useSelector(state => state.entry_browser);
 
-  const current_browser_key = useSelector(state => state.entry_browser.current_browser_key);
-  const selected_browser_key = useSelector(state => state.entry_browser.selected_browser_key);
+  const selected_browser_key = useSelector(state => state.entry_browser.current_browser_key);
+  const selected_index = useSelector(state => state.entry_browser.selected_browser.current_index);
+
   const browsers = useSelector(state => state.entry_browser.browsers);
-  const entries = useSelector(state => state.entry_browser.current_browser.entries);
-  const current_index = useSelector(state => state.entry_browser.current_browser.current_index);
+
+  let [browser_key, set_browser_key] = useState(selected_browser_key);
+
+  const entries = browsers[browser_key].entries;
 
   let browser_keys = [];
   for (let key in browsers) {
@@ -22,7 +24,7 @@ export function EntryBrowser() {
 
   function render_browser_select(key, index) {
     function onClick() {
-      dispatch({type:'entry.select_browser', value:key});
+      set_browser_key(key);
     }
     return (
       <a className="dropdown-item" href="#" key={index} onClick={onClick}>{key}</a>
@@ -30,10 +32,14 @@ export function EntryBrowser() {
   }
 
   function render_entry(entry, index) {
-    let selected = index === current_index && current_browser_key === selected_browser_key;
+    let selected = selected_index === index && selected_browser_key === browser_key;
     let class_name = selected ? 'active' : '';
+    function onClick() {
+      let data = {key: browser_key, index: index};
+      dispatch({type:'entry.select', value:data});
+    }
     return (
-      <li className={"list-group-item "+class_name} key={index} onClick={() => dispatch({type:'entry.select', value:index})}>
+      <li className={"list-group-item "+class_name} key={index} onClick={onClick}>
         <div>Name: {entry.name}</div>
         <div>Rule: {entry.description}</div>
       </li>
@@ -68,7 +74,7 @@ export function EntryBrowser() {
   return (
     <div className="card shadow mb-2">
       <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 className="m-0 font-weight-bold text-primary">Rules ({current_browser_key})</h6>
+        <h6 className="m-0 font-weight-bold text-primary">Rules ({browser_key})</h6>
         {controls}
       </div>
       <div className="collapse show" id="collapseRulesBrowser">

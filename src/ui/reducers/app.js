@@ -45,16 +45,22 @@ export function entry_reducer(entry_browser) {
     const reducer = (browser=entry_browser, action) => {
         switch (action.type) {
             case 'entry.select':
-                let index = action.value;
-                browser.select(index);
+                {
+                    let {key, index} = action.value;
+                    browser.select(key, index);
+                }
                 break;
             case 'entry.select_browser':
-                let key = action.value;
-                browser.select_browser(key);
+                {
+                    let key = action.value;
+                    browser.select_browser(key);
+                }
                 break;
             case 'entry.create':
-                let {name, ca_string} = action.value;
-                browser.create_entry(name, ca_string);
+                {
+                    let {name, ca_string} = action.value;
+                    browser.create_entry(name, ca_string);
+                }
                 break;
             default: 
                 break;
