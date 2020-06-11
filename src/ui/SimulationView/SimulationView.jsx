@@ -11,7 +11,7 @@ export function SimulationView(props) {
   const fullscreen = useSelector(store => store.gui.fullscreen);
   const focused = useSelector(store => store.gui.focused);
 
-  let float_controls = (fullscreen && !focused) ? 'd-none' : '';
+  let float_controls = (fullscreen && !focused) ? 'fade' : '';
 
   function render_float_controls() {
     return (
