@@ -24,6 +24,8 @@ export class StoredEntryBrowser {
       store.createIndex('name', 'name', {unique: false});
       store.createIndex('ca_string', 'ca_string', {unique: false});
     }
+
+    this.current_index = -1;
   }
 
   listen_select(listener) {
@@ -94,26 +96,30 @@ export class StoredEntryBrowser {
     // map expected current index after removal
     let current_index = this.current_index;
     if (this.current_index === idx) {
-      current_index = 0;
+      current_index = Math.max(this.current_index, 0);
     } else if (this.current_index > idx) {
-      current_index = this.current_index-1;
+      current_index = Math.min(this.current_index, this.entries.length-2);
     } else {
       current_index = this.current_index;
     }
     // remove from db
     let entry = this.entries[idx];
     let cfg = this.db_cfg;
-    let store = this.db.transaction(cfg.store).objectStore(cfg.store);
+    let transaction = this.db.transaction([cfg.store], 'readwrite');
+    let store = transaction.objectStore(cfg.store);
     let request = store.delete(entry.id);
 
     // if request was successful, then modify entries array inplace
     // send notification
-    request.oncomplete = () => {
-      this.entries = this.entries.splice(idx, 1);
+    transaction.oncomplete = () => {
+      this.entries.splice(idx, 1);
+      this.entries = [...this.entries];
+      this.current_index = current_index;
       if (this.entries.length === 0) {
+        this.current_index = -1;
         return;
       }
-      this.notify(current_index);
+      this.select(this.current_index);
     }
   }
 
@@ -125,6 +131,9 @@ export class StoredEntryBrowser {
 
   select(idx) {
     this.current_index = idx;
+    if (this.current_index < 0 || this.current_index >= this.entries.length) {
+      return;
+    }
     let entry = this.selected_entry;
     this.notify(entry);
   }

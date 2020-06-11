@@ -41,18 +41,25 @@ export class EntryBrowser {
     return browser;
   }
 
+  get_entries(key) {
+    return this.browsers[key].entries;
+  }
+
   select(key, index) {
     this.current_browser_key = key;
     this.selected_browser.select(index);
   }
 
   // wrap around stored database
-  delete_entry(index) {
+  delete(key, index) {
+    if (key !== 'User') {
+      return;
+    }
     let stored = this.browsers['User'];
     stored.delete(index);
   }
 
-  create_entry(name, ca_string) {
+  create(name, ca_string) {
     try {
       let stored = this.browsers['User'];
       stored.create(name, ca_string);

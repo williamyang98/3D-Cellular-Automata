@@ -50,18 +50,17 @@ export function entry_reducer(entry_browser) {
                     browser.select(key, index);
                 }
                 break;
-            case 'entry.select_browser':
-                {
-                    let key = action.value;
-                    browser.select_browser(key);
-                }
-                break;
             case 'entry.create':
                 {
                     let {name, ca_string} = action.value;
-                    browser.create_entry(name, ca_string);
+                    browser.create(name, ca_string);
                 }
                 break;
+            case 'entry.delete':
+                {
+                    let {key, index} = action.value;
+                    browser.delete(key, index);
+                }
             default: 
                 break;
         }
