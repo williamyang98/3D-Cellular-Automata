@@ -71,8 +71,15 @@ export class Canvas extends React.Component {
   }
 
   render() {
+    const listener = ev => this.on_mouse_move();
+    const hooks = ['onMouseMove', 'onMouseDown', 'onMouseUp', 'onTouchMove', 'onTouchStart', 'onTouchEnd'];
+    let listeners = {};
+    for (let hook of hooks) {
+      listeners[hook] = listener;
+    }
+    
     return (
-      <div className='w-100 h-100' onMouseMove={ev => this.on_mouse_move()} onMouseDown={ev => this.on_mouse_move()}>
+      <div className='w-100 h-100' {...listeners}>
         <canvas 
           className="w-100 h-100" ref={this.props.canvas} 
           {...this.mouse_controller.listeners} {...this.touch_controller.listeners}></canvas>
