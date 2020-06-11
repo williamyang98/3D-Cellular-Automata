@@ -14,8 +14,6 @@ export class Engine {
         this.grid_available = true;
         this.local_rerender = false;
 
-        this.unprocessed_blocks = new Set();
-
         this.tasks = {
             clear:     {callback: () => this.clear(), queued: false},
             randomise: {callback: () => this.randomise(), queued: false},
@@ -47,13 +45,10 @@ export class Engine {
         this.completed_frame = false;
         this.grid_available = false;
 
-        let unprocessed_blocks = this.unprocessed_blocks;
-        this.unprocessed_blocks = new Set();
-
         let local = this.local_rerender;
         this.local_rerender = true;
 
-        return {grid:this.grid, unprocessed_blocks, local};
+        return {grid:this.grid, local};
     }
 
     start() {
@@ -119,15 +114,15 @@ export class Engine {
         }
         this.tasks.clear.queued = false;
 
-        let {cells, cells_buffer, updates, updates_buffer, neighbours} = this.grid;
+        let {cells, cells_buffer, neighbours, updates, updates_buffer, render_updates} = this.grid;
         let count = this.grid.count;
         cells.fill(0, 0, count);
         cells_buffer.fill(0, 0, count);
         neighbours.fill(0, 0, count);
         updates.clear();
         updates_buffer.clear();
+        render_updates.clear();
 
-        this.unprocessed_blocks.clear();
         this.total_steps = 0;
         this.notify({total_steps: this.total_steps, total_blocks: 0, completed_blocks: 0, frame_time: 0});
         this.completed_frame = true;
@@ -145,9 +140,6 @@ export class Engine {
 
         this.randomiser.randomise(this.grid, this.rule);
         let total_blocks = this.grid.updates.size;
-        for (let i of this.grid.updates) {
-            this.unprocessed_blocks.add(i);
-        }
 
         this.notify({total_blocks, completed_blocks:0});
         this.completed_frame = true;
@@ -162,8 +154,7 @@ export class Engine {
 
         this.grid_available = false;
 
-        let {cells, cells_buffer, updates, updates_buffer, neighbours} = grid;
-        let updated_blocks = this.unprocessed_blocks;
+        let {cells, cells_buffer, neighbours, updates, updates_buffer, render_updates} = grid;
 
         let total_blocks = updates.size;
         let completed_blocks = 0;
@@ -190,7 +181,6 @@ export class Engine {
             } else {
                 rule.on_location_update(x, y, z, grid, updates_buffer);
             }
-            updated_blocks.add(i);
 
             completed_blocks += 1;
             if (completed_blocks % 10000 === 0) {

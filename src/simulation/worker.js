@@ -33,7 +33,7 @@ onmessage = (ev) => {
 function send_grid() {
     let res = engine.get_frame();
     if (!res) return;
-    let {grid, unprocessed_blocks, local} = res;
-    postMessage({action:'grid', grid, unprocessed_blocks, local}, grid.transferables);
+    let {grid, local} = res;
+    postMessage({action:'grid', grid, local}, grid.transferables);
 }
 

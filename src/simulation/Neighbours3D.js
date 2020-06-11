@@ -29,6 +29,7 @@ class MooreNeighbour {
     }
 
     on_location_update(x, y, z, grid, updates) {
+        let render_updates = grid.render_updates;
         for (let xoff = -1; xoff <= 1; xoff++) {
             for (let yoff = -1; yoff <= 1; yoff++) {
                 for (let zoff = -1; zoff <= 1; zoff++) {
@@ -38,6 +39,7 @@ class MooreNeighbour {
 
                     const i = grid.xyz_to_i(xn, yn, zn);
                     updates.add(i);
+                    render_updates.add(i);
                     // updates[i] = true;
                 }
             }
@@ -79,7 +81,9 @@ class VonNeumanNeighbour {
 
     on_location_update(x, y, z, grid, updates) {
         let i = grid.xyz_to_i(x, y, z);
+        let render_updates = grid.render_updates;
         updates.add(i);
+        render_updates.add(i);
         // updates[i] = true;
 
         for (let off of this.offsets) {
@@ -89,6 +93,7 @@ class VonNeumanNeighbour {
 
             i = grid.xyz_to_i(xn, yn, zn);
             updates.add(i);
+            render_updates.add(i);
             // updates[i] = true;
         }
     }

@@ -137,10 +137,12 @@ export class SimulationRenderer {
     this.sim.step();
   }
 
-  update_vertex_buffer(grid, unprocessed_blocks, local=false) {
+  update_vertex_buffer(grid, local=false) {
     let gl = this.gl;
 
-    let items = local ? unprocessed_blocks : range(0, grid.count);
+    let items = local ? grid.render_updates : range(0, grid.count);
+    // once updates all rendered, clear it
+    if (local) grid.render_updates = new Set();
     let rule = this.entry_browser.selected_entry.rule;
     let max_neighbours = rule.neighbour.max;
 

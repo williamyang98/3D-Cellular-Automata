@@ -12,6 +12,7 @@ export class Grid3D {
         sk.neighbours = new Uint8Array(sk.count);
         sk.updates = new Set();
         sk.updates_buffer = new Set();
+        sk.render_updates = new Set();
         // sk.updates = new Uint8Array(sk.count);
         // sk.updates_buffer = new Uint8Array(sk.count);
 
@@ -38,6 +39,7 @@ export class Grid3D {
         this.neighbours = sk.neighbours;
         this.updates = sk.updates;
         this.updates_buffer = sk.updates_buffer;
+        this.render_updates = sk.render_updates;
 
         this.transferables = sk.transferables;
     }

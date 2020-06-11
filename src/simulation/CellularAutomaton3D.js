@@ -22,7 +22,7 @@ export class CellularAutomaton3D {
                     this.stats.recieve(msg.data);
                     return;
                 case 'grid':
-                    this.notify(msg.grid, msg.unprocessed_blocks, msg.local);
+                    this.notify(msg.grid, msg.local);
                 default:
                     break;
             }
@@ -31,9 +31,9 @@ export class CellularAutomaton3D {
         this.listeners = new Set();
     }
 
-    notify(grid, unprocessed_blocks, local) {
+    notify(grid, local) {
         for (let listener of this.listeners) {
-            listener(grid, unprocessed_blocks, local);
+            listener(grid, local);
         }
         this.set_grid(grid);
     }
