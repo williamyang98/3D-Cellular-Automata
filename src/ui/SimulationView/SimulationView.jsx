@@ -19,17 +19,17 @@ export function SimulationView(props) {
 
   function render_fullscreen_button() {
     return (
-      <div style={{zIndex:2, position:'absolute', top:'3.5rem', right:'1.5rem'}}>
+      <div style={{zIndex:2, position:'absolute', top:'1.5rem', right:'1.5rem'}}>
         <FullScreenButton></FullScreenButton>
       </div>
     );
   }
 
   return (
-    <div className="card shadow" style={{height:'calc(100vh - 1.0rem)'}}>
-      <div className="card-header">
+    <div className="card shadow h-100">
+      {/* <div className="card-header">
         <h6 className="m-0 font-weight-bold text-primary">Render</h6>
-      </div>
+      </div> */}
       <Canvas store={store} canvas={props.canvas}></Canvas>
       {app ? render_float_controls() : <div></div>}
       {render_fullscreen_button()}

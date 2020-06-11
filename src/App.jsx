@@ -40,7 +40,7 @@ function Main(props) {
   
   function render_left_panel() {
     return (
-      <div className='col-sm-3'>
+      <div className='col-sm-3 overflow-auto vh-100'>
         <SizeChanger></SizeChanger>
         <ShaderMenu></ShaderMenu>
         <RandomiserMenu></RandomiserMenu>
@@ -51,7 +51,7 @@ function Main(props) {
 
   function render_right_panel() {
     return (
-      <div className="col-sm-3">
+      <div className="col-sm-3 overflow-auto vh-100">
         <EntryBrowser></EntryBrowser>
       </div>
     );
@@ -63,7 +63,7 @@ function Main(props) {
     <div className="container-fluid">
       <div className="row">
         {app && !fullscreen ? render_left_panel() : <div></div>}
-        <div className="col">{canvas}</div>
+        <div className="col vh-100">{canvas}</div>
         {app && !fullscreen ? render_right_panel() : <div></div>}
       </div>
     </div>
