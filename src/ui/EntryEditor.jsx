@@ -3,14 +3,17 @@ import { useSelector, useDispatch } from 'react-redux';
 
 export function EntryEditor() {
   const dispatch = useDispatch();  
+  const error = useSelector(store => store.entry_browser.create_errors);
   const [name, set_name] = useState('');
   const [ca_string, set_ca_string] = useState('');
 
   function on_submit(ev) {
-    console.log(name, ca_string);
     dispatch({type:'entry.create', value:{name, ca_string}});
     ev.preventDefault();
   }
+
+  let err_fmt = error ? 'is-invalid' : '';
+  
 
   return (
     <form className="px-4 pb-4" onSubmit={on_submit}>
@@ -25,7 +28,8 @@ export function EntryEditor() {
       <div className="form-group row mb-2">
         <label className="col-sm col-form-label">Rule</label>
         <div className="col-sm-10">
-          <input type="text" className="form-control form-control-sm" id="ca_string" value={ca_string} onChange={ev => set_ca_string(ev.target.value)}/>
+          <input type="text" className={`form-control form-control-sm ${err_fmt}`} id="ca_string" value={ca_string} onChange={ev => set_ca_string(ev.target.value)}/>
+          {error ? <div className="invalid-feedback">{error}</div> : <div></div>}
         </div>
       </div>
       <button type="submit" className="btn btn-primary btn-sm" style={{float:'right'}}>Add</button>
