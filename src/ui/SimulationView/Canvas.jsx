@@ -24,11 +24,34 @@ export class Canvas extends React.Component {
     let camera = app.camera;
     this.mouse_controller.camera = camera;
     this.touch_controller.camera = camera;
+    this.focus_timeout = this.create_focus_timeout();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.focus_timeout);
+  }
+
+  create_focus_timeout(delay=3000) {
+    let id = setTimeout(() => this.change_focus(false), delay);
+    return id;
+  }
+
+  // mouse moves, update focus
+  on_mouse_move() {
+    clearTimeout(this.focus_timeout);
+    this.focus_timeout = this.create_focus_timeout();
+    this.change_focus(true);
+  }
+
+  change_focus(focused) {
+    let store = this.props.store;
+    store.dispatch({type:'gui.focused', value:focused});
   }
 
   create_app(gl) {
     let store = this.props.store;
     let app = store.getState().app;
+    let gui = store.getState().gui;
     if (app) {
       return app;
     }
@@ -40,7 +63,7 @@ export class Canvas extends React.Component {
       shader_manager: shader_reducer(app.shader_manager),
       stats: stats_reducer(app.stats),
       randomiser: randomiser_reducer(app.randomiser_manager),
-      gui: gui_reducer(store.gui),
+      gui: gui_reducer(gui),
     });
     store.replaceReducer(reducers);
     app.run();
@@ -49,9 +72,11 @@ export class Canvas extends React.Component {
 
   render() {
     return (
-      <canvas 
-        className="w-100 h-100" ref={this.props.canvas} 
-        {...this.mouse_controller.listeners} {...this.touch_controller.listeners}></canvas>
+      <div className='w-100 h-100' onMouseMove={ev => this.on_mouse_move()}>
+        <canvas 
+          className="w-100 h-100" ref={this.props.canvas} 
+          {...this.mouse_controller.listeners} {...this.touch_controller.listeners}></canvas>
+      </div>
     );
   }
 }
