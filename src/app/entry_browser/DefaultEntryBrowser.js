@@ -8,7 +8,8 @@ export class DefaultEntryBrowser {
     // our default entries
     this.add_entry(new Entry('445',       '4/4/5/M',                new SeedCrystalSerialized(0.05, 0.5)));
     this.add_entry(new Entry('678 678',   '6-8/6-8/3/M',            new SeedCrystalSerialized(0.3)));
-    this.add_entry(new Entry('Amoeba',    '9-26/5-7,12-13,15/5/M',  new SeedCrystalAbsoluteSerialized(0.3, 5)));
+    this.add_entry(new Entry('Amoeba-1',  '9-26/5-7,12-13,15/5/M',  new SeedCrystalAbsoluteSerialized(0.3, 5)));
+    this.add_entry(new Entry('Amoeba-2',  '9-26/5-7,12-13,15/15/M',  new SeedCrystalAbsoluteSerialized(0.3, 5)));
     this.add_entry(new Entry('Builder 1', '2,6,9/4,6,8-9/10/M',     new SeedCrystalAbsoluteSerialized(0.35, 7)));
     this.add_entry(new Entry('Builder 2', '6,9/4,6,8-9/10/M',       new SeedCrystalAbsoluteSerialized(0.35, 7)));
     this.add_entry(new Entry('Clouds 1',  '13-26/13-14,17-19/2/M',  new SeedCrystalSerialized(0.5, 0.5)));
