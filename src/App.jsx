@@ -60,10 +60,10 @@ function Main(props) {
   const canvas = <SimulationView canvas={props.canvas}></SimulationView>;
 
   return (
-    <div className="container-fluid">
-      <div className="row">
+    <div className="vh-100 vw-100">
+      <div className="row px-0 mx-0">
         {app && !fullscreen ? render_left_panel() : <div></div>}
-        <div className="col vh-100">{canvas}</div>
+        <div className="col vh-100 mx-0 px-0">{canvas}</div>
         {app && !fullscreen ? render_right_panel() : <div></div>}
       </div>
     </div>
