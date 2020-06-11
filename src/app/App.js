@@ -5,7 +5,7 @@ import { vec3 } from 'gl-matrix';
 import { SimulationRenderer } from './SimulationRenderer';
 import { Border } from './Border';
 import { ShaderManager } from './ShaderManager';
-import { EntryBrowser } from './EntryBrowser';
+import { EntryBrowser } from './entry_browser/EntryBrowser';
 import { Statistics } from './Statistics';
 import { RandomiserManager } from './RandomiserManager';
 import { Toggle } from '../ui/AdjustableValues';
