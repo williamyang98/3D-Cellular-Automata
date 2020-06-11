@@ -189,8 +189,8 @@ export class Engine {
                 remove_stack.push(i);
             } else {
                 rule.on_location_update(x, y, z, grid, updates_buffer);
-                updated_blocks.add(i);
             }
+            updated_blocks.add(i);
 
             completed_blocks += 1;
             if (completed_blocks % 10000 === 0) {
