@@ -60,7 +60,6 @@ export class StoredEntryBrowser {
   }
 
   purge_corrupted_ids(ids) {
-    console.log('Purging ids:', ids);
     let cfg = this.db_cfg;
     let store = this.db.transaction(cfg.store).objectStore(cfg.store);
     for (let id of ids) {
@@ -83,7 +82,6 @@ export class StoredEntryBrowser {
     let request = store.add(data);
     request.onsuccess = (ev) => {
       let id = ev.target.result;
-      console.log(id);
       entry.id = id;
       this.add_entry(entry);
     }
