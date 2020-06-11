@@ -17,6 +17,7 @@ export class Engine {
         this.tasks = {
             clear:     {callback: () => this.clear(), queued: false},
             randomise: {callback: () => this.randomise(), queued: false},
+            set_shape: {callback: () => {}, queued: false},
         }
     }
 
@@ -84,6 +85,15 @@ export class Engine {
     }
 
     set_shape(shape) {
+        // if grid is still being used, then queue it
+        if (this.grid && !this.grid_available) {
+            this.tasks.set_shape.queued = true;
+            this.tasks.set_shape.callback = () => this.set_shape(shape);
+            return;
+        }
+        this.tasks.set_shape.queued = false;
+        this.tasks.set_shape.callback = () => {};
+
         this.grid = Grid3D.Create(shape);
         this.total_steps = 0;
         this.notify({total_steps: this.total_steps, total_blocks: 0, completed_blocks: 0, frame_time: 0});
