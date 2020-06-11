@@ -13,12 +13,17 @@ export class EntryBrowser {
     this.current_browser_key = 'System';
     this.create_errors = undefined;
 
-    for (let key in this.browsers) {
-      let browser = this.browsers[key];
-      browser.listen_select((entry) => {
+    this.browsers['System'].listen_select((entry) => {
+      this.notify(entry);
+    })
+
+    this.browsers['User'].listen_select((entry) => {
+      if (entry === undefined) {
+        this.select('System', 0);  
+      } else {
         this.notify(entry);
-      });
-    }
+      }
+    })
   }
 
   listen_select(listener) {
