@@ -5,7 +5,7 @@ import { Provider, useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import { SimulationView } from './ui/SimulationView/SimulationView';
-import { EntryBrowser } from './ui/EntryBrowser';
+import { EntryBrowser } from './ui/EntryBrowser/EntryBrowser';
 import { ShaderMenu } from './ui/ShaderMenu';
 import { SizeChanger } from './ui/SizeChanger';
 import { Statistics } from './ui/Statistics';
