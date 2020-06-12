@@ -12,6 +12,7 @@ export class EntryBrowser {
 
     this.current_browser_key = 'System';
     this.create_errors = undefined;
+    this.edit_errors = undefined;
 
     this.browsers['System'].listen_select((entry) => {
       this.notify(entry);
@@ -71,6 +72,16 @@ export class EntryBrowser {
       this.create_errors = undefined;
     } catch (ex) {
       this.create_errors = String(ex.message);
+    }
+  }
+
+  edit(index, name, ca_string) {
+    try {
+      let stored = this.browsers['User'];
+      stored.edit(index, name, ca_string);
+      this.edit_errors = undefined;
+    } catch (ex) {
+      this.edit_errors = String(ex.message);
     }
   }
 }

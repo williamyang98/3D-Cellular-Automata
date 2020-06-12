@@ -69,18 +69,46 @@ export class StoredEntryBrowser {
     }
   }
 
+  edit(index, name, ca_string) {
+    let original = this.entries[index];
+    if (!original) return;
+
+    let replace = new StoredEntry(name, ca_string, original.id);
+
+    let db = this.db;
+    if (!db) {
+      console.error(`${cfg.store} failed to load`);
+      return;
+    } 
+    let cfg = this.db_cfg;
+
+    let data = {id: original.id, name, ca_string};
+    let transaction = db.transaction([cfg.store], 'readwrite');
+    let store = transaction.objectStore(cfg.store);
+    let request = store.put(data, data.id);
+    request.onsuccess = (ev) => {
+      let entries = [...this.entries];
+      entries[index] = replace;
+      this.entries = entries;
+    }
+    request.onerror = () => {
+      console.error(`Failed to update entry: ${original} to ${replace}`);
+    }
+  }
+
   create(name, ca_string) {
     // id is undefined, add in later
     let entry = new StoredEntry(name, ca_string);
 
     let db = this.db;
+    let cfg = this.db_cfg;
     if (!db) {
-      console.error('entries_db failed to load');
+      console.error(`${cfg.store} failed to load`);
       return;
     }
     let data = {name, ca_string};
-    let transaction = db.transaction(['entries_os'], 'readwrite');
-    let store = transaction.objectStore('entries_os');
+    let transaction = db.transaction([cfg.store], 'readwrite');
+    let store = transaction.objectStore(cfg.store);
     let request = store.add(data);
     request.onsuccess = (ev) => {
       let id = ev.target.result;
@@ -93,6 +121,8 @@ export class StoredEntryBrowser {
   }
 
   delete(idx) {
+    // ignore invalid index
+    if (idx < 0 || idx >= this.entries.length) return;
     // map expected current index after removal
     let current_index = this.current_index;
     if (this.current_index === idx) {
