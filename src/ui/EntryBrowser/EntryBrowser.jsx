@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { EntryEditor } from './EntryEditor';
+import { Entry } from './Entry';
 
 export function EntryBrowser() {
   const dispatch = useDispatch();
@@ -14,15 +15,22 @@ export function EntryBrowser() {
   const browsers = useSelector(state => state.entry_browser.browsers);
   const entries = useSelector(state => state.entry_browser.get_entries(browser_key));
 
-  let can_delete = (browser_key === 'User');
-
+  let is_user = (browser_key === 'User');
 
   let browser_keys = [];
   for (let key in browsers) {
     browser_keys.push(key);
   }
 
-  const rule_items = entries.map((e, i) => render_entry(e, i));
+  const rule_items = entries.map((e, i) => {
+    let props = {
+      entry: e, 
+      browser: browser_key, index: i,
+      del: is_user, copy: true, edit: is_user,
+      selected: i === selected_index && browser_key === selected_browser_key,
+    }
+    return <Entry {...props} key={`${browser_key}_${i}`}></Entry>
+  });
 
   function render_browser_select(key, index) {
     function onClick() {
@@ -30,30 +38,6 @@ export function EntryBrowser() {
     }
     return (
       <a className="dropdown-item" href="#" key={index} onClick={onClick}>{key}</a>
-    );
-  }
-
-  function render_entry(entry, index) {
-    let selected = selected_index === index && selected_browser_key === browser_key;
-    let class_name = selected ? 'active' : '';
-    let data = {key: browser_key, index: index};
-
-    function select_entry(ev) {
-      dispatch({type:'entry.select', value:data});
-      ev.preventDefault();
-    }
-
-    function delete_entry(ev) {
-      dispatch({type:'entry.delete', value:data});
-      ev.preventDefault();
-    }
-
-    return (
-      <li className={"list-group-item "+class_name} key={index} onClick={select_entry}>
-        <div>Name: {entry.name}</div>
-        <div>Rule: {entry.description}</div>
-        {can_delete ? <button className="btn btn-danger btn-sm" onClick={delete_entry}>Delete</button> : <div></div>}
-      </li>
     );
   }
 
