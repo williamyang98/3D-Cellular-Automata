@@ -19,7 +19,7 @@ export class RuleReader {
       throw new Error(`Invalid neighbourhood. Expected M or VN.`);
     }
 
-    total_states = Number(total_states);
+    total_states = this.convert_to_number(total_states);
     if (total_states <= 1) {
       throw new Error(`Invalid total states. Expected 2 or more states`);
     }
