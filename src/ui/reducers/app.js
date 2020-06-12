@@ -44,23 +44,14 @@ export function stats_reducer(init_stats) {
 export function entry_reducer(entry_browser) {
     const reducer = (browser=entry_browser, action) => {
         switch (action.type) {
+            case 'entry.refresh':
+                return browser;
             case 'entry.select':
                 {
                     let {key, index} = action.value;
                     browser.select(key, index);
                 }
                 break;
-            case 'entry.create':
-                {
-                    let {name, ca_string} = action.value;
-                    browser.create(name, ca_string);
-                }
-                break;
-            case 'entry.delete':
-                {
-                    let {key, index} = action.value;
-                    browser.delete(key, index);
-                }
             default: 
                 break;
         }
