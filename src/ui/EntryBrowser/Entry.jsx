@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import "./Entry.css";
+
 export function Entry(props) {
   const dispatch = useDispatch();
 
@@ -38,22 +40,21 @@ export function Entry(props) {
     ev.preventDefault();
   }
 
-  const copy_tooltip = copy_success ? {'data-toggle': 'tooltip', 'data-placement': 'top', 'title': `Copied ${entry.name}`} : {};
-
   const actions = (
-    <div className={`${show_actions ? '' : 'fade'}`}
-         style={{zIndex:1, position:'absolute', top: '0.5rem', right: '0.5rem'}}>
+    <div className={`actions ${show_actions ? '' : 'fade'}`}>
+      {copy && 
+        <button className="btn btn-circle btn-sm btn-light" role="button" 
+            onClick={on_copy} onMouseLeave={() => set_copy_success(false)}>
+        <span className="icon text-gray-600">
+          <i className="fas fa-copy"></i>
+        </span>
+        <div className={`tooltip copy-text ${copy_success ? 'show' : 'fade'}`} role="tooltip">
+          <div className="tooltip-inner">Copied {entry.name}!</div>
+        </div>
+      </button>}
 
-      {copy ? 
-        <div className="btn btn-circle btn-sm btn-light" role="button" 
-             onClick={on_copy} onMouseLeave={() => set_copy_success(false)}>
-          <span className="icon text-gray-600" {...copy_tooltip}>
-            <i className="fas fa-copy"></i>
-          </span>
-        </div> 
-        : <div></div>}
-      {del ? <div className="btn btn-circle btn-sm btn-danger" role="button" onClick={on_delete}><i className="fas fa-trash"></i></div> : <div></div>}
-      {edit ? <div className="btn btn-circle btn-sm btn-warning" role="button" onClick={on_edit}><i className="fas fa-edit"></i></div> : <div></div>}
+      {del && <button className="btn btn-circle btn-sm btn-danger" role="button" onClick={on_delete}><i className="fas fa-trash"></i></button>}
+      {edit && <button className="btn btn-circle btn-sm btn-warning" role="button" onClick={on_edit}><i className="fas fa-edit"></i></button>}
     </div>
   );
 

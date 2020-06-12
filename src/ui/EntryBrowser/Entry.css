@@ -1,0 +1,14 @@
+.actions {
+    z-index: 1;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+.copy-text {
+    /* position: absolute; */
+    transform: translateX(-60%);
+    word-wrap: normal;
+    white-space: nowrap;
+    overflow: hidden;
+}
