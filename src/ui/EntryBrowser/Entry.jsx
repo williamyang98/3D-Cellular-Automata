@@ -12,7 +12,6 @@ export function Entry(props) {
   const {del, copy, edit} = props;
   const selected = props.selected;
 
-
   let data = {key: browser, index};
 
   let [show_actions, set_show_actions] = useState(false);
@@ -117,8 +116,14 @@ export function Entry(props) {
     );
   }
 
+  function on_key_down(ev) {
+    if(ev.keyCode === 13) {
+      on_submit(ev);
+    }
+  }
+
   const render_editable_body = () => (
-    <form onSubmit={on_submit} className="w-75">
+    <form onSubmit={on_submit} onKeyDown={on_key_down} className="w-75">
       <div className="form-group row mb-0 mt-0">
         <label className="col-sm-3 col-form-label py-0">Name:</label>
         <div className="col-sm py-0">
