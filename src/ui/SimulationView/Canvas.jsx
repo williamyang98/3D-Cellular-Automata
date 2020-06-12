@@ -47,6 +47,10 @@ export class Canvas extends React.Component {
 
   change_focus(focused) {
     let store = this.props.store;
+    let original = store.getState().gui.focused;
+    if (original === focused) {
+      return;
+    }
     store.dispatch({type:'gui.focused', value:focused});
   }
 
