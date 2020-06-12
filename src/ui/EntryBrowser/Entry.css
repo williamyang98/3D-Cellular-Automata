@@ -7,7 +7,9 @@
 
 .copy-text {
     /* position: absolute; */
-    transform: translateX(-60%);
+    transform: translateX(-100%);
+    top: 0rem;
+    float: left;
     word-wrap: normal;
     white-space: nowrap;
     overflow: hidden;
