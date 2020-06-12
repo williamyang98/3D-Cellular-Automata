@@ -43,7 +43,7 @@ function Main(props) {
   
   function render_left_panel() {
     return (
-      <div className={`col-sm-3 overflow-auto vh-100 ${fullscreen ? 'd-none' : ''}`}>
+      <div className={`col-sm-3 overflow-auto vh-100 ${fullscreen && 'd-none'}`}>
         <SizeChanger></SizeChanger>
         <ShaderMenu></ShaderMenu>
         <RandomiserMenu></RandomiserMenu>
@@ -54,7 +54,7 @@ function Main(props) {
 
   function render_right_panel() {
     return (
-      <div className={`col-sm-3 overflow-auto vh-100 ${fullscreen ? 'd-none' : ''}`}>
+      <div className={`col-sm-3 overflow-auto vh-100 ${fullscreen && 'd-none'}`}>
         <EntryBrowser></EntryBrowser>
       </div>
     );
@@ -65,9 +65,9 @@ function Main(props) {
   return (
     <div className="vh-100 vw-100">
       <div className="row px-0 mx-0">
-        {app ? render_left_panel() : <div></div>}
+        {app && render_left_panel()}
         <div className="col vh-100 mx-0 px-0">{canvas}</div>
-        {app ? render_right_panel() : <div></div>}
+        {app && render_right_panel()}
       </div>
     </div>
   );
