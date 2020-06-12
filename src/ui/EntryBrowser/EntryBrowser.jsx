@@ -22,15 +22,17 @@ export function EntryBrowser() {
     browser_keys.push(key);
   }
 
-  const rule_items = entries.map((e, i) => {
-    let props = {
-      entry: e, 
-      browser: browser_key, index: i,
-      del: is_user, copy: true, edit: is_user,
-      selected: i === selected_index && browser_key === selected_browser_key,
-    }
-    return <Entry {...props} key={`${browser_key}_${i}`}></Entry>
-  });
+  function render_rule_items() { 
+    return entries.map((e, i) => {
+      let props = {
+        entry: e, 
+        browser: browser_key, index: i,
+        del: is_user, copy: true, edit: is_user,
+        selected: i === selected_index && browser_key === selected_browser_key,
+      }
+      return <Entry {...props} key={`${browser_key}_${i}_${e.id}`}></Entry>
+    });
+  }
 
   function render_browser_select(key, index) {
     function onClick() {
@@ -82,7 +84,7 @@ export function EntryBrowser() {
       </div>
       <div className="collapse show" id="collapseRulesBrowser">
         <ul className="list-group">
-          {rule_items.length > 0 ? rule_items : render_no_entries()}
+          {entries.length > 0 ? render_rule_items() : render_no_entries()}
         </ul>
       </div>
     </div>
