@@ -85,15 +85,23 @@ export class StoredEntryBrowser {
     let data = {id: original.id, name, ca_string};
     let transaction = db.transaction([cfg.store], 'readwrite');
     let store = transaction.objectStore(cfg.store);
-    let request = store.put(data, data.id);
-    request.onsuccess = (ev) => {
-      let entries = [...this.entries];
-      entries[index] = replace;
-      this.entries = entries;
-    }
-    request.onerror = () => {
-      console.error(`Failed to update entry: ${original} to ${replace}`);
-    }
+    let request = store.put(data);
+
+    let promise = new Promise((resolve, reject) => {
+      transaction.oncomplete = (ev) => {
+        this.entries[index] = replace;
+        this.entries = [...this.entries];
+        if (this.current_index === index) {
+          this.notify(replace);
+        }
+        resolve(true);
+      }
+      transaction.onerror = () => {
+        console.error(`Failed to update entry: ${original} to ${replace}`);
+        reject(`Failed to update entry: ${original} to ${replace}`);
+      }
+    });
+    return promise;
   }
 
   create(name, ca_string) {
@@ -110,25 +118,35 @@ export class StoredEntryBrowser {
     let transaction = db.transaction([cfg.store], 'readwrite');
     let store = transaction.objectStore(cfg.store);
     let request = store.add(data);
-    request.onsuccess = (ev) => {
-      let id = ev.target.result;
-      entry.id = id;
-      this.add_entry(entry);
-    }
-    request.onerror = () => {
-      console.error(`Failed to add entry: ${name}, ${ca_string}`);
-    }
-  }
+
+    return new Promise((resolve, reject) => {
+      request.onsuccess = (ev) => {
+        let id = ev.target.result;
+        entry.id = id;
+        this.add_entry(entry);
+        resolve(true);
+      }
+      request.onerror = () => {
+        console.error(`Failed to add entry: ${name}, ${ca_string}`);
+        reject(`Failed to add entry: ${name}, ${ca_string}`);
+      }
+    });
+ }
 
   delete(idx) {
     // ignore invalid index
     if (idx < 0 || idx >= this.entries.length) return;
     // map expected current index after removal
     let current_index = this.current_index;
+    // if same item, then we want the index to point to same location in list after change
+    // this will be the next item
     if (this.current_index === idx) {
-      current_index = Math.max(this.current_index, 0);
+      current_index = this.current_index;
+    // if an item behind selected item, then we want to keep the selected item
+    // this will be now an index behind
     } else if (this.current_index > idx) {
-      current_index = Math.min(this.current_index, this.entries.length-2);
+      current_index = this.current_index-1; 
+    // if selected item behind deleted item, then dont do anything
     } else {
       current_index = this.current_index;
     }
@@ -141,18 +159,21 @@ export class StoredEntryBrowser {
 
     // if request was successful, then modify entries array inplace
     // send notification
-    transaction.oncomplete = () => {
-      this.entries.splice(idx, 1);
-      this.entries = [...this.entries];
-      // always try to figure out a viable selection before defaulting to nothing
-      this.current_index = Math.max(current_index, 0);
-      this.current_index = Math.min(this.current_index, this.entries.length-1);
-      // if no entries left, then undefined entry
-      if (this.entries.length === 0) {
-        this.current_index = -1;
+    return new Promise((resolve, reject) => {
+      transaction.oncomplete = () => {
+        let entries = this.entries;
+        this.entries = [...entries.slice(0, idx), ...entries.slice(idx + 1)];
+        // always try to figure out a viable selection before defaulting to nothing
+        current_index = Math.max(current_index, 0);
+        current_index = Math.min(current_index, this.entries.length-1);
+        // if no entries left, then undefined entry
+        if (this.entries.length === 0) {
+          current_index = -1;
+        }
+        this.select(current_index);
+        resolve(true);
       }
-      this.select(this.current_index);
-    }
+    });
   }
 
   get selected_entry() {

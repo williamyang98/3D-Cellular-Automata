@@ -11,8 +11,6 @@ export class EntryBrowser {
     };
 
     this.current_browser_key = 'System';
-    this.create_errors = undefined;
-    this.edit_errors = undefined;
 
     this.browsers['System'].listen_select((entry) => {
       this.notify(entry);
@@ -58,31 +56,39 @@ export class EntryBrowser {
 
   // wrap around stored database
   delete(key, index) {
-    if (key !== 'User') {
-      return;
-    }
-    let stored = this.browsers['User'];
-    stored.delete(index);
+    return new Promise((resolve, reject) => {
+      if (key !== 'User') {
+        reject('Can only delete user defined rules');
+        return;
+      }
+      let stored = this.browsers['User'];
+      stored.delete(index)
+        .then(v => resolve(v), err => reject(err));
+    });
   }
 
   create(name, ca_string) {
-    try {
-      let stored = this.browsers['User'];
-      stored.create(name, ca_string);
-      this.create_errors = undefined;
-    } catch (ex) {
-      this.create_errors = String(ex.message);
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        let stored = this.browsers['User'];
+        stored.create(name, ca_string)
+          .then(v => resolve(v), err => reject(err));
+      } catch (ex) {
+        reject(String(ex.message));
+      }
+    });
   }
 
-  edit(index, name, ca_string) {
-    try {
-      let stored = this.browsers['User'];
-      stored.edit(index, name, ca_string);
-      this.edit_errors = undefined;
-    } catch (ex) {
-      this.edit_errors = String(ex.message);
-    }
+  edit(key, index, name, ca_string) {
+    let stored = this.browsers[key];
+    return new Promise((resolve, reject) => {
+      try {
+        let promise = stored.edit(index, name, ca_string);
+        promise.then((val) => resolve(val), (err) => reject(err));
+      } catch (ex) {
+        reject(String(ex.message));
+      }
+    });
   }
 }
 
