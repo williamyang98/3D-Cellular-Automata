@@ -7,6 +7,8 @@ import { combineReducers } from 'redux';
 import { MouseController } from './MouseController';
 import { TouchScreenController } from './TouchScreenController';
 
+import "./Canvas.css";
+
 export class Canvas extends React.Component {
   constructor(props) {
     super(props);
