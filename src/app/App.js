@@ -43,7 +43,7 @@ export class App {
     });
 
     // select amoeba with layer colouring
-    this.entry_browser.select('System', 3);
+    this.entry_browser.select('System', 0);
     this.shader_manager.update_params({colouring: 0});
     this.sim.randomise();
   }
