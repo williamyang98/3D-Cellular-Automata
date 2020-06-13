@@ -71,6 +71,12 @@ export function Entry(props) {
     });
   }
 
+  const copy_tooltip = (
+    <div className={`tooltip copy-text ${copy_success ? 'show' : 'fade'}`} role="tooltip">
+      <div className="tooltip-inner">Copied {entry.name}!</div>
+    </div>
+  );
+
   const copy_action = copy && 
     <div className="d-inline">
       <button className="btn btn-circle btn-sm btn-light" role="button" 
@@ -79,10 +85,9 @@ export function Entry(props) {
           <i className="fas fa-copy"></i>
         </span>
       </button>
-      <div className={`tooltip copy-text ${copy_success ? 'show' : 'fade'}`} role="tooltip">
-        <div className="tooltip-inner">Copied {entry.name}!</div>
-      </div>
+      {copy_tooltip}
     </div>;
+
 
   const actions = (
     <div className={`actions ${show_actions ? '' : 'fade'}`} onMouseOver={() => set_show_actions(true)}>
@@ -96,6 +101,7 @@ export function Entry(props) {
       {edit && editing && <button className="btn btn-circle btn-sm btn-success" role="button" onClick={on_submit}><i className="fas fa-check-circle"></i></button>}
     </div>
   );
+
 
   const render_normal_body = () => 
     (
