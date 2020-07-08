@@ -1,10 +1,10 @@
 import { vec3 } from 'gl-matrix';
 
-import { Dropdown } from '../ui/AdjustableValues';
+import { Dropdown } from '../../ui/AdjustableValues';
 import { VolumeRenderer } from './renderers/VolumeRenderer';
 import { PointCloudRenderer } from './renderers/PointCloudRenderer';
 import { VoxelRenderer } from './renderers/VoxelRenderer';
-import { vertex_shader_src } from '../shaders/vertex_shader';
+import { vertex_shader_src } from './shaders/vertex_shader';
 
 export class ShaderManager {
   constructor(gl, camera) {

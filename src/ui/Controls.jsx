@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 export function Controls () {
-  const is_running = useSelector(state => state.app.sim.running);
+  const is_running = useSelector(state => state.app.sim.is_running);
   const dispatch = useDispatch();
 
   const on_off = is_running ? 'Pause': 'Run';

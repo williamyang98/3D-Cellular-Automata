@@ -1,13 +1,14 @@
 import { Renderer } from "./Renderer";
 
-import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../../gl/VertexBuffer';
-import { Shader } from "../../gl/Shader";
-import { IndexBuffer } from "../../gl/IndexBuffer";
+import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../../../gl/VertexBuffer';
+import { Shader } from "../../../gl/Shader";
+import { IndexBuffer } from "../../../gl/IndexBuffer";
 
-import { Dropdown, Slider, Toggle } from "../../ui/AdjustableValues";
-import { fragment_shader_src } from "../../shaders/fragment_shader";
-import { vertex_shader_src } from "../../shaders/vertex_shader";
-import { Uniform } from "../../gl/Uniform";
+import { Dropdown, Slider, Toggle } from "../../../ui/AdjustableValues";
+import { Uniform } from "../../../gl/Uniform";
+
+import { fragment_shader_src } from "../shaders/fragment_shader";
+import { vertex_shader_src } from "../shaders/vertex_shader";
 
 export class PointCloudRenderer extends Renderer {
     constructor(gl, props, params) {

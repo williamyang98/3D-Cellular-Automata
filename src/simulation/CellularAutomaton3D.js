@@ -10,13 +10,14 @@ export class CellularAutomaton3D {
 
         this.worker = worker();
         this.promise_id = 0;
+        this.is_running = false;
 
         this.worker.addEventListener('message', (event) => {
             let msg = event.data;
 
             if (msg.error) {
                 // throw msg.error;
-                console.error(msg.error);
+                console.error(msg);
                 return;
             }
 
@@ -30,6 +31,10 @@ export class CellularAutomaton3D {
                     break;
             }
         });
+
+        this.worker.addEventListener('error', ev => {
+            console.error(ev.message, ev);
+        })
 
         this.listeners = new Set();
     }
@@ -75,10 +80,16 @@ export class CellularAutomaton3D {
 
     start() {
         this.use_worker('start');
+        this.is_running = true;
     }
 
     stop() {
         this.use_worker('stop');
+        this.is_running = false;
+    }
+
+    toggle() {
+        this.is_running ? this.stop() : this.start();
     }
 
     set_grid(grid) {

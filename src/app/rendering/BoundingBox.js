@@ -1,4 +1,4 @@
-import { cube } from '../gl/CubeData';
+import { cube } from '../../gl/CubeData';
 import { vec3 } from 'gl-matrix';
 
 export class BoundingBox {

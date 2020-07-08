@@ -1,13 +1,13 @@
 import { Renderer } from "./Renderer";
 
-import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../../gl/VertexBuffer';
-import { IndexBuffer } from "../../gl/IndexBuffer";
-import { Shader } from "../../gl/Shader";
-import { UniformMat4f, UniformVec3f, Uniform } from "../../gl/Uniform";
-import { cube_optimized } from "../../gl/CubeData";
-import { volume_shader } from "../../shaders/volume";
+import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../../../gl/VertexBuffer';
+import { IndexBuffer } from "../../../gl/IndexBuffer";
+import { Shader } from "../../../gl/Shader";
+import { UniformMat4f, UniformVec3f, Uniform } from "../../../gl/Uniform";
+import { cube_optimized } from "../../../gl/CubeData";
+import { volume_shader } from "../shaders/volume";
 
-import { Toggle, Slider, Dropdown } from "../../ui/AdjustableValues";
+import { Toggle, Slider, Dropdown } from "../../../ui/AdjustableValues";
 
 export class VolumeRenderer extends Renderer {
     constructor(gl, props, params) {

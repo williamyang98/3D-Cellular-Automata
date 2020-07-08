@@ -6,7 +6,7 @@ export function app_reducer(init_app) {
             case 'start': app.sim.start(); break;
             case 'toggle': app.sim.toggle(); break;
             case 'clear': app.sim.clear(); break;
-            case 'randomise': app.sim.randomise(); break;
+            case 'randomise': app.randomise(); break;
             case 'app.set_size':
                 app.set_size(action.value);
                 break;

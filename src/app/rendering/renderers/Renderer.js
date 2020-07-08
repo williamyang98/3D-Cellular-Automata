@@ -1,6 +1,9 @@
 import { vec3 } from "gl-matrix";
-import { UniformMat4f, UniformVec3f, Uniform } from "../../gl/Uniform";
+import { UniformMat4f, UniformVec3f, Uniform } from "../../../gl/Uniform";
 
+/**
+ * Given a 3D point cloud, render it
+ */
 export class Renderer {
     constructor(gl, props, params) {
         this.gl = gl;

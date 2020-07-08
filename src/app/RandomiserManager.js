@@ -38,6 +38,7 @@ export class RandomiserManager {
             this.current_index = i;
             break;
         }
+        this.notify(this.current_randomiser);
     }
 
     update_current(key, value) {

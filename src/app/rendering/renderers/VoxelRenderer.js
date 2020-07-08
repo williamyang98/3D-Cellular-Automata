@@ -1,14 +1,14 @@
 import { Renderer } from "./Renderer";
 
-import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../../gl/VertexBuffer';
-import { Shader } from "../../gl/Shader";
-import { UniformMat4f, UniformVec3f, Uniform } from "../../gl/Uniform";
-import { IndexBuffer } from "../../gl/IndexBuffer";
-import { cube } from "../../gl/CubeData";
+import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../../../gl/VertexBuffer';
+import { Shader } from "../../../gl/Shader";
+import { UniformMat4f, UniformVec3f, Uniform } from "../../../gl/Uniform";
+import { IndexBuffer } from "../../../gl/IndexBuffer";
+import { cube } from "../../../gl/CubeData";
 
-import { Toggle, Slider, Dropdown } from "../../ui/AdjustableValues";
-import { fragment_shader_src } from "../../shaders/fragment_shader";
-import { vertex_shader_src } from "../../shaders/vertex_shader";
+import { Toggle, Slider, Dropdown } from "../../../ui/AdjustableValues";
+import { fragment_shader_src } from "../shaders/fragment_shader";
+import { vertex_shader_src } from "../shaders/vertex_shader";
 
 import { vec3 } from "gl-matrix";
 
