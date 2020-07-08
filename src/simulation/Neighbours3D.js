@@ -1,10 +1,39 @@
-class MooreNeighbour {
-    constructor() {
-        this.max_neighbours = 26;
+/**
+ * Add or subtract neighbours from a grid
+ * If a cell becomes alive, then surrounding cells gain a neighbour
+ * If a cell dies or starts refracting, then surround cells lose a neighbour
+ */
+class NeighbourBase {
+    constructor(max_neighbours) {
+        this.max_neighbours = max_neighbours;
     }
 
-    count_neighbours(x, y, z, grid, rule) {
-        let total_neighbours = 0;
+    sub(x, y, z, grid) {
+
+    }
+
+    add(x, y, z, grid) {
+
+    }
+}
+
+class MooreNeighbour extends NeighbourBase {
+    constructor() {
+        super(26);
+    }
+
+    sub(x, y, z, grid) {
+        this.add(x, y, z, grid, -1);
+    }
+
+    add(x, y, z, grid, val=1) {
+        let neighbours = grid.neighbours;
+        let updates = grid.updates;
+        let render_updates = grid.render_updates;
+
+        let i = grid.xyz_to_i(x, y, z);
+        updates.add(i);
+        render_updates.add(i);
 
         for (let xoff = -1; xoff <= 1; xoff++) {
             for (let yoff = -1; yoff <= 1; yoff++) {
@@ -16,39 +45,20 @@ class MooreNeighbour {
                     const yn = pos_mod(y+yoff, grid.shape[1]);
                     const zn = pos_mod(z+zoff, grid.shape[2]); 
 
-                    const i = grid.xyz_to_i(xn, yn, zn);
-                    const state = grid.cells[i]; 
-                    if (rule.is_neighbour(state)) 
-                        total_neighbours += 1;
-                }
-            }
-        }
-
-        return total_neighbours;
-
-    }
-
-    on_location_update(x, y, z, grid, updates) {
-        let render_updates = grid.render_updates;
-        for (let xoff = -1; xoff <= 1; xoff++) {
-            for (let yoff = -1; yoff <= 1; yoff++) {
-                for (let zoff = -1; zoff <= 1; zoff++) {
-                    const xn = pos_mod(x+xoff, grid.shape[0]);
-                    const yn = pos_mod(y+yoff, grid.shape[1]);
-                    const zn = pos_mod(z+zoff, grid.shape[2]); 
-
-                    const i = grid.xyz_to_i(xn, yn, zn);
+                    i = grid.xyz_to_i(xn, yn, zn);
+                    neighbours[i] += val;
                     updates.add(i);
                     render_updates.add(i);
-                    // updates[i] = true;
                 }
             }
         }
+
     }
 }
 
-class VonNeumanNeighbour {
+class VonNeumanNeighbour extends NeighbourBase {
     constructor() {
+        super(6);
         this.offsets = [];
         for (let dim = 0; dim < 3; dim++) {
             let n = [0, 0, 0];
@@ -58,33 +68,20 @@ class VonNeumanNeighbour {
             this.offsets.push(n);
             this.offsets.push(m); 
         }
-        this.max_neighbours = 6;
     }
 
-    count_neighbours(x, y, z, grid, rule) {
-        let total_neighbours = 0;
-
-        for (let off of this.offsets) {
-            const xn = pos_mod(x+off[0], grid.shape[0]);
-            const yn = pos_mod(y+off[1], grid.shape[1]);
-            const zn = pos_mod(z+off[2], grid.shape[2]); 
-
-            const i = grid.xyz_to_i(xn, yn, zn);
-
-            const state = grid.cells[i]; 
-            if (rule.is_neighbour(state)) 
-                total_neighbours += 1;
-        }
-
-        return total_neighbours;
+    sub(x, y, z, grid) {
+        this.add(x, y, z, grid, -1);
     }
 
-    on_location_update(x, y, z, grid, updates) {
-        let i = grid.xyz_to_i(x, y, z);
+    add(x, y, z, grid, val=1) {
+        let neighbours = grid.neighbours;
+        let updates = grid.updates;
         let render_updates = grid.render_updates;
+
+        let i = grid.xyz_to_i(x, y, z);
         updates.add(i);
         render_updates.add(i);
-        // updates[i] = true;
 
         for (let off of this.offsets) {
             const xn = pos_mod(x+off[0], grid.shape[0]);
@@ -92,9 +89,9 @@ class VonNeumanNeighbour {
             const zn = pos_mod(z+off[2], grid.shape[2]); 
 
             i = grid.xyz_to_i(xn, yn, zn);
+            neighbours[i] += val;
             updates.add(i);
             render_updates.add(i);
-            // updates[i] = true;
         }
     }
 }

@@ -17,18 +17,78 @@ export class Rule3D {
         this.neighbours = neighbours;
 
         let delta = (this.alive_state-this.dead_state)/(this.total_states-1);
+        delta = Math.floor(delta);
 
-        this.alive_threshold = Math.floor(this.alive_state-delta/2.0);
-        this.dead_threshold = Math.floor(delta/2.0);
-        this.delta = Math.floor(delta);
+        this.alive_threshold = Math.floor(this.alive_state-delta);
+        this.dead_threshold = Math.floor(delta);
+        this.delta = delta;
     }
 
-    count_neighbours(x, y, z, grid) {
-        return this.neighbours.count_neighbours(x, y, z, grid, this);
-    }
+    update(grid, listener) {
+        let {cells, neighbours, updates, render_updates} = grid;
 
-    on_location_update(x, y, z, grid, updates) {
-        this.neighbours.on_location_update(x, y, z, grid, updates);
+        let completed_blocks = 0;
+        let remove_stack = [];
+        let sub_stack = [];
+        let add_stack = [];
+        let refactory_stack = [];
+
+        function complete(total) {
+            completed_blocks += total;
+            if (completed_blocks % 10000 === 0) {
+                listener(completed_blocks);
+            }
+        }
+
+        for (let i of updates) {
+            let ncount = neighbours[i];
+            let state = cells[i];
+            let next_state = this.get_next_state(state, ncount); 
+            cells[i] = next_state;
+
+            // cell is still fresh, we want to update it next tick
+            // we only update when neighbours change, and this only occurs when
+            // dead to alive, or alive to refactory/dead
+            // refractory cells do not affect neighbour count, but still require updating 
+            // an update has occured, therefore we update the neighbour and updates set
+
+            // alive to refactory/dead
+            if (this.is_alive(state) && !this.is_alive(next_state)) {
+                sub_stack.push(i);
+            // dead to alive
+            } else if (this.is_dead(state) && this.is_alive(next_state)) {
+                add_stack.push(i);
+            // refactory
+            } else if (state !== next_state) {
+                refactory_stack.push(i);
+            // cell is stale, remove from update list
+            } else {
+                remove_stack.push(i);
+            }
+        }
+
+        for (let i of remove_stack) {
+            updates.delete(i);
+        }
+        complete(remove_stack.length);
+
+        for (let i of refactory_stack) {
+            // updates.add(i);
+            render_updates.add(i);
+        }
+        complete(refactory_stack.length);
+
+        for (let i of add_stack) {
+            let [x, y, z] = grid.i_to_xyz(i);
+            this.add(x, y, z, grid);
+        }
+        complete(add_stack.length);
+
+        for (let i of sub_stack) {
+            let [x, y, z] = grid.i_to_xyz(i);
+            this.sub(x, y, z, grid);
+        }
+        complete(sub_stack.length);
     }
 
     get_next_state(state, neighbours) {
@@ -52,8 +112,12 @@ export class Rule3D {
         return state-this.delta;
     }
 
-    is_neighbour(state) {
-        return (state === this.alive_state);
+    add(x, y, z, grid) {
+        this.neighbours.add(x, y, z, grid);
+    }
+
+    sub(x, y, z, grid) {
+        this.neighbours.sub(x, y, z, grid);
     }
 
     is_alive(state) {

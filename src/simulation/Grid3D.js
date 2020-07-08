@@ -8,17 +8,14 @@ export class Grid3D {
         sk.X = shape[0];
 
         sk.cells = new Uint8Array(sk.count);
-        sk.cells_buffer = new Uint8Array(sk.count);
         sk.neighbours = new Uint8Array(sk.count);
         sk.updates = new Set();
-        sk.updates_buffer = new Set();
         sk.render_updates = new Set();
         // sk.updates = new Uint8Array(sk.count);
         // sk.updates_buffer = new Uint8Array(sk.count);
 
         sk.transferables = [
             sk.cells.buffer,
-            sk.cells_buffer.buffer,
             sk.neighbours.buffer,
             // sk.updates.buffer,
             // sk.updates_buffer.buffer,
@@ -44,14 +41,11 @@ export class Grid3D {
         this.transferables = sk.transferables;
     }
 
-    swap_buffers() {
-        let tmp = this.cells;
-        this.cells = this.cells_buffer;
-        this.cells_buffer = tmp;
-
-        tmp = this.updates;
-        this.updates = this.updates_buffer;
-        this.updates_buffer = tmp;
+    clear() {
+        this.cells.fill(0, 0, this.count);
+        this.neighbours.fill(0, 0, this.count);
+        this.updates.clear();
+        this.render_updates.clear();
     }
 
     xyz_to_i(x, y, z) {

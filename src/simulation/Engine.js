@@ -2,7 +2,13 @@ import { Grid3D } from './Grid3D';
 import { Randomiser } from './Randomiser3D';
 import { Rule3D } from './Rule3D';
 
-// state machine
+/**
+ * Web worker state machine
+ * Mutates the grid based on cellular automata rules.
+ * Since web workers cannot share data between threads anymore (due to spectre) 
+ * the grid is transferred between threads.
+ * This means grid must be returned to web worker after updating 3d textures, etc.
+ */
 export class Engine {
     constructor() {
         this.listeners = new Set();
@@ -21,6 +27,7 @@ export class Engine {
         }
     }
 
+    // observe when the grid has been mutated
     attach_listener(listener) {
         return this.listeners.add(listener);
     }
@@ -123,15 +130,7 @@ export class Engine {
         }
         this.tasks.clear.queued = false;
 
-        let {cells, cells_buffer, neighbours, updates, updates_buffer, render_updates} = this.grid;
-        let count = this.grid.count;
-        cells.fill(0, 0, count);
-        cells_buffer.fill(0, 0, count);
-        neighbours.fill(0, 0, count);
-        updates.clear();
-        updates_buffer.clear();
-        render_updates.clear();
-
+        this.grid.clear();
         this.total_steps = 0;
         this.notify({total_steps: this.total_steps, total_blocks: 0, completed_blocks: 0, frame_time: 0});
         this.completed_frame = true;
@@ -155,6 +154,15 @@ export class Engine {
         this.local_rerender = this.local_rerender && true;
     }
 
+    /**
+     * To decrease computation of each tick for cellular automata, we only consider the
+     * fresh cells in the grid, which actually change.
+     * We consider fresh cells as those which changed state in this tick.
+     * Cells which are in the neighbourhood (VonNeumann or Moore) are also considered to be fresh.
+     * A cell has become stale (i.e. not considered for update next tick) 
+     * if their new state is the same as their old state.
+     * The stale and fresh cells are tracked within a set.
+     */
     calculate_frame() {
         let grid = this.grid;
         let rule = this.rule;
@@ -163,50 +171,22 @@ export class Engine {
 
         this.grid_available = false;
 
-        let {cells, cells_buffer, neighbours, updates, updates_buffer, render_updates} = grid;
+        let total_blocks = grid.updates.size;
+        this.notify({completed_blocks: 0, total_blocks});
 
-        let total_blocks = updates.size;
-        let completed_blocks = 0;
-        this.notify({total_blocks, completed_blocks});
-
-        let remove_stack = [];
         let start_dt = performance.now();
 
-        // let xyz = [0,0,0];
-        for (let i of updates) {
-            let [x, y, z] = grid.i_to_xyz(i);
-            // grid.i_to_xyz_inplace(i, xyz);
-            // let [x,y,z] = xyz;
-
-            let ncount = rule.count_neighbours(x, y, z, grid);
-            neighbours[i] = ncount;
-
-            let state = cells[i];
-            let next_state = rule.get_next_state(state, ncount);
-            cells_buffer[i] = next_state;
-
-            if (state === next_state) {
-                remove_stack.push(i);
-            } else {
-                rule.on_location_update(x, y, z, grid, updates_buffer);
-            }
-
-            completed_blocks += 1;
-            if (completed_blocks % 10000 === 0) {
-                this.notify({completed_blocks});
-            }
-        }
-
-        for (let i of remove_stack) {
-            updates.delete(i);
-        }
-
-        grid.swap_buffers();
+        rule.update(grid, completed_blocks => {
+            this.notify({completed_blocks});
+        });
 
         this.total_steps += 1;
         let end_dt = performance.now();
         let frame_time = end_dt - start_dt;
-        this.notify({total_steps: this.total_steps, frame_time, completed_blocks, total_blocks});
+        this.notify({
+            total_steps: this.total_steps, 
+            completed_blocks: total_blocks,
+            frame_time, total_blocks});
 
         this.completed_frame = true;
         this.grid_available = true;

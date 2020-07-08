@@ -1,6 +1,9 @@
 import worker from 'worker-loader!./worker.js'; // eslint-disable-line import/no-webpack-loader-syntax 
 import { Grid3D } from './Grid3D';
 
+/**
+ * Frontend to communicate with the web worker
+ */
 export class CellularAutomaton3D {
     constructor(stats) {
         this.stats = stats;

@@ -1,8 +1,6 @@
 export class Randomiser {
     constructor(params={}) {
         this.params = params;
-        this.alive_state = 255;
-        this.dead_state = 0;
     }
 
     static Create(type, params) {
@@ -38,9 +36,13 @@ class SeedCrystal extends Randomiser {
             for (let y = ylower; y <= yupper; y++) {
                 for (let z = zlower; z <= zupper; z++) {
                     let i = grid.xyz_to_i(x, y, z);
+                    let state = grid.cells[i];
+                    if (state === rule.alive_state) {
+                        continue;
+                    }
                     if (Math.random() < density) {
-                        grid.cells[i] = this.alive_state;
-                        rule.on_location_update(x, y, z, grid, grid.updates);
+                        grid.cells[i] = rule.alive_state;
+                        rule.add(x, y, z, grid);
                     } else {
                         // grid.cells[i] = this.dead_state;
                     }
@@ -66,9 +68,13 @@ class SeedCrystalAbsolute extends Randomiser {
             for (let y = ylower; y <= yupper; y++) {
                 for (let z = zlower; z <= zupper; z++) {
                     let i = grid.xyz_to_i(x, y, z);
+                    let state = grid.cells[i];
+                    if (state === rule.alive_state) {
+                        continue;
+                    }
                     if (Math.random() < density) {
-                        grid.cells[i] = this.alive_state;
-                        rule.on_location_update(x, y, z, grid, grid.updates)
+                        grid.cells[i] = rule.alive_state;
+                        rule.add(x, y, z, grid)
                     } else {
                         // sim.cells[i] = this.dead_state;
                     }
