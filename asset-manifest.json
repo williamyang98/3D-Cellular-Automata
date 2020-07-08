@@ -1,24 +1,24 @@
 {
   "files": {
-    "main.css": "/3D-Cellular-Automata/static/css/main.181b7d47.chunk.css",
-    "main.js": "/3D-Cellular-Automata/static/js/main.5782f7d6.chunk.js",
-    "main.js.map": "/3D-Cellular-Automata/static/js/main.5782f7d6.chunk.js.map",
+    "main.css": "/3D-Cellular-Automata/static/css/main.66b6a748.chunk.css",
+    "main.js": "/3D-Cellular-Automata/static/js/main.cb5499ea.chunk.js",
+    "main.js.map": "/3D-Cellular-Automata/static/js/main.cb5499ea.chunk.js.map",
     "runtime-main.js": "/3D-Cellular-Automata/static/js/runtime-main.ee7eacaa.js",
     "runtime-main.js.map": "/3D-Cellular-Automata/static/js/runtime-main.ee7eacaa.js.map",
-    "static/js/2.0eb37648.chunk.js": "/3D-Cellular-Automata/static/js/2.0eb37648.chunk.js",
-    "static/js/2.0eb37648.chunk.js.map": "/3D-Cellular-Automata/static/js/2.0eb37648.chunk.js.map",
+    "static/js/2.9399a184.chunk.js": "/3D-Cellular-Automata/static/js/2.9399a184.chunk.js",
+    "static/js/2.9399a184.chunk.js.map": "/3D-Cellular-Automata/static/js/2.9399a184.chunk.js.map",
     "9c903fdfe86c1905cd1c.worker.js": "/3D-Cellular-Automata/9c903fdfe86c1905cd1c.worker.js",
     "9c903fdfe86c1905cd1c.worker.js.map": "/3D-Cellular-Automata/9c903fdfe86c1905cd1c.worker.js.map",
     "index.html": "/3D-Cellular-Automata/index.html",
-    "precache-manifest.bb79e099d236829cac6ec5a3f6d2dfcf.js": "/3D-Cellular-Automata/precache-manifest.bb79e099d236829cac6ec5a3f6d2dfcf.js",
+    "precache-manifest.926aad926438721cc6a4b0af85d09aa4.js": "/3D-Cellular-Automata/precache-manifest.926aad926438721cc6a4b0af85d09aa4.js",
     "service-worker.js": "/3D-Cellular-Automata/service-worker.js",
-    "static/css/main.181b7d47.chunk.css.map": "/3D-Cellular-Automata/static/css/main.181b7d47.chunk.css.map",
-    "static/js/2.0eb37648.chunk.js.LICENSE.txt": "/3D-Cellular-Automata/static/js/2.0eb37648.chunk.js.LICENSE.txt"
+    "static/css/main.66b6a748.chunk.css.map": "/3D-Cellular-Automata/static/css/main.66b6a748.chunk.css.map",
+    "static/js/2.9399a184.chunk.js.LICENSE.txt": "/3D-Cellular-Automata/static/js/2.9399a184.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.ee7eacaa.js",
-    "static/js/2.0eb37648.chunk.js",
-    "static/css/main.181b7d47.chunk.css",
-    "static/js/main.5782f7d6.chunk.js"
+    "static/js/2.9399a184.chunk.js",
+    "static/css/main.66b6a748.chunk.css",
+    "static/js/main.cb5499ea.chunk.js"
   ]
 }
