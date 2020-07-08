@@ -28,7 +28,8 @@ export function EntryBrowser() {
         actions: {del: is_user, copy: true, edit: is_user},
         selected: i === selected_index && browser_key === selected_browser_key,
       }
-      return <Entry {...props} key={`${browser_key}_${i}_${e.id}`}></Entry>
+      let index = e.id === undefined ? i : e.id;
+      return <Entry {...props} key={`${browser_key}_${index}`}></Entry>
     });
   }
 

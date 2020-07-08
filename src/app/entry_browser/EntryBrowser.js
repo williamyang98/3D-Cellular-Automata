@@ -6,19 +6,19 @@ export class EntryBrowser {
     this.listeners = new Set();
 
     this.browsers = {
-      'System': new DefaultEntryBrowser(),
+      'Default': new DefaultEntryBrowser(),
       'User': new StoredEntryBrowser(),
     };
 
     this.current_browser_key = 'System';
 
-    this.browsers['System'].listen_select((entry) => {
+    this.browsers['Default'].listen_select((entry) => {
       this.notify(entry);
     })
 
     this.browsers['User'].listen_select((entry) => {
       if (entry === undefined) {
-        this.select('System', 0);  
+        this.select('Default', 0);  
       } else {
         this.notify(entry);
       }
