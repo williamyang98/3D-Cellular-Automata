@@ -32,32 +32,25 @@ export function EntryBrowser() {
     });
   }
 
-  function render_browser_select(key, index) {
-    function onClick() {
-      set_browser_key(key);
-    }
-    return (
-      <a className="dropdown-item" href="#" key={index} onClick={onClick}>{key}</a>
-    );
-  }
-
   const render_controls = (
-    <div className="d-flex flex-row">
-      <div className="dropdown no-arrow">
-        <a className="dropdown-toggle" href="#" role="button" id="category_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i className="fas fa-caret-square-down"></i>
-        </a>
-        <div className="dropdown-menu dropdown-menu-right shadow" aria-labelledby="category_dropdown">
-          {browser_keys.map((e, i) => render_browser_select(e, i))}
-        </div>
+    <div className="d-flex flex-row my-0 py-0">
+      <div className="btn-group py-0 my-0">
+        {browser_keys.map((e, i) => { 
+          let selected = e === browser_key;
+          return (
+            <button 
+              className={`btn btn-sm ${selected ? 'btn-primary' : 'btn-outline-secondary'}`} 
+              key={i} onClick={() => set_browser_key(e)}>{e}</button>
+          )
+        })}
       </div>
     </div>
   );
 
   return (
     <div className="card shadow mb-2">
-      <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 className="m-0 font-weight-bold text-primary">Rules ({browser_key})</h6>
+      <div className="card-header py-2 d-flex flex-row align-items-center justify-content-between">
+        <h6 className="m-0 font-weight-bold text-primary">Rules</h6>
         {render_controls}
       </div>
       <div className="collapse show" id="collapseRulesBrowser">
