@@ -1,18 +1,19 @@
 import { Shader } from '../../gl/Shader';
 import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../../gl/VertexBuffer';
 import { IndexBuffer } from '../../gl/IndexBuffer';
-import { UniformMat4f, UniformVec3f, UniformVec4f } from '../../gl/Uniform';
+import { UniformMat4f, UniformVec3f, UniformVec4f, Uniform } from '../../gl/Uniform';
 
 import { vec3, vec4 } from 'gl-matrix';
 
 import border_shader from './shaders/border';
 import { BoundingBox } from './BoundingBox';
+import { Color } from '../../ui/util/AdjustableValues';
 
 export class Border {
-  constructor(gl, size, renderer, camera) {
+  constructor(gl, size, camera) {
     this.gl = gl;
-    this.renderer = renderer;
     this.camera = camera;
+    this.colour = new Color([0,0,0], "Border Colour");
 
     let thickness = 0.2;
     let offset = 0.5;
@@ -37,11 +38,20 @@ export class Border {
     this.shader.add_uniform("uView", new UniformMat4f(gl, this.camera.view));
     this.shader.add_uniform("uProjection", new UniformMat4f(gl, this.camera.projection));
     // this.shader.add_uniform("uColour", new UniformVec4f(gl, vec4.fromValues(0, 0, 0, 1)));
-    this.shader.add_uniform("uColour", new UniformVec4f(gl, vec4.fromValues(0, 0, 0, 1)));
+    // this.shader.add_uniform("uColour", new UniformVec4f(gl, vec4.fromValues(0, 0, 0, 1)));
+    this.shader.add_uniform("uColour", new Uniform(loc => {
+      let c = this.colour.value;
+      gl.uniform4f(loc, c[0]/255, c[1]/255, c[2]/255, 1.0);
+    }));
     this.shader.add_uniform("uOffset", new UniformVec3f(gl, offset_vec));
   }
 
   on_render() {
-    this.renderer.draw(this.vao, this.index_buffer, this.shader);
+    let gl = this.gl;
+    this.shader.bind();
+    this.vao.bind();
+    this.index_buffer.bind();
+
+    gl.drawElements(gl.TRIANGLES, this.index_buffer.count, gl.UNSIGNED_INT, 0);
   }
 }

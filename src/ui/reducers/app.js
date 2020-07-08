@@ -16,6 +16,11 @@ export function app_reducer(init_app) {
             case 'app.show_render':
                 app.show_render.value = action.value;
                 break;
+            case 'app.set_background_colour':
+                app.background_colour.value = action.value;
+                break;
+            case 'app.set_border_colour':
+                app.border.colour.value = action.value;
             default: 
                 break;
             }

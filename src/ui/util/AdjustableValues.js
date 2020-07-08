@@ -1,3 +1,5 @@
+import { vec3 } from "gl-matrix";
+
 class AdjustableValue {
   constructor(type, value, help) {
     this.type = type;
@@ -38,6 +40,20 @@ export class Toggle extends AdjustableValue {
   // javascript doesnt extend accessors
   set value(val) {
     super.value = val;
+  }
+
+  get value() {
+    return super.value;
+  }
+}
+
+export class Color extends AdjustableValue {
+  constructor(color, help) {
+    super('color', color, help);
+  }
+
+  set value(val) {
+    super.value = vec3.fromValues(val[0], val[1], val[2]);
   }
 
   get value() {

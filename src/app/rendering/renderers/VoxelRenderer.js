@@ -6,7 +6,7 @@ import { UniformMat4f, UniformVec3f, Uniform } from "../../../gl/Uniform";
 import { IndexBuffer } from "../../../gl/IndexBuffer";
 import { cube } from "../../../gl/CubeData";
 
-import { Toggle, Slider, Dropdown } from "../../../ui/util/AdjustableValues";
+import { Toggle, Slider, Dropdown, Color } from "../../../ui/util/AdjustableValues";
 import { fragment_shader_src } from "../shaders/fragment_shader";
 import { vertex_shader_src } from "../shaders/vertex_shader";
 
@@ -28,6 +28,7 @@ export class VoxelRenderer extends Renderer {
             sky_strength: new Slider(0, 1, 0.25, "Strength of sky lighting"),
             brightness: new Slider(0, 1, 1.0, "Amount of global lighting"),
             occlusion: new Slider(0, 1, 0.0, "Amount nearby cells darken the center cell"),
+            light_colour: new Color(vec3.fromValues(255, 255, 255), "Colour of sun"),
         };
 
         this.global_params = {
@@ -36,8 +37,8 @@ export class VoxelRenderer extends Renderer {
         };
 
         this.shading_keys = {
-          basic: ['occlusion', 'sun_strength', 'sky_strength', 'fog_near', 'fog_far', 'scaling_enabled'],
-          basic_alternate: ['occlusion', 'ambient_strength', 'diffuse_strength', 'specular_strength', 'specular_power_factor', 'scaling_enabled'],
+          basic: ['occlusion', 'sun_strength', 'sky_strength', 'fog_near', 'fog_far', 'light_colour', 'scaling_enabled'],
+          basic_alternate: ['occlusion', 'ambient_strength', 'diffuse_strength', 'specular_strength', 'specular_power_factor', 'light_colour', 'scaling_enabled'],
           no_shading: ['occlusion', 'brightness', 'scaling_enabled']
         };
 
@@ -76,7 +77,14 @@ export class VoxelRenderer extends Renderer {
         let gl = this.gl;
         // lighting
         shader.add_uniform('light.position', new UniformVec3f(gl, this.props.light_position));
-        shader.add_uniform('light.colour', new UniformVec3f(gl, vec3.fromValues(1,1,1)));
+        shader.add_uniform('light.colour', new Uniform(loc => {
+            let c = this.shading_params.light_colour.value;
+            gl.uniform3f(loc, c[0]/255, c[1]/255, c[2]/255);
+        }));
+        shader.add_uniform('uSunColour', new Uniform(loc => {
+            let c = this.shading_params.light_colour.value;
+            gl.uniform3f(loc, c[0]/255, c[1]/255, c[2]/255);
+        }))
         // // lighting params
         shader.add_uniform("uAmbientStrength", new Uniform(loc => gl.uniform1f(loc, this.params.ambient_strength.value)));
         shader.add_uniform("uDiffuseStrength", new Uniform(loc => gl.uniform1f(loc, this.params.diffuse_strength.value)));

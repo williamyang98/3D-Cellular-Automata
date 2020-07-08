@@ -1,5 +1,6 @@
 import React from 'react';
 import { Help } from './Help';
+import { ColorPicker } from './ColorPicker';
 
 export function RenderAdjustableValue(adjustable, key, name, valueChanged) {
   let type = adjustable.type;
@@ -10,6 +11,8 @@ export function RenderAdjustableValue(adjustable, key, name, valueChanged) {
       return ToggleView(adjustable, key, name, valueChanged);
     case 'dropdown':
       return DropdownView(adjustable, key, name, valueChanged);
+    case 'color':
+      return ColorView(adjustable, key, name, valueChanged);
     default:
       return;
   }
@@ -63,6 +66,18 @@ function DropdownView(dropdown, key, name, valueChanged) {
         </div>
       </div>
       {dropdown.help && <div className="col-sm-1 text-right"><Help text={dropdown.help}></Help></div>}
+    </div>
+  );
+}
+
+function ColorView(color, key, name, valueChange) {
+  return (
+    <div className="row w-100" key={key}>
+      <div className="form-inline col-sm">
+          <ColorPicker color={color.value} valueChanged={valueChange}></ColorPicker>
+          <label className="ml-1">{name}</label>
+      </div>
+      {color.help && <div className="col-sm-1 text-right"><Help text={color.help}></Help></div>}
     </div>
   );
 }

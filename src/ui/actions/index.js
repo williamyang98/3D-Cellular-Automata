@@ -7,6 +7,14 @@ export const show_border = has_border => ({
     type: 'app.show_border', value: has_border
 })
 
+export const set_background_colour = colour => ({
+    type: 'app.set_background_colour', value: colour
+})
+
+export const set_border_colour = colour => ({
+    type: 'app.set_border_colour', value: colour
+})
+
 export const set_size = size => ({
     type: 'app.set_size', value: size
 })

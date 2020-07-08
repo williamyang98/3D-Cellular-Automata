@@ -1,4 +1,3 @@
-import { Renderer } from '../gl/Renderer';
 import { Camera } from './Camera';
 import { CellularAutomaton3D } from '../simulation/CellularAutomaton3D';
 import { vec3 } from 'gl-matrix';
@@ -9,7 +8,7 @@ import { ShaderManager } from './rendering/ShaderManager';
 import { EntryBrowser } from './entry_browser/EntryBrowser';
 import { Statistics } from './Statistics';
 import { RandomiserManager } from './RandomiserManager';
-import { Toggle } from '../ui/util/AdjustableValues';
+import { Toggle, Color } from '../ui/util/AdjustableValues';
 
 
 export class App {
@@ -23,8 +22,8 @@ export class App {
 
     this.show_border = new Toggle(true, "Show an outlining border");
     this.show_render = new Toggle(true, "Show the grid of cells (Disable if you want to see result later)");
+    this.background_colour = new Color([255,255,255], "Background Colour");
 
-    this.renderer = new Renderer(gl); 
     this.camera = new Camera();
 
     this.shader_manager = new ShaderManager(gl, this.camera);
@@ -73,7 +72,7 @@ export class App {
     this.sim_renderer.set_size(size);
     this.shader_manager.set_size(size);
 
-    this.border = new Border(gl, this.size, this.renderer, this.camera);
+    this.border = new Border(gl, this.size, this.camera);
 
     this.camera.model_translation = vec3.create();
     vec3.scale(this.camera.model_translation, this.size, -0.5);
@@ -123,8 +122,15 @@ export class App {
   }
     
   on_render() {
+    let gl = this.gl;
     this.resize();
-    this.renderer.clear();
+    
+    {
+      let c = this.background_colour.value;
+      gl.clearColor(c[0]/255, c[1]/255, c[2]/255, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    }
+
     if (this.show_border.value) {
       this.border.on_render();
     }

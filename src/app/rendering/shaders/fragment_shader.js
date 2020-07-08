@@ -27,7 +27,9 @@ float uSpecularScattering = 0.1;
 
 vec3 uSkyTop =  vec3( 0.8, 0.8, 0.8 ) * 0.5;
 vec3 uSkyBottom = vec3( 0.8, 0.8, 0.8 ) * 1.5;
-vec3 uSunColour = vec3(1.0, 1.0, 1.0);
+
+uniform vec3 uSunColour;
+// vec3 uSunColour = vec3(1.0, 1.0, 1.0);
 
 
 float uFloorHeight = 0.0;
