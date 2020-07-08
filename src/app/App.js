@@ -9,7 +9,7 @@ import { ShaderManager } from './rendering/ShaderManager';
 import { EntryBrowser } from './entry_browser/EntryBrowser';
 import { Statistics } from './Statistics';
 import { RandomiserManager } from './RandomiserManager';
-import { Toggle } from '../ui/AdjustableValues';
+import { Toggle } from '../ui/util/AdjustableValues';
 
 
 export class App {

@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { create_preinit_reducer } from './ui/reducers';
 import { Provider, useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import { SimulationView } from './ui/SimulationView/SimulationView';
-import { EntryBrowser } from './ui/EntryBrowser/EntryBrowser';
-import { ShaderMenu } from './ui/ShaderMenu';
-import { SizeChanger } from './ui/SizeChanger';
-import { Statistics } from './ui/Statistics';
-import { RandomiserMenu } from './ui/Randomiser';
-import { gui_reducer } from './ui/reducers/app';
+import { SimulationView } from './ui/components/SimulationView/SimulationView';
+import { EntryBrowser } from './ui/components/EntryBrowser/EntryBrowser';
+import { ShaderMenu } from './ui/components/ShaderMenu';
+import { SizeChanger } from './ui/components/SizeChanger';
+import { Statistics } from './ui/components/Statistics';
+import { RandomiserMenu } from './ui/components/Randomiser';
 
 export class App extends React.Component {
   constructor(props) {
     super(props);
     this.store = createStore(
-      combineReducers({gui: gui_reducer()}),
+      create_preinit_reducer(),
       compose(
         applyMiddleware(thunk),
         // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),

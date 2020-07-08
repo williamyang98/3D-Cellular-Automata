@@ -26,94 +26,11 @@ export function app_reducer(init_app) {
     return reducer;
 } 
 
-export function stats_reducer(init_stats) {
-    const reducer = (stats=init_stats, action) => {
-        switch (action.type) {
-            case 'stats.update':
-                return action.value;
-            default: 
-                break;
-        }
 
-        return stats;
-    }
 
-    return reducer;
-}
 
-export function entry_reducer(entry_browser) {
-    const reducer = (browser=entry_browser, action) => {
-        switch (action.type) {
-            case 'entry.refresh':
-                return browser;
-            case 'entry.select':
-                {
-                    let {key, index} = action.value;
-                    browser.select(key, index);
-                }
-                break;
-            default: 
-                break;
-        }
 
-        return browser;
-    } 
 
-    return reducer;
-}
 
-export function shader_reducer(shader_manager) {
-    const reducer = (manager=shader_manager, action) => {
-        switch (action.type) {
-            case 'shader.select_renderer':
-                manager.select_renderer(action.value);
-                break;
-            case 'shader.update_params':
-                manager.update_params(action.value);
-                break;
-            default: 
-                break;
-        }
 
-        return manager;
-    }
 
-    return reducer;
-}
-
-export function randomiser_reducer(randomiser_manager) {
-    const reducer = (manager=randomiser_manager, action) => {
-        switch (action.type) {
-            case 'randomiser.select':
-                manager.select(action.value);
-                break;
-            case 'randomiser.update':
-                manager.update_current(action.name, action.value);
-                break;
-            default: 
-                break;
-        }
-        return manager;
-    }
-    return reducer;
-}
-
-export function gui_reducer(init) {
-    let default_settings = {
-        fullscreen: false, 
-        focused: true,
-        ...init
-    };
-    const reducer = (settings=default_settings, action) => {
-        switch (action.type) {
-            case 'gui.fullscreen':
-                return {...settings, fullscreen: action.value};
-            case 'gui.focused':
-                return {...settings, focused: action.value};
-            default:
-                break;
-        }
-        return settings;
-    }
-    return reducer;
-}

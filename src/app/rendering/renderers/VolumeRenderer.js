@@ -7,7 +7,7 @@ import { UniformMat4f, UniformVec3f, Uniform } from "../../../gl/Uniform";
 import { cube_optimized } from "../../../gl/CubeData";
 import { volume_shader } from "../shaders/volume";
 
-import { Toggle, Slider, Dropdown } from "../../../ui/AdjustableValues";
+import { Toggle, Slider, Dropdown } from "../../../ui/util/AdjustableValues";
 
 export class VolumeRenderer extends Renderer {
     constructor(gl, props, params) {

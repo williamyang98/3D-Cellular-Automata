@@ -1,4 +1,8 @@
-import  { Slider } from '../ui/AdjustableValues';
+import  { Slider } from '../ui/util/AdjustableValues';
+/**
+ * Serialisation for web worker
+ */
+
 
 class SerializedRandomiser {
     constructor(type, params) {

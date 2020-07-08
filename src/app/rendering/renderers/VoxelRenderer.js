@@ -6,7 +6,7 @@ import { UniformMat4f, UniformVec3f, Uniform } from "../../../gl/Uniform";
 import { IndexBuffer } from "../../../gl/IndexBuffer";
 import { cube } from "../../../gl/CubeData";
 
-import { Toggle, Slider, Dropdown } from "../../../ui/AdjustableValues";
+import { Toggle, Slider, Dropdown } from "../../../ui/util/AdjustableValues";
 import { fragment_shader_src } from "../shaders/fragment_shader";
 import { vertex_shader_src } from "../shaders/vertex_shader";
 

@@ -1,11 +1,10 @@
 import React from 'react';
-import { App } from '../../app/App';
-
-import { app_reducer, shader_reducer, stats_reducer, randomiser_reducer, gui_reducer, entry_reducer } from '../reducers/app';
-import { combineReducers } from 'redux';
+import { App } from '../../../app/App';
 
 import { MouseController } from './MouseController';
 import { TouchScreenController } from './TouchScreenController';
+
+import { create_reducer } from '../../reducers';
 
 import "./Canvas.css";
 
@@ -57,21 +56,13 @@ export class Canvas extends React.Component {
   create_app(gl) {
     let store = this.props.store;
     let app = store.getState().app;
-    let gui = store.getState().gui;
     if (app) {
       return app;
     }
 
     app = new App(gl, store);
-    let reducers = combineReducers({
-      app: app_reducer(app),
-      entry_browser: entry_reducer(app.entry_browser),
-      shader_manager: shader_reducer(app.shader_manager),
-      stats: stats_reducer(app.stats),
-      randomiser: randomiser_reducer(app.randomiser_manager),
-      gui: gui_reducer(gui),
-    });
-    store.replaceReducer(reducers);
+    let reducer = create_reducer(app);
+    store.replaceReducer(reducer);
     app.run();
     return app;
   }

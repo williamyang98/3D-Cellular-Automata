@@ -4,7 +4,7 @@ import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../..
 import { Shader } from "../../../gl/Shader";
 import { IndexBuffer } from "../../../gl/IndexBuffer";
 
-import { Dropdown, Slider, Toggle } from "../../../ui/AdjustableValues";
+import { Dropdown, Slider, Toggle } from "../../../ui/util/AdjustableValues";
 import { Uniform } from "../../../gl/Uniform";
 
 import { fragment_shader_src } from "../shaders/fragment_shader";

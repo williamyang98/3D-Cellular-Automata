@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RenderAdjustableValue } from './AdjustableValueViews';
+import { RenderAdjustableValue } from '../util/AdjustableValueViews';
 import { BorderControls } from './BorderControls';
 
 export function ShaderMenu() {
