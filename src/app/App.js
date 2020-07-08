@@ -21,8 +21,8 @@ export class App {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    this.show_border = new Toggle(true);
-    this.show_render = new Toggle(true);
+    this.show_border = new Toggle(true, "Show an outlining border");
+    this.show_render = new Toggle(true, "Show the grid of cells (Disable if you want to see result later)");
 
     this.renderer = new Renderer(gl); 
     this.camera = new Camera();
@@ -37,7 +37,6 @@ export class App {
 
     let x = 100;
     this.set_size(vec3.fromValues(x, x, x));
-
 
     this.randomiser_manager.listen_select((randomiser) => {
       this.sim.set_randomiser(randomiser.to_json());

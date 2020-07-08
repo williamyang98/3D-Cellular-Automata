@@ -35,6 +35,14 @@ export function EntryEditor(props) {
 
   const err_fmt = errors ? 'is-invalid' : '';
 
+  const tooltip = (
+    "[Remain Alive]/[Become Alive]/[Total States]/[Neighbourhood]\n"+
+    "[Remain Alive]: Range where a cell stays alive. E.g. 0-3,9\n"+
+    "[Become Alive]: Range where a cell goes from dead to alive. E.g. 0-3,9\n"+
+    "[Total States]: Number of states a cell goes through when dying. E.g. 10\n"+
+    "[Neighbourhood]: Type of neighbour counting. 'M' counts all 26, and 'VN' counts 6"
+  )
+
   const form = (
     <form onSubmit={on_submit} onKeyDown={on_key_down} className="w-75">
       <div className="form-group row mb-0 mt-0">
@@ -44,7 +52,13 @@ export function EntryEditor(props) {
         </div>
       </div>
       <div className="form-group row mt-0 mb-0">
-        <label className="col-sm-3 col-form-label py-0">Rule:</label>
+        <div className="col-sm-3 col-form-label py-0">
+        <label className="mr-1">Rule:</label>
+        <span className="" data-toggle="tooltip" data-placement="left" data-html={true} title={tooltip}>
+          <i className="fas fa-question-circle"></i>
+        </span>
+
+        </div>
         <div className="col-sm py-0">
           <input type="text" className={`form-control form-control-sm w-100 py-0 ${err_fmt}`} id="ca_string" value={ca_string} onChange={ev => set_ca_string(ev.target.value)}/>
           {errors && render_errors(errors)}

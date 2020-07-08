@@ -14,8 +14,8 @@ export class VolumeRenderer extends Renderer {
         super(gl, props, params);
         [this.vao, this.ibo, this.index_data] = create_volume_data(gl);
         this.add_params({
-            occlusion: new Slider(0, 1, 0.65),
-            step_factor: new Slider(0.1, 2, 1)
+            occlusion: new Slider(0, 1, 0.65, "Amount that nearby cells darken the center cell"),
+            step_factor: new Slider(0.1, 2, 1, "Decrease to increase quality of volume render")
         });
         this.create_shader();
         this.params.colouring.listen(() => {

@@ -17,22 +17,22 @@ export class VoxelRenderer extends Renderer {
     constructor(gl, props, params) {
         super(gl, props, {});
         this.shading_params = {
-            ambient_strength: new Slider(0, 1, 0.4),
-            diffuse_strength: new Slider(0, 1, 0.95),
-            specular_strength: new Slider(0, 1, 0.6),
-            specular_power_factor: new Slider(0, 128.0, 4.0),
-            scaling_enabled: new Toggle(0),
-            fog_near: new Slider(0, 1, 0),
-            fog_far: new Slider(0, 1, 0),
-            sun_strength: new Slider(0, 1, 0.95),
-            sky_strength: new Slider(0, 1, 0.25),
-            brightness: new Slider(0, 1, 1.0),
-            occlusion: new Slider(0, 1, 0.0),
+            ambient_strength: new Slider(0, 1, 0.4, "Amount of global lighting"),
+            diffuse_strength: new Slider(0, 1, 0.95, "Amount of light scattering"),
+            specular_strength: new Slider(0, 1, 0.6, "Amount of light reflection"),
+            specular_power_factor: new Slider(0, 128.0, 4.0, "Strength of the light reflection"),
+            scaling_enabled: new Toggle(0, "Change size of cell depending on its value (state or total neighbours)"),
+            fog_near: new Slider(0, 1, 0, "Minimum distance of fog"),
+            fog_far: new Slider(0, 1, 0, "Maximum distance of fog"),
+            sun_strength: new Slider(0, 1, 0.95, "Strength of the sun"),
+            sky_strength: new Slider(0, 1, 0.25, "Strength of sky lighting"),
+            brightness: new Slider(0, 1, 1.0, "Amount of global lighting"),
+            occlusion: new Slider(0, 1, 0.0, "Amount nearby cells darken the center cell"),
         };
 
         this.global_params = {
             ...params,
-            shading: new Dropdown(Object.keys(fragment_shader_src)),
+            shading: new Dropdown(Object.keys(fragment_shader_src), 0, "Different methods of rendering"),
         };
 
         this.shading_keys = {

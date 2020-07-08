@@ -18,7 +18,7 @@ export class ShaderManager {
     };
 
     this.global_params = {
-      colouring: new Dropdown(Object.keys(vertex_shader_src)),
+      colouring: new Dropdown(Object.keys(vertex_shader_src), 0, 'Method of colouring each cell'),
     };
 
     this.renderers = {
@@ -27,7 +27,15 @@ export class ShaderManager {
       voxel: new VoxelRenderer(gl, props, this.global_params),
     };
 
-    this.renderer_type = new Dropdown(Object.keys(this.renderers));
+    {
+      const tooltip = (
+        "Method of rendering the grid\n"+
+        "Volume: Fastest but low quality (Uses raycasting)\n"+
+        "Point: Represents each cell as a floating quad\n"+
+        "Voxel: Slowest but highest quality (Like Minecraft)\n"
+      );
+      this.renderer_type = new Dropdown(Object.keys(this.renderers), 0, tooltip);
+    }
   }
 
   set_size(size) {

@@ -14,10 +14,10 @@ export class PointCloudRenderer extends Renderer {
     constructor(gl, props, params) {
         super(gl, props, params);
         this.add_params({
-            point_type: new Dropdown(['quad', 'tri']),
-            brightness: new Slider(0, 1, 1),
-            occlusion: new Slider(0, 1, 0.65),
-            scaling_enabled: new Toggle(0),
+            point_type: new Dropdown(['quad', 'tri'], 0, "Render quad or triangle for each point"),
+            brightness: new Slider(0, 1, 1, "Global brightness"),
+            occlusion: new Slider(0, 1, 0.65, "Amount nearby cells darken the center cell"),
+            scaling_enabled: new Toggle(0, "Size of cell varies with its value"),
         });
         this.data = {
             quad: create_quad_data(gl),

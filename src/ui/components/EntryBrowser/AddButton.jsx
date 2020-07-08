@@ -11,7 +11,7 @@ export function AddButton() {
 
   const render_add_button = () => (
     <li className="list-group-item" style={{textAlign:'center'}}>
-      <button className="btn btn-circle btn-md btn-secondary" onClick={() => set_editing(true)}>
+      <button className="btn btn-circle btn-md btn-secondary shadow" onClick={() => set_editing(true)}>
         <span className="icon text-white-600 m-0">
           <i className="fas fa-plus"></i>
         </span>

@@ -25,8 +25,8 @@ class SerializedRandomiser {
 export class SeedCrystalSerialized extends SerializedRandomiser {
     constructor(density=0.2, radius=0.1) {
         super('Seed Crystal', {
-            density: new Slider(0, 1, density),
-            radius: new Slider(0, 0.5, radius),
+            density: new Slider(0, 1, density, "Amount of region to fill"),
+            radius: new Slider(0, 0.5, radius, "Radius of cube to fill (Relative to size of 3D grid)"),
         });
     }
 }
@@ -34,8 +34,8 @@ export class SeedCrystalSerialized extends SerializedRandomiser {
 export class SeedCrystalAbsoluteSerialized extends SerializedRandomiser {
     constructor(density=0.2, radius=3) {
         super('Seed Crystal Absolute', {
-            density: new Slider(0, 1, density),
-            radius: new Slider(0, 100, radius),
+            density: new Slider(0, 1, density, "Amount of region to fill"),
+            radius: new Slider(0, 100, radius, "Radius of cube to fill (Number of cells for radius)"),
         });
     }
 }

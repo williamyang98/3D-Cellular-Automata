@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { RenderAdjustableValue } from '../util/AdjustableValueViews';
 import { update_randomiser, select_randomiser } from '../actions';
+import { Help } from '../util/Help';
 
 export function RandomiserMenu() {
   const dispatch = useDispatch();
@@ -19,14 +20,17 @@ export function RandomiserMenu() {
 
   const card_body = (
     <div>
-      <form>
-        <div className='form-inline'>
-          <label className='mr-2'>Randomiser</label>
-          <select className='custom-select custom-select-sm' value={current_index} onChange={on_select_randomiser}>
-            {randomiser_options}
-          </select>
+      <div className="row w-100">
+        <div className="col-sm">
+          <div className='form-inline'>
+            <label className='mr-2'>Randomiser</label>
+            <select className='custom-select custom-select-sm' value={current_index} onChange={on_select_randomiser}>
+              {randomiser_options}
+            </select>
+          </div>
         </div>
-      </form>
+        <div className="col-sm-1 text-right"><Help text={"Type of randomiser to use"}></Help></div>
+      </div>
       <hr></hr>
       <SeedCrystalEditor></SeedCrystalEditor>
     </div>

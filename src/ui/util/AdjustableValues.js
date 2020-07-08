@@ -1,6 +1,7 @@
 class AdjustableValue {
-  constructor(type, value) {
+  constructor(type, value, help) {
     this.type = type;
+    this.help = help;
     this._value = value;
     this.listeners = new Set();
   }
@@ -30,8 +31,8 @@ class AdjustableValue {
 }
 
 export class Toggle extends AdjustableValue {
-  constructor(value) {
-    super('toggle', value);
+  constructor(value, help) {
+    super('toggle', value, help);
   }
 
   // javascript doesnt extend accessors
@@ -45,8 +46,8 @@ export class Toggle extends AdjustableValue {
 }
 
 export class Slider extends AdjustableValue {
-  constructor(min, max, value) {
-    super('slider', value);
+  constructor(min, max, value, help) {
+    super('slider', value, help);
     this.min = min;
     this.max = max;
   }
@@ -72,8 +73,8 @@ export class Slider extends AdjustableValue {
 }
 
 export class Dropdown extends AdjustableValue {
-  constructor(options, index=0) {
-    super('dropdown', index);
+  constructor(options, index=0, help=undefined) {
+    super('dropdown', index, help);
     this.options = options;
   }
 
