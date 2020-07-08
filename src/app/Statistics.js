@@ -12,11 +12,20 @@ export class Statistics {
             texture_data_upload: 0,
             draw_time: 0,
         };
+        this.cooldown = false;
     }
 
     force_update() {
+        if (this.cooldown) {
+            return;
+        }
+
         this.store.dispatch((dispatch) => {
-            setTimeout(() => dispatch(update_statistics(this)), 0);
+            this.cooldown = true;
+            setTimeout(() => {
+                dispatch(update_statistics(this));
+                setTimeout(() => this.cooldown = false, 30);
+            }, 0);
         });
     }
 
