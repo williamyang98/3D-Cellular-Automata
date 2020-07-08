@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { create_entry } from '../../actions';
 
 export function EntryEditor() {
   const dispatch = useDispatch();  
@@ -10,15 +11,7 @@ export function EntryEditor() {
   const entry_browser = useSelector(store => store.entry_browser);
 
   function on_submit(ev) {
-    dispatch(() => {
-      entry_browser.create(name, ca_string)
-        .then(() => {
-          set_error(false);
-          dispatch({type: 'entry.refresh'});
-        }, (err) => {
-          set_error(err);
-        });
-    })
+    dispatch(create_entry(name, ca_string, err => set_error(err)));
     ev.preventDefault();
   }
 

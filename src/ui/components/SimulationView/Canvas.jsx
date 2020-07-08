@@ -7,6 +7,7 @@ import { TouchScreenController } from './TouchScreenController';
 import { create_reducer } from '../../reducers';
 
 import "./Canvas.css";
+import { set_focused } from '../../actions';
 
 export class Canvas extends React.Component {
   constructor(props) {
@@ -50,7 +51,7 @@ export class Canvas extends React.Component {
     if (original === focused) {
       return;
     }
-    store.dispatch({type:'gui.focused', value:focused});
+    store.dispatch(set_focused(focused));
   }
 
   create_app(gl) {

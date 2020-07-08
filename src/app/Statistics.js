@@ -1,3 +1,5 @@
+import { update_statistics } from "../ui/actions";
+
 export class Statistics {
     constructor(store) {
         this.store = store;
@@ -14,12 +16,7 @@ export class Statistics {
 
     force_update() {
         this.store.dispatch((dispatch) => {
-            setTimeout(() => {
-                dispatch({
-                    type: 'stats.update',
-                    value: this
-                });
-            }, 0);
+            setTimeout(() => dispatch(update_statistics(this)), 0);
         });
     }
 

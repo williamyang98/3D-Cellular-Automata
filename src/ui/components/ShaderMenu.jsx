@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RenderAdjustableValue } from '../util/AdjustableValueViews';
 import { BorderControls } from './BorderControls';
+import { update_shader_params, select_renderer } from '../actions';
 
 export function ShaderMenu() {
   const dispatch = useDispatch();
@@ -12,7 +13,7 @@ export function ShaderMenu() {
     <div>
       <form className='form-inline'>
         {RenderAdjustableValue(renderer_type, 0, 'Renderer', value => {
-          dispatch({type:'shader.select_renderer', value:value});
+          dispatch(select_renderer(value));
         })}
       </form>
       <BorderControls></BorderControls>
@@ -44,7 +45,7 @@ function ShaderSettings() {
       return RenderAdjustableValue(param, index, name, value => {
         let data = {};
         data[name] = value;
-        dispatch({type: 'shader.update_params', value: data}) 
+        dispatch(update_shader_params(data)); 
       })
     })}</form>
   );

@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { set_fullscreen as action_fullscreen } from '../../actions';
+
 export function FullScreenButton() {
   const dispatch = useDispatch();
   const fullscreen = useSelector(state => state.gui.fullscreen);
@@ -19,7 +21,7 @@ export function FullScreenButton() {
   const onClick = () => {
     let is_fullscreen = !fullscreen;
     set_fullscreen(is_fullscreen);
-    dispatch({type:'gui.fullscreen', value: is_fullscreen});
+    dispatch(action_fullscreen(is_fullscreen));
   };
 
   return (

@@ -1,15 +1,16 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { RenderAdjustableValue } from '../util/AdjustableValueViews';
+import { update_randomiser, select_randomiser } from '../actions';
 
 export function RandomiserMenu() {
   const dispatch = useDispatch();
   let current_index = useSelector(state => state.randomiser.current_index);
   let entries = useSelector(state => state.randomiser.entries);
 
-  function select_randomiser(event) {
+  function on_select_randomiser(event) {
     let index = event.target.value;
-    dispatch({type:'randomiser.select', value:index});
+    dispatch(select_randomiser(index));
   }
 
   const randomiser_options = entries.map((e, i) => {
@@ -21,7 +22,7 @@ export function RandomiserMenu() {
       <form>
         <div className='form-inline'>
           <label className='mr-2'>Randomiser</label>
-          <select className='custom-select custom-select-sm' value={current_index} onChange={select_randomiser}>
+          <select className='custom-select custom-select-sm' value={current_index} onChange={on_select_randomiser}>
             {randomiser_options}
           </select>
         </div>
@@ -50,11 +51,7 @@ export function SeedCrystalEditor() {
   let params = useSelector(state => state.randomiser.current_randomiser.params);
 
   function change_param(name, value) {
-    dispatch({
-      type: 'randomiser.update', 
-      name: name,
-      value: value,
-    });
+    dispatch(update_randomiser(name, value));
   }
 
   let param_options = Object

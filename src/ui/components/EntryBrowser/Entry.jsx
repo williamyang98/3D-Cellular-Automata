@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import "./Entry.css";
+import { select_entry, edit_entry, delete_entry } from '../../actions';
 
 export function Entry(props) {
   const dispatch = useDispatch();
@@ -12,8 +13,6 @@ export function Entry(props) {
   const {del, copy, edit} = props;
   const selected = props.selected;
 
-  let data = {key: browser, index};
-
   let [show_actions, set_show_actions] = useState(false);
   let [copy_success, set_copy_success] = useState(false);
   let [editing, set_editing] = useState(false);
@@ -23,15 +22,12 @@ export function Entry(props) {
   let [description, set_description] = useState(entry.description);
 
   function on_select(ev) {
-    dispatch({type:'entry.select', value:data});
+    dispatch(select_entry(browser, index));
     ev.preventDefault();
   }
 
   function on_delete(ev) {
-    dispatch(() => {
-      entry_browser.delete(browser, index)
-        .then(() => dispatch({type: 'entry.refresh'}));
-    });
+    dispatch(delete_entry(browser, index));
     ev.preventDefault();
   }
 
@@ -61,14 +57,10 @@ export function Entry(props) {
     if (ev) {
       ev.preventDefault();
     }
-    dispatch(() => {
-      entry_browser.edit(browser, index, name, description)
-        .then(() => {
-          set_editing(false);
-          set_error(false);
-          dispatch({type: 'entry.refresh'});
-        }, (err) => set_error(err));
-    });
+    dispatch(edit_entry(browser, index, name, description, err => {
+      set_error(err);
+      set_editing(Boolean(err));
+    }))
   }
 
   const copy_tooltip = (

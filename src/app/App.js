@@ -46,9 +46,13 @@ export class App {
     this.entry_browser.listen_select((entry) => {
       let randomiser = entry.randomiser;
       let rule = entry.rule;
-      this.randomiser_manager.update_randomiser(randomiser);
-      this.sim.set_rule(rule.to_json());
-      this.sim_renderer.max_neighbours = rule.neighbour.max;
+      if (randomiser) {
+        this.randomiser_manager.update_randomiser(randomiser);
+      }
+      if (rule) {
+        this.sim.set_rule(rule.to_json());
+        this.sim_renderer.max_neighbours = rule.neighbour.max;
+      }
     });
 
     // select amoeba with layer colouring

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { vec3 } from 'gl-matrix';
 import { useDispatch, useSelector } from 'react-redux';
+import { set_size } from '../actions';
 
 export function SizeChanger() {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ export function SizeChanger() {
     set_y(Y);
     set_z(Z);
     let size = vec3.fromValues(X, Y, Z);
-    dispatch({type: 'app.set_size', value: size});
+    dispatch(set_size(size));
     event.preventDefault();
   }
 

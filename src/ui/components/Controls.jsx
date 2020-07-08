@@ -2,6 +2,8 @@ import React from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 
+import { sim } from '../actions';
+
 export function Controls () {
   const is_running = useSelector(state => state.app.sim.is_running);
   const dispatch = useDispatch();
@@ -11,10 +13,10 @@ export function Controls () {
 
   return (
     <div className="btn-group">
-      <button className="btn btn-secondary" onClick={() => dispatch({type: 'step'})}>Step</button>
-      <button className="btn btn-primary" onClick={() => dispatch({type: 'randomise'})}>Randomise</button>
-      <button className="btn btn-warning" onClick={() => dispatch({type: 'clear'})}>Clear</button>
-      <button className={"btn btn-"+run_btn} onClick={() => dispatch({type: 'toggle'})}>{on_off}</button>
+      <button className="btn btn-secondary" onClick={() => dispatch(sim.step())}>Step</button>
+      <button className="btn btn-primary" onClick={() => dispatch(sim.randomise())}>Randomise</button>
+      <button className="btn btn-warning" onClick={() => dispatch(sim.clear())}>Clear</button>
+      <button className={"btn btn-"+run_btn} onClick={() => dispatch(sim.toggle())}>{on_off}</button>
     </div>
   );
 }
