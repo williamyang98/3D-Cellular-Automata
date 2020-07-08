@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { EntryEditor } from './EntryEditor';
+import { useSelector } from 'react-redux';
 import { Entry } from './Entry';
+import { AddButton } from './AddButton';
 
 export function EntryBrowser() {
-  const dispatch = useDispatch();
-
   const selected_browser_key = useSelector(state => state.entry_browser.current_browser_key);
   const selected_index = useSelector(state => state.entry_browser.selected_browser.current_index);
 
@@ -27,7 +25,7 @@ export function EntryBrowser() {
       let props = {
         entry: e, 
         browser: browser_key, index: i,
-        del: is_user, copy: true, edit: is_user,
+        actions: {del: is_user, copy: true, edit: is_user},
         selected: i === selected_index && browser_key === selected_browser_key,
       }
       return <Entry {...props} key={`${browser_key}_${i}_${e.id}`}></Entry>
@@ -43,28 +41,8 @@ export function EntryBrowser() {
     );
   }
 
-  function render_no_entries() {
-    return (
-      <li className="list-group-item" style={{textAlign:'center'}}>
-        <h5 className="m-0">No Entries</h5>
-      </li>
-    );
-  }
-
-
   const render_controls = (
     <div className="d-flex flex-row">
-      {/* Add button */}
-      {/* <i className={`fas fa-plus-square mr-2`}></i> */}
-      <div className="dropdown no-arrow">
-        <a className="dropdown-toggle" href="#" role="button" id="add_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i className={`fas fa-plus-square mr-2`}></i>
-        </a>
-        <div className="dropdown-menu dropdown-menu-right shadow col-sm-10" aria-labelledby="add_dropdown" style={{minWidth:'25.0rem'}}>
-          <EntryEditor></EntryEditor>
-        </div>
-      </div>
-      {/* Categories */}
       <div className="dropdown no-arrow">
         <a className="dropdown-toggle" href="#" role="button" id="category_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i className="fas fa-caret-square-down"></i>
@@ -84,8 +62,9 @@ export function EntryBrowser() {
       </div>
       <div className="collapse show" id="collapseRulesBrowser">
         <ul className="list-group">
-          {entries.length > 0 ? render_rule_items() : render_no_entries()}
+          {render_rule_items()}
         </ul>
+        {is_user && <AddButton></AddButton>}
       </div>
     </div>
   );
