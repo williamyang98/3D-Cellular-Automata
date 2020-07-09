@@ -39,11 +39,12 @@ export function ShaderMenu() {
 function ShaderSettings() {
   const dispatch = useDispatch();
   const params = useSelector(state => state.shader_manager.params);
+  const renderer_type = useSelector(state => state.shader_manager.renderer_type.value);
 
   return (
     <div>
       {Object.entries(params).map(([name, param], index) => {
-        return RenderAdjustableValue(param, index, name, value => {
+        return RenderAdjustableValue(param, `${renderer_type}_${index}`, name, value => {
           let data = {};
           data[name] = value;
           dispatch(update_shader_params(data)); 

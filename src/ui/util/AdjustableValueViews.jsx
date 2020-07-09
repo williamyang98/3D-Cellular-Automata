@@ -48,9 +48,9 @@ function SliderView(slider, key, name, valueChanged) {
 
 function ToggleView(toggle, key, name, valueChanged) {
   return (
-    <div className="row w-100">
+    <div className="row w-100" key={key}>
       <div className="col-sm">
-        <div className='form-check' key={key}>
+        <div className='form-check'>
           <input 
             type='checkbox' className='form-check-input'
             checked={toggle.value}
