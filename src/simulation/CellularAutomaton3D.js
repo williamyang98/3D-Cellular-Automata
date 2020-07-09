@@ -4,12 +4,18 @@ import worker from 'worker-loader!./worker.js'; // eslint-disable-line import/no
  * Frontend to communicate with the web worker
  */
 export class CellularAutomaton3D {
-    constructor(stats) {
+    constructor(size, stats) {
+        this.size = size;
         this.stats = stats;
 
         this.worker = worker();
         this.promise_id = 0;
         this.is_running = false;
+
+        this.set_size(this.size.value);
+        this.size.listen(size => {
+            this.set_size(size.value);
+        })
 
         this.worker.addEventListener('message', (event) => {
             let msg = event.data;

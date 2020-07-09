@@ -7,9 +7,9 @@ import { VoxelRenderer } from './renderers/VoxelRenderer';
 import { vertex_shader_src } from './shaders/vertex_shader';
 
 export class ShaderManager {
-  constructor(gl, camera) {
+  constructor(gl, size, camera) {
     this.gl = gl;
-    this.size = vec3.create();
+    this.size = size;
     this.camera = camera;
 
     let props = {
@@ -36,13 +36,6 @@ export class ShaderManager {
       );
       this.renderer_type = new Dropdown(Object.keys(this.renderers), 0, tooltip);
     }
-  }
-
-  set_size(size) {
-    this.size = size;
-    Object.values(this.renderers).forEach(renderer => {
-      renderer.update_props({size: size});
-    })
   }
 
   get current_renderer() {

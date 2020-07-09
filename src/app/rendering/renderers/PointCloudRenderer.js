@@ -59,8 +59,8 @@ export class PointCloudRenderer extends Renderer {
     on_render() {
         let gl = this.gl;
         let data = this.current_data;
-        let size = this.props.size;
-        let total_cells = size[0]*size[1]*size[2];
+        let [x, y, z] = this.props.size.value;
+        let total_cells = x*y*z;
         gl.enable(gl.CULL_FACE);
         gl.cullFace(gl.BACK);
         gl.drawElementsInstanced(gl.TRIANGLES, data.ibo.count, gl.UNSIGNED_INT, data.index_data, total_cells); 

@@ -1,7 +1,9 @@
 import { mat4, vec3 } from 'gl-matrix';
 
 export class Camera {
-  constructor() {
+  constructor(size) {
+    this.size = size;
+
     this.fov = 50;
     this.aspect_ratio = 1;
     this.view_position = vec3.fromValues(0, 0, 0);
@@ -13,7 +15,27 @@ export class Camera {
     this.view = mat4.create();
     this.projection = mat4.create();
 
+    this.on_size_change(this.size.value);
+    this.size.listen(size => this.on_size_change(size.value));
+
     this.update();
+  }
+
+  on_size_change(size) {
+    this.model_translation = vec3.create();
+    vec3.scale(this.model_translation, size, -0.5);
+
+    // zoom along minimum axis
+    // zoom by maximum axis
+    let distance = Math.max(...size);
+    let min_index = argmin([...size]); 
+
+    this.view_position = vec3.create();
+    this.view_position[min_index] = distance*1.5;
+    // glitchy around y axis due to euler angle rotation, so add offset
+    if (min_index === 1) {
+      this.view_position[2] = 1;
+    }
   }
 
   update() {
@@ -53,6 +75,19 @@ export class Camera {
 
     vec3.add(this.view_position, this.look_position, diff);
   }
-
-
 }
+
+
+function argmin(list) {
+  let min_i = 0;
+  let min_val = list[0];
+  for (let i = 1; i < list.length; i++) {
+    let val = list[i];
+    if (val < min_val) {
+      min_val = val;
+      min_i = i;
+    }
+  } 
+  return min_i;
+}
+

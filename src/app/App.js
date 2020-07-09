@@ -9,6 +9,7 @@ import { EntryBrowser } from './entry_browser/EntryBrowser';
 import { Statistics } from './Statistics';
 import { RandomiserManager } from './RandomiserManager';
 import { Toggle, Color } from '../ui/util/AdjustableValues';
+import { Observable } from './Observable';
 
 
 export class App {
@@ -24,23 +25,25 @@ export class App {
     this.show_render = new Toggle(true, "Show the grid of cells (Disable if you want to see result later)");
     this.background_colour = new Color([255,255,255], "Background Colour");
 
-    this.camera = new Camera();
+    let x = 100;
+    this.size = new Observable(vec3.fromValues(x, x, x));
+    this.camera = new Camera(this.size);
 
-    this.shader_manager = new ShaderManager(gl, this.camera);
+    this.shader_manager = new ShaderManager(gl, this.size, this.camera);
     this.randomiser_manager = new RandomiserManager();
     this.entry_browser = new EntryBrowser();
     this.stats = new Statistics(this.store);
 
-    this.sim = new CellularAutomaton3D(this.stats);
-    this.sim_renderer = new SimulationRenderer(gl, this.sim, this.shader_manager, this.stats);
+    this.sim = new CellularAutomaton3D(this.size, this.stats);
+    this.sim_renderer = new SimulationRenderer(gl, this.size, this.sim, this.shader_manager, this.stats);
+    this.border = new Border(gl, this.size, this.camera);
 
-    let x = 100;
-    this.set_size(vec3.fromValues(x, x, x));
-
+    // everytime randomiser is changed, we update randomiser
     this.randomiser_manager.listen_select((randomiser) => {
       this.sim.set_randomiser(randomiser.to_json());
     });
 
+    // when changing entries, we have a new randomiser and rule
     this.entry_browser.listen_select((entry) => {
       let randomiser = entry.randomiser;
       let rule = entry.rule;
@@ -52,6 +55,8 @@ export class App {
         this.sim_renderer.max_neighbours = rule.neighbour.max;
       }
     });
+
+    this.size.notify();
 
     // select amoeba with layer colouring
     this.entry_browser.select('Default', 0);
@@ -66,26 +71,10 @@ export class App {
   }
 
   set_size(size) {
-    let gl = this.gl;
-    this.size = size;
-    this.sim.set_size(size);
-    this.sim_renderer.set_size(size);
-    this.shader_manager.set_size(size);
-
-    this.border = new Border(gl, this.size, this.camera);
-
-    this.camera.model_translation = vec3.create();
-    vec3.scale(this.camera.model_translation, this.size, -0.5);
-    // zoom along minimum axis
-    // zoom by maximum axis
-    let distance = Math.max(...size);
-    let min_index = argmin([...size]); 
-
-    this.camera.view_position = vec3.create();
-    this.camera.view_position[min_index] = distance*1.5;
-    // glitchy around y axis due to euler angle rotation, so add offset
-    if (min_index === 1) {
-      this.camera.view_position[2] = 1;
+    let [xi, yi, zi] = this.size.value;
+    let [xf, yf, zf] = size;
+    if (xi !== xf || yi !== yf || zi !== zf) {
+      this.size.value = size;
     }
   }
 
@@ -139,19 +128,5 @@ export class App {
     }
   }
 }
-
-function argmin(list) {
-  let min_i = 0;
-  let min_val = list[0];
-  for (let i = 1; i < list.length; i++) {
-    let val = list[i];
-    if (val < min_val) {
-      min_val = val;
-      min_i = i;
-    }
-  } 
-  return min_i;
-}
-
 
 

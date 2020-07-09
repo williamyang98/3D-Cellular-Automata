@@ -5,7 +5,7 @@ import { set_size } from '../actions';
 
 export function SizeChanger() {
   const dispatch = useDispatch();
-  const app_size = useSelector(state => state.app.size);
+  const app_size = useSelector(state => state.app.size.value);
   let [x, set_x] = useState(app_size[0]);
   let [y, set_y] = useState(app_size[1]);
   let [z, set_z] = useState(app_size[2]);

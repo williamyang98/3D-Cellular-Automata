@@ -5,8 +5,12 @@ import { create_states_texture, create_radius_texture } from './ColourMaps';
  * Collect data from simulation and render it
  */
 export class SimulationRenderer {
-  constructor(gl, sim, shader_manager, stats) {
+  constructor(gl, size, sim, shader_manager, stats) {
     this.gl = gl;
+
+    this.size = size;
+    this.set_size(this.size.value);
+    this.size.listen(size => this.set_size(size.value));
 
     this.sim = sim;
     this.shader_manager = shader_manager;
@@ -21,12 +25,12 @@ export class SimulationRenderer {
   }
 
   set_size(size) {
-    this.size = size;
-    this.total_cells = size[0] * size[1] * size[2];
-    this.create_textures();
+    let [x, y, z] = size;
+    this.total_cells = x*y*z; 
+    this.create_textures(size);
   }
 
-  create_textures() {
+  create_textures(size) {
     let gl = this.gl;
 
     // colour maps for states and distances
@@ -36,7 +40,7 @@ export class SimulationRenderer {
     // create 3d texture for rendering cell data
     this.cell_data_width = 2;
     this.cell_data = new Uint8Array(this.total_cells*this.cell_data_width);
-    this.cell_data_texture = new Texture3D(gl, this.cell_data, this.size);
+    this.cell_data_texture = new Texture3D(gl, this.cell_data, size);
   }
 
   
@@ -79,7 +83,8 @@ export class SimulationRenderer {
       return;
     }
     let start = performance.now();
-    gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, this.size[0], this.size[1], this.size[2], gl.RG, gl.UNSIGNED_BYTE, this.cell_data, 0);
+    let [x, y, z] = this.size.value;
+    gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, x, y, z, gl.RG, gl.UNSIGNED_BYTE, this.cell_data, 0);
     let end = performance.now();
     this.stats.recieve('texture_data_upload', end-start);
     this.data_updated = false;
