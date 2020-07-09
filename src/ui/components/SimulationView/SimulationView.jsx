@@ -11,6 +11,7 @@ export function SimulationView(props) {
   const app = useSelector(store => store.app);
   const fullscreen = useSelector(store => store.gui.fullscreen);
   const focused = useSelector(store => store.gui.focused);
+  const background_colour = useSelector(store => store.app && store.app.background_colour.value)
 
   let float_controls = (fullscreen && !focused) ? 'fade' : '';
 
@@ -41,14 +42,17 @@ export function SimulationView(props) {
           data-toggle="tooltip"
           data-placement="left"
           title="Github Repository">
-          <i class="fab fa-github"></i>
+          <i className="fab fa-github"></i>
         </a>
       </div>
     )
   }
 
+  const border_colour = background_colour || [255, 255, 255]; 
+  const rgb = `rgb(${border_colour[0]}, ${border_colour[1]}, ${border_colour[2]})`;
+
   return (
-    <div className="sim-view shadow h-100">
+    <div className="card sim-view shadow h-100" style={{border: `1px solid ${rgb}`}}>
       <Canvas store={store} canvas={props.canvas}></Canvas>
       {app ? render_float_controls() : <div></div>}
       {render_fullscreen_button()}

@@ -21,13 +21,13 @@ export function RandomiserMenu() {
   const card_body = (
     <div>
       <div className="row w-100">
+        <div className="col-sm-5">
+          <label className='mr-2'>Randomiser</label>
+        </div>
         <div className="col-sm">
-          <div className='form-inline'>
-            <label className='mr-2'>Randomiser</label>
-            <select className='custom-select custom-select-sm' value={current_index} onChange={on_select_randomiser}>
-              {randomiser_options}
-            </select>
-          </div>
+          <select className='custom-select custom-select-sm' value={current_index} onChange={on_select_randomiser}>
+            {randomiser_options}
+          </select>
         </div>
         <div className="col-sm-1 text-right"><Help text={"Type of randomiser to use"}></Help></div>
       </div>

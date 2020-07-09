@@ -11,11 +11,11 @@ export function ShaderMenu() {
 
   const card_body = (
     <div>
-      <form className='form-inline'>
+      <div>
         {RenderAdjustableValue(renderer_type, 0, 'Renderer', value => {
           dispatch(select_renderer(value));
         })}
-      </form>
+      </div>
       <BorderControls></BorderControls>
       <hr></hr>
       <ShaderSettings></ShaderSettings>
@@ -41,12 +41,14 @@ function ShaderSettings() {
   const params = useSelector(state => state.shader_manager.params);
 
   return (
-    <form>{Object.entries(params).map(([name, param], index) => {
-      return RenderAdjustableValue(param, index, name, value => {
-        let data = {};
-        data[name] = value;
-        dispatch(update_shader_params(data)); 
-      })
-    })}</form>
+    <div>
+      {Object.entries(params).map(([name, param], index) => {
+        return RenderAdjustableValue(param, index, name, value => {
+          let data = {};
+          data[name] = value;
+          dispatch(update_shader_params(data)); 
+        })
+      })}
+    </div>
   );
 }

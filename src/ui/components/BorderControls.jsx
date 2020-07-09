@@ -28,7 +28,7 @@ export function BorderControls() {
       {RenderAdjustableValue(background_colour, 2, 'Background Colour', value => {
         dispatch(set_background_colour(value));
       })}
-      {RenderAdjustableValue(border_colour, 2, 'Border Colour', value => {
+      {RenderAdjustableValue(border_colour, 3, 'Border Colour', value => {
         dispatch(set_border_colour(value));
       })}
     </div>

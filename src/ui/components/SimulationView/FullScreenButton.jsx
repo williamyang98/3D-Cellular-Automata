@@ -14,14 +14,19 @@ export function FullScreenButton() {
     const d = document;
     const request_fullscreen = e.requestFullscreen || e.mozRequestFullScreen || e.webkitRequestFullScreen || e.msRequestFullscreen;
     const cancel_fullscreen = d.exitFullscreen || d.mozCancelFullScreen || d.webkitCancelFullScreen || d.msExitFullscreen;
-    if (is_fullscreen) request_fullscreen.bind(e)();
-    else               cancel_fullscreen.bind(d)();
+    const document_fullscreen = (d.fullscreenElement && d.fullscreenElement !== undefined) || d.mozFullscreen || d.webkitIsFullScreen; 
+    if (!document_fullscreen) {
+      request_fullscreen.bind(e)();
+      dispatch(action_fullscreen(true));
+    } else {
+      cancel_fullscreen.bind(d)();
+      dispatch(action_fullscreen(false));
+    }
   }
 
   const onClick = () => {
     let is_fullscreen = !fullscreen;
     set_fullscreen(is_fullscreen);
-    dispatch(action_fullscreen(is_fullscreen));
   };
 
   return (
