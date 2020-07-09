@@ -71,8 +71,8 @@ export function EntryEditor(props) {
     <div 
       className={`actions ${!show_actions && 'fade'}`} 
       onMouseOver={() => set_show_actions(true)}>
-      <button className="btn btn-circle btn-sm btn-warning" role="button" onClick={on_exit}><i className="fas fa-ban"></i></button>
-      <button className="btn btn-circle btn-sm btn-success" role="button" onClick={on_submit}><i className="fas fa-check-circle"></i></button>
+      <button className="btn btn-circle btn-sm btn-warning"  onClick={on_exit}><i className="fas fa-ban"></i></button>
+      <button className="btn btn-circle btn-sm btn-success"  onClick={on_submit}><i className="fas fa-check-circle"></i></button>
     </div>
   );
 

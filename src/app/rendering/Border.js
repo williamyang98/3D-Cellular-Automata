@@ -1,9 +1,9 @@
 import { Shader } from '../../gl/Shader';
 import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../../gl/VertexBuffer';
 import { IndexBuffer } from '../../gl/IndexBuffer';
-import { UniformMat4f, UniformVec3f, UniformVec4f, Uniform } from '../../gl/Uniform';
+import { UniformMat4f, UniformVec3f, Uniform } from '../../gl/Uniform';
 
-import { vec3, vec4 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 
 import border_shader from './shaders/border';
 import { BoundingBox } from './BoundingBox';

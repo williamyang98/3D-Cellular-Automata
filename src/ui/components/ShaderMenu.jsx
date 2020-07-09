@@ -7,7 +7,7 @@ import { update_shader_params, select_renderer } from '../actions';
 export function ShaderMenu() {
   const dispatch = useDispatch();
   const renderer_type = useSelector(state => state.shader_manager.renderer_type);
-  const current_renderer_type = useSelector(state => state.shader_manager.renderer_type.value);
+  const _ = useSelector(state => state.shader_manager.renderer_type.value);
 
   const card_body = (
     <div>

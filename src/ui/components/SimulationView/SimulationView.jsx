@@ -1,12 +1,11 @@
-import React, { useState }  from 'react';
+import React from 'react';
 import { Controls } from '../Controls';
-import { useSelector, useStore, useDispatch } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import { Canvas } from './Canvas';
 import { FullScreenButton } from './FullScreenButton';
 import "./SimulationView.css";
 
 export function SimulationView(props) {
-  const dispatch = useDispatch();
   const store = useStore();
   const app = useSelector(store => store.app);
   const fullscreen = useSelector(store => store.gui.fullscreen);
@@ -39,6 +38,7 @@ export function SimulationView(props) {
         <a className="btn btn-dark btn-circle btn-md" 
           href="https://github.com/FiendChain/3D-Cellular-Automata"
           target="_blank"
+          rel="noopener noreferrer"
           data-toggle="tooltip"
           data-placement="left"
           title="Github Repository">

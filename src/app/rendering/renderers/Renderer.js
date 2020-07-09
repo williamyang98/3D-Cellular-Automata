@@ -1,5 +1,5 @@
 import { vec3 } from "gl-matrix";
-import { UniformMat4f, UniformVec3f, Uniform } from "../../../gl/Uniform";
+import { UniformMat4f, Uniform } from "../../../gl/Uniform";
 
 /**
  * Given a 3D point cloud, render it
@@ -9,17 +9,18 @@ export class Renderer {
         this.gl = gl;
         this.props = {
             size: vec3.create(),
-            ...props};
+            ...props
+        };
         this.params = params;
     }
 
     // arbitary values
     update_props(props) {
-        this.props = {...this.props, ...props};
-    } 
+        this.props = { ...this.props, ...props };
+    }
 
     add_params(params) {
-        this.params = {...this.params, ...params};
+        this.params = { ...this.params, ...params };
     }
 
     // adjustable values
@@ -28,7 +29,7 @@ export class Renderer {
             let param = this.params[key];
             param.value = params[key];
         }
-        this.params = {...this.params};
+        this.params = { ...this.params };
     }
 
     // base uniforms
@@ -42,9 +43,9 @@ export class Renderer {
         shader.add_uniform("uViewPosition", new Uniform(loc => gl.uniform3f(loc, ...this.props.camera.view_position)));
         shader.add_uniform("uGridSize", new Uniform(loc => gl.uniform3f(loc, this.props.size[0], this.props.size[1], this.props.size[2])));
         // default texture slots
-        shader.add_uniform("uStateTexture",         new Uniform(loc => gl.uniform1i(loc, 0)));
-        shader.add_uniform("uStateColourTexture",   new Uniform(loc => gl.uniform1i(loc, 1)));
-        shader.add_uniform("uRadiusColourTexture",  new Uniform(loc => gl.uniform1i(loc, 2)));
+        shader.add_uniform("uStateTexture", new Uniform(loc => gl.uniform1i(loc, 0)));
+        shader.add_uniform("uStateColourTexture", new Uniform(loc => gl.uniform1i(loc, 1)));
+        shader.add_uniform("uRadiusColourTexture", new Uniform(loc => gl.uniform1i(loc, 2)));
     }
 
     bind() {

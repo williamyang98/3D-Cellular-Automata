@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { createStore, applyMiddleware, compose } from 'redux';
 import { create_preinit_reducer } from './ui/reducers';
@@ -39,7 +39,6 @@ export class App extends React.Component {
 function Main(props) {
   const app = useSelector(store => store.app);
   const fullscreen = useSelector(store => store.gui.fullscreen);
-  const gui = useSelector(store => store.gui);
   
   function render_left_panel() {
     return (

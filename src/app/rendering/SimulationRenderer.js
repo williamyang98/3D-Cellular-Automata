@@ -45,8 +45,6 @@ export class SimulationRenderer {
   // we use a rgba buffer, with 8 bits for each channel
   // r = state, g = neighbours, b/a = unused
   update_texture_buffer(grid, local=false) {
-    let gl = this.gl;
-
     let items = local ? grid.render_updates : range(0, grid.count);
     // once updates all rendered, clear it
     if (local) grid.render_updates = new Set();
@@ -89,8 +87,6 @@ export class SimulationRenderer {
 
   // render the 3d grid
   on_render() {
-    let gl = this.gl;
-
     this.shader_manager.bind();
     this.cell_data_texture.bind(0);
     this.sim.request_frame();

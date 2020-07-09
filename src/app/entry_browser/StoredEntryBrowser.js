@@ -62,10 +62,14 @@ export class StoredEntryBrowser {
   }
 
   purge_corrupted_ids(ids) {
+    if (ids && ids.length > 0) {
+      console.warn('Purging corrupted ids');
+      console.warn(ids);
+    }
     let cfg = this.db_cfg;
     let store = this.db.transaction([cfg.store], 'readwrite').objectStore(cfg.store);
     for (let id of ids) {
-      let request = store.delete(id);
+      store.delete(id);
     }
   }
 
@@ -76,16 +80,17 @@ export class StoredEntryBrowser {
     let replace = new StoredEntry(name, ca_string, original.id);
 
     let db = this.db;
+    let cfg = this.db_cfg;
+
     if (!db) {
       console.error(`${cfg.store} failed to load`);
       return;
     } 
-    let cfg = this.db_cfg;
 
     let data = {id: original.id, name, ca_string};
     let transaction = db.transaction([cfg.store], 'readwrite');
     let store = transaction.objectStore(cfg.store);
-    let request = store.put(data);
+    store.put(data);
 
     let promise = new Promise((resolve, reject) => {
       transaction.oncomplete = (ev) => {
@@ -155,7 +160,7 @@ export class StoredEntryBrowser {
     let cfg = this.db_cfg;
     let transaction = this.db.transaction([cfg.store], 'readwrite');
     let store = transaction.objectStore(cfg.store);
-    let request = store.delete(entry.id);
+    store.delete(entry.id);
 
     // if request was successful, then modify entries array inplace
     // send notification

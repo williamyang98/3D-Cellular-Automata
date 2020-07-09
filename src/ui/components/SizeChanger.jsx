@@ -39,7 +39,7 @@ export function SizeChanger() {
         <input type="number" value={y} max={max_size} min={min_size} onChange={ev => set_y(ev.target.value)}></input> 
         <input type="number" value={z} max={max_size} min={min_size} onChange={ev => set_z(ev.target.value)}></input> 
         <div className="input-group-append">
-          <button type="submit" className='btn btn-primary btn-sm' role="button">Apply</button>
+          <button type="submit" className='btn btn-primary btn-sm'>Apply</button>
         </div>
       </div>
     </form>
@@ -47,7 +47,7 @@ export function SizeChanger() {
 
   return (
     <div className="card shadow mb-2">
-      <a href="#collapseSizeChanger" className="card-header d-block" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseSizeChanger">
+      <a href="#collapseSizeChanger" className="card-header d-block" data-toggle="collapse" aria-expanded="true" aria-controls="collapseSizeChanger">
         <h6 className="m-0 font-weight-bold text-primary">Size Controls</h6>
       </a>
       <div className="collapse show" id="collapseSizeChanger">

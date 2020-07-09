@@ -2,7 +2,7 @@ import { Renderer } from "./Renderer";
 
 import { VertexBufferObject, VertexArrayObject, VertexBufferLayout } from '../../../gl/VertexBuffer';
 import { Shader } from "../../../gl/Shader";
-import { UniformMat4f, UniformVec3f, Uniform } from "../../../gl/Uniform";
+import { UniformVec3f, Uniform } from "../../../gl/Uniform";
 import { IndexBuffer } from "../../../gl/IndexBuffer";
 import { cube } from "../../../gl/CubeData";
 

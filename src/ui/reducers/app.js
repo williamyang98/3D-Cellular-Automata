@@ -21,6 +21,7 @@ export function app_reducer(init_app) {
                 break;
             case 'app.set_border_colour':
                 app.border.colour.value = action.value;
+                break;
             default: 
                 break;
             }
