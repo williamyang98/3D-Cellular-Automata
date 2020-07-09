@@ -35,9 +35,7 @@ export class Rule3D {
 
         function complete(total) {
             completed_blocks += total;
-            if (completed_blocks % 10000 === 0) {
-                listener(completed_blocks);
-            }
+            listener(completed_blocks);
         }
 
         for (let i of updates) {
@@ -95,9 +93,10 @@ export class Rule3D {
         // alive to dead
         if (this.is_alive(state)) {
             if (!this.remain_alive[neighbours]) {
-                return state-this.delta;
+                let next = state-this.delta;
+                return this.is_dead(next) ? 0 : next;
             } else {
-                return state;
+                return this.alive_state;
             }
         }
         // dead to alive
@@ -105,11 +104,13 @@ export class Rule3D {
             if (this.become_alive[neighbours]) {
                 return this.alive_state;
             } else {
-                return state;
+                // if we changed rules, then state may not always be 0
+                return this.dead_state;
             }
         }
         // refractory
-        return state-this.delta;
+        let next = state-this.delta;
+        return this.is_dead(next) ? 0 : next;
     }
 
     add(x, y, z, grid) {
