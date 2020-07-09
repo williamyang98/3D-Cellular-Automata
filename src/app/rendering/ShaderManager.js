@@ -1,5 +1,3 @@
-import { vec3 } from 'gl-matrix';
-
 import { Dropdown } from '../../ui/util/AdjustableValues';
 import { VolumeRenderer } from './renderers/VolumeRenderer';
 import { PointCloudRenderer } from './renderers/PointCloudRenderer';
