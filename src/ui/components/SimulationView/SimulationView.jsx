@@ -3,6 +3,7 @@ import { Controls } from '../Controls';
 import { useSelector, useStore, useDispatch } from 'react-redux';
 import { Canvas } from './Canvas';
 import { FullScreenButton } from './FullScreenButton';
+import "./SimulationView.css";
 
 export function SimulationView(props) {
   const dispatch = useDispatch();
@@ -47,7 +48,7 @@ export function SimulationView(props) {
   }
 
   return (
-    <div className="card shadow h-100">
+    <div className="sim-view shadow h-100">
       <Canvas store={store} canvas={props.canvas}></Canvas>
       {app ? render_float_controls() : <div></div>}
       {render_fullscreen_button()}
