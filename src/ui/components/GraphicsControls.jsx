@@ -5,7 +5,7 @@ import { RenderAdjustableValue } from '../util/AdjustableValueViews';
 
 import { show_border, show_render, set_background_colour, set_border_colour } from '../actions';
 
-export function BorderControls() {
+export function GraphicsControls() {
   const dispatch = useDispatch();
   const border_checkbox = useSelector(state => state.app.show_border);
   const render_checkbox = useSelector(state => state.app.show_render);
@@ -22,14 +22,14 @@ export function BorderControls() {
       {RenderAdjustableValue(border_checkbox, 0, 'Show Border', value => {
         dispatch(show_border(value));
       })}
-      {RenderAdjustableValue(render_checkbox, 1, 'Show Render', value => {
+      {RenderAdjustableValue(border_colour, 1, 'Border Colour', value => {
+        dispatch(set_border_colour(value));
+      })}
+      {RenderAdjustableValue(render_checkbox, 2, 'Show Render', value => {
         dispatch(show_render(value));
       })}
-      {RenderAdjustableValue(background_colour, 2, 'Background Colour', value => {
+      {RenderAdjustableValue(background_colour, 3, 'Background Colour', value => {
         dispatch(set_background_colour(value));
-      })}
-      {RenderAdjustableValue(border_colour, 3, 'Border Colour', value => {
-        dispatch(set_border_colour(value));
       })}
     </div>
   )

@@ -48,8 +48,8 @@ export function SimulationView(props) {
     )
   }
 
-  const border_colour = background_colour || [255, 255, 255]; 
-  const rgb = `rgb(${border_colour[0]}, ${border_colour[1]}, ${border_colour[2]})`;
+  const [r,g,b] = background_colour || [255, 255, 255]; 
+  const rgb = `rgb(${r},${g},${b})`;
 
   return (
     <div className="card sim-view shadow h-100" style={{border: `1px solid ${rgb}`}}>

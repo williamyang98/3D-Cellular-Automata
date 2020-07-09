@@ -49,14 +49,14 @@ function SliderView(slider, key, name, valueChanged) {
 function ToggleView(toggle, key, name, valueChanged) {
   return (
     <div className="row w-100" key={key}>
+      <div className="col-sm-5">
+        <label className='form-check-label'>{name}</label>
+      </div>
       <div className="col-sm">
-        <div className='form-check'>
           <input 
-            type='checkbox' className='form-check-input'
+            type='checkbox' className='form-check-input ml-0'
             checked={toggle.value}
             onChange={ev => valueChanged(ev.target.checked)}></input>
-          <label className='form-check-label'>{name}</label>
-        </div>
       </div>
       {toggle.help && <div className="col-sm-1 text-right"><Help text={toggle.help}></Help></div>}
     </div>
@@ -67,7 +67,7 @@ function DropdownView(dropdown, key, name, valueChanged) {
   let onChange = ev => valueChanged(Number(ev.target.value));
   return (
     <div className="row w-100" key={key}>
-      <div className="col-sm-5"><label className='mr-2'>{name} </label></div>
+      <div className="col-sm-5"><label>{name} </label></div>
       <div className="col-sm">
         <select className='custom-select custom-select-sm' value={dropdown.value} onChange={onChange}>
           {dropdown.options.map((option, i) => (
@@ -83,9 +83,9 @@ function DropdownView(dropdown, key, name, valueChanged) {
 function ColorView(color, key, name, valueChange) {
   return (
     <div className="row w-100" key={key}>
-      <div className="form-inline col-sm">
+      <div className="col-sm-5"><label>{name}</label></div>
+      <div className="col-sm">
           <ColorPicker color={color.value} valueChanged={valueChange}></ColorPicker>
-          <label className="ml-1">{name}</label>
       </div>
       {color.help && <div className="col-sm-1 text-right"><Help text={color.help}></Help></div>}
     </div>

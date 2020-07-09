@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RenderAdjustableValue } from '../util/AdjustableValueViews';
-import { BorderControls } from './BorderControls';
+import { GraphicsControls } from './GraphicsControls';
 import { update_shader_params, select_renderer } from '../actions';
 
 export function ShaderMenu() {
@@ -16,7 +16,7 @@ export function ShaderMenu() {
           dispatch(select_renderer(value));
         })}
       </div>
-      <BorderControls></BorderControls>
+      <GraphicsControls></GraphicsControls>
       <hr></hr>
       <ShaderSettings></ShaderSettings>
     </div>
