@@ -1,6 +1,8 @@
 # 3D Cellular Automata
 [Live Demo](http://fiendchain.github.io/3D-Cellular-Automata) of website here.
 
+[![3D Cellular Automata](http://img.youtube.com/vi/-sCSQcG2hZM/0.jpg)](http://youtu.be/-sCSQcG2hZM "3D Cellular Automata")
+
 This is based on the youtube video by Softology. The article written by them can be found [here](https://softologyblog.wordpress.com/2019/12/28/3d-cellular-automata-3/), and their video linked below.
 
 [![3D Cellular Automata](http://img.youtube.com/vi/dQJ5aEsP6Fs/0.jpg)](http://youtu.be/dQJ5aEsP6Fs "3D Cellular Automata")
