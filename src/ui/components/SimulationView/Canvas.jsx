@@ -77,7 +77,7 @@ export class Canvas extends React.Component {
     }
     
     return (
-      <div className='w-100 h-100' {...listeners}>
+      <div className='w-100 h-100 pb-2' {...listeners}>
         <canvas 
           className="w-100 h-100" ref={this.props.canvas} 
           {...this.mouse_controller.listeners} {...this.touch_controller.listeners}></canvas>

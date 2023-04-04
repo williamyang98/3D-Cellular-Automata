@@ -3,27 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "colorsys": "^1.0.22",
-    "comlink": "^4.3.0",
-    "gl-matrix": "^3.3.0",
-    "react": "^16.13.1",
-    "react-color": "^2.18.1",
-    "react-dom": "^16.13.1",
-    "react-redux": "^7.2.0",
+    "colorsys": "1.0.22",
+    "gl-matrix": "3.4.3",
+    "react": "16.13.1",
+    "react-color": "2.18.1",
+    "react-dom": "16.13.1",
+    "react-redux": "7.2.0",
     "react-scripts": "3.4.1",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0",
-    "worker-loader": "^2.0.0"
+    "redux": "4.0.5",
+    "redux-thunk": "2.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "yarn build",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
+    "eject": "react-scripts --openssl-legacy-provider eject",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
@@ -42,7 +35,9 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^2.2.0"
+    "gh-pages": "5.0.0",
+    "worker-loader": "2.0.0",
+    "webpack": "4.42.0"
   },
   "homepage": "http://fiendchain.github.io/3D-Cellular-Automata"
 }
