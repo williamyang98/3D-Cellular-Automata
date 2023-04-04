@@ -1,24 +1,25 @@
 {
   "files": {
-    "main.css": "/3D-Cellular-Automata/static/css/main.b263668f.chunk.css",
-    "main.js": "/3D-Cellular-Automata/static/js/main.933cfddc.chunk.js",
-    "main.js.map": "/3D-Cellular-Automata/static/js/main.933cfddc.chunk.js.map",
-    "runtime-main.js": "/3D-Cellular-Automata/static/js/runtime-main.ee7eacaa.js",
-    "runtime-main.js.map": "/3D-Cellular-Automata/static/js/runtime-main.ee7eacaa.js.map",
-    "static/js/2.c5119248.chunk.js": "/3D-Cellular-Automata/static/js/2.c5119248.chunk.js",
-    "static/js/2.c5119248.chunk.js.map": "/3D-Cellular-Automata/static/js/2.c5119248.chunk.js.map",
-    "66acda58adfb3d8ba9a4.worker.js": "/3D-Cellular-Automata/66acda58adfb3d8ba9a4.worker.js",
-    "66acda58adfb3d8ba9a4.worker.js.map": "/3D-Cellular-Automata/66acda58adfb3d8ba9a4.worker.js.map",
+    "main.css": "/3D-Cellular-Automata/static/css/main.4bb97351.chunk.css",
+    "main.js": "/3D-Cellular-Automata/static/js/main.418a9dd4.chunk.js",
+    "main.js.map": "/3D-Cellular-Automata/static/js/main.418a9dd4.chunk.js.map",
+    "runtime-main.js": "/3D-Cellular-Automata/static/js/runtime-main.f484d196.js",
+    "runtime-main.js.map": "/3D-Cellular-Automata/static/js/runtime-main.f484d196.js.map",
+    "static/js/2.93499d39.chunk.js": "/3D-Cellular-Automata/static/js/2.93499d39.chunk.js",
+    "static/js/2.93499d39.chunk.js.map": "/3D-Cellular-Automata/static/js/2.93499d39.chunk.js.map",
+    "360c322880eafe2b008f.worker.js": "/3D-Cellular-Automata/360c322880eafe2b008f.worker.js",
+    "360c322880eafe2b008f.worker.js.map": "/3D-Cellular-Automata/360c322880eafe2b008f.worker.js.map",
     "index.html": "/3D-Cellular-Automata/index.html",
-    "precache-manifest.24f7f0dd7f95a6c14f069738de5e455b.js": "/3D-Cellular-Automata/precache-manifest.24f7f0dd7f95a6c14f069738de5e455b.js",
+    "precache-manifest.a78c9b4a3dbb0d78aa693a024400e637.js": "/3D-Cellular-Automata/precache-manifest.a78c9b4a3dbb0d78aa693a024400e637.js",
     "service-worker.js": "/3D-Cellular-Automata/service-worker.js",
-    "static/css/main.b263668f.chunk.css.map": "/3D-Cellular-Automata/static/css/main.b263668f.chunk.css.map",
-    "static/js/2.c5119248.chunk.js.LICENSE.txt": "/3D-Cellular-Automata/static/js/2.c5119248.chunk.js.LICENSE.txt"
+    "static/css/main.4bb97351.chunk.css.map": "/3D-Cellular-Automata/static/css/main.4bb97351.chunk.css.map",
+    "static/js/2.93499d39.chunk.js.LICENSE.txt": "/3D-Cellular-Automata/static/js/2.93499d39.chunk.js.LICENSE.txt",
+    "static/js/main.418a9dd4.chunk.js.LICENSE.txt": "/3D-Cellular-Automata/static/js/main.418a9dd4.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.ee7eacaa.js",
-    "static/js/2.c5119248.chunk.js",
-    "static/css/main.b263668f.chunk.css",
-    "static/js/main.933cfddc.chunk.js"
+    "static/js/runtime-main.f484d196.js",
+    "static/js/2.93499d39.chunk.js",
+    "static/css/main.4bb97351.chunk.css",
+    "static/js/main.418a9dd4.chunk.js"
   ]
 }
