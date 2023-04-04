@@ -46,13 +46,13 @@ A more detailed explanation can be found [here](https://softologyblog.wordpress.
 | | | |
 |:---:|:---:|:---:|
 | 445 | 678 678 | Amoeba |
-| <img src="src/images/445.PNG" alt="445" width="256"> | <img src="src/images/678 678.PNG" alt="678 678" width="256"> | <img src="src/images/amoeba.PNG" alt="Amoeba" width="256"> |
+| <img src="docs/images/445.PNG" alt="445" width="256"> | <img src="docs/images/678 678.PNG" alt="678 678" width="256"> | <img src="docs/images/amoeba.PNG" alt="Amoeba" width="256"> |
 | Builder 1 | Builder 2 | Clouds 1 |
-| <img src="src/images/builder-1.PNG" alt="Builder-1" width="256"> | <img src="src/images/builder-2.PNG" alt="Builder-2" width="256"> | <img src="src/images/clouds-1.PNG" alt="Clouds-1" width="256"> |
+| <img src="docs/images/builder-1.PNG" alt="Builder-1" width="256"> | <img src="docs/images/builder-2.PNG" alt="Builder-2" width="256"> | <img src="docs/images/clouds-1.PNG" alt="Clouds-1" width="256"> |
 | Crystal Growth 1 | Crystal Growth 2 | Pyroclastic |
-| <img src="src/images/crystal-growth-1.PNG" alt="Crystal-1" width="256"> | <img src="src/images/crystal-growth-2.PNG" alt="Crystal-2" width="256"> | <img src="src/images/pyroclastic.PNG" alt="Pyroclastic" width="256"> |
+| <img src="docs/images/crystal-growth-1.PNG" alt="Crystal-1" width="256"> | <img src="docs/images/crystal-growth-2.PNG" alt="Crystal-2" width="256"> | <img src="docs/images/pyroclastic.PNG" alt="Pyroclastic" width="256"> |
 | Slow Decay | Spikey Growth |
-| <img src="src/images/slow-decay.PNG" alt="Slow Decay" width="256"> | <img src="src/images/spikey-growth.PNG" alt="Spikey Growth" width="256"> |
+| <img src="docs/images/slow-decay.PNG" alt="Slow Decay" width="256"> | <img src="docs/images/spikey-growth.PNG" alt="Spikey Growth" width="256"> |
 
 ## Combining rules
 You can also switch between the rules while it is running, which can create interesting patterns.
