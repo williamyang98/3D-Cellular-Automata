@@ -1,26 +1,38 @@
 {
   "name": "cellular-automaton",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "colorsys": "1.0.22",
     "gl-matrix": "3.4.3",
-    "react": "16.13.1",
-    "react-color": "2.18.1",
-    "react-dom": "16.13.1",
-    "react-redux": "7.2.0",
-    "react-scripts": "3.4.1",
-    "redux": "4.0.5",
-    "redux-thunk": "2.3.0"
+    "react": "18.2.0",
+    "react-color": "2.19.3",
+    "react-dom": "18.2.0",
+    "react-scripts": "5.0.1",
+    "recoil": "0.7.7"
   },
+  "devDependencies": {
+    "gh-pages": "5.0.0"
+  },
+  "homepage": "http://fiendchain.github.io/3D-Cellular-Automata",
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
-    "eject": "react-scripts --openssl-legacy-provider eject",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "plugins": [
+      "react-hooks"
+    ],
+    "rules": {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": [
+        "warn", {
+          "additionalHooks": "(useRecoilCallback|useRecoilTransaction_UNSTABLE)"
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [
@@ -33,11 +45,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "gh-pages": "5.0.0",
-    "worker-loader": "2.0.0",
-    "webpack": "4.42.0"
-  },
-  "homepage": "http://fiendchain.github.io/3D-Cellular-Automata"
+  }
 }

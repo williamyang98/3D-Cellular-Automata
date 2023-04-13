@@ -1,13 +1,27 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { App } from './App';
-import * as serviceWorker from './serviceWorker';
-import "./index.css";
+import ReactDOM from 'react-dom/client';
+import { RecoilRoot } from 'recoil';
+import { App } from './ui/App';
+import { Recoil_State } from './recoil_state.js';
 
-ReactDOM.render(
-  <App></App>,
-  document.getElementById('root')
+import { App as AppMain } from './app/app.js';
+import * as service_worker from './serviceWorker.js';
+import './index.css';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+let app = new AppMain();
+app.init_default();
+let recoil_state = new Recoil_State(app);
+
+window.app = app;
+window.recoil_state = recoil_state;
+service_worker.register();
+
+root.render(
+  <React.StrictMode>
+    <RecoilRoot>
+      <App app={app} recoil_state={recoil_state}></App>
+    </RecoilRoot>
+  </React.StrictMode>
 );
-
-serviceWorker.unregister();
-// serviceWorker.register();
