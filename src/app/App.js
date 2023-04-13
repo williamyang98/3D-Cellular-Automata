@@ -25,6 +25,7 @@ class App {
     init_default = () => {
         this.simulation.set_size(128, 128, 128);
         this.select_entry(this.system_entries[1]);
+        this.simulation.randomise();
     }
 
     /**
