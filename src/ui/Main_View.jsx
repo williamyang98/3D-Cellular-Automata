@@ -59,9 +59,33 @@ let Github_Button = () => {
 }
 
 class Canvas extends React.Component {
+  /**
+   * @param {Simulation} props.simulation
+   * @param {(Boolean) => {}} props.on_focus_change
+   */
   constructor(props) {
     super(props);
     this.canvas_ref = React.createRef();
+
+    this.focus_delay = 3000;
+    this.focus_timeout = this.create_focus_timeout();
+  }
+
+  create_focus_timeout = () => {
+    let id = setTimeout(() => {
+      this.change_focus(false)
+    }, this.focus_delay);
+    return id;
+  }
+
+  refresh_focus_timeout = () => {
+    clearTimeout(this.focus_timeout);
+    this.focus_timeout = this.create_focus_timeout();
+    this.change_focus(true);
+  }
+
+  change_focus = (is_focused) => {
+    this.props.on_focus_change(is_focused);
   }
 
   componentDidMount = () => {
@@ -71,9 +95,21 @@ class Canvas extends React.Component {
     simulation.start_loop();
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.focus_timeout);
+  }
+
   render = () => {
+    // Everytime we touch the canvas we refresh our focus state
+    let listener = () => this.refresh_focus_timeout();
+    const hooks = ['onMouseMove', 'onMouseDown', 'onMouseUp', 'onTouchMove', 'onTouchStart', 'onTouchEnd'];
+    let focus_listeners = {};
+    for (let hook of hooks) {
+      focus_listeners[hook] = listener;
+    }
+
     return (
-      <div className='w-100 h-100 pb-2' style={{cursor:'grab'}}>
+      <div className='w-100 h-100 pb-2' style={{cursor:'grab'}} {...focus_listeners}>
         <canvas className="w-100 h-100" ref={this.canvas_ref}></canvas>
       </div>
     );
@@ -83,12 +119,16 @@ class Canvas extends React.Component {
 // Contains our webgl canvas and some controls
 let Main_View = ({ simulation, recoil_state }) => {
   let is_fullscreen = useRecoilValue(recoil_state.is_fullscreen);
-  let is_focused = useRecoilValue(recoil_state.is_focused);
+  let [is_focused, set_is_focused] = useRecoilState(recoil_state.is_focused);
   let button_class_name = (is_fullscreen && !is_focused) ? 'fade' : '';
+
+  let on_focus_change = (new_is_focused) => {
+    set_is_focused(new_is_focused);
+  }
 
   return (
     <div className="d-flex flex-column h-100 shadow">
-      <Canvas simulation={simulation}></Canvas>
+      <Canvas simulation={simulation} on_focus_change={on_focus_change}></Canvas>
       <div className={button_class_name} style={{zIndex:1, position:'absolute', bottom:'1.5rem', alignSelf:'center'}}>
         <Simulation_Controls simulation={simulation} recoil_state={recoil_state}></Simulation_Controls>
       </div>
