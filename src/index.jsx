@@ -5,7 +5,6 @@ import { App } from './ui/App';
 import { Recoil_State } from './recoil_state.js';
 
 import { App as AppMain } from './app/app.js';
-import * as service_worker from './serviceWorker.js';
 import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -16,7 +15,6 @@ let recoil_state = new Recoil_State(app);
 
 window.app = app;
 window.recoil_state = recoil_state;
-service_worker.register();
 
 root.render(
   <React.StrictMode>

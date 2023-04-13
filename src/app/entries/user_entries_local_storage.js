@@ -15,7 +15,7 @@ let load_entries_from_storage = () => {
 
     try {
         let data_string = local_storage.getItem(storage_key);
-        if (data_string === undefined) {
+        if (data_string === null) {
             return [];
         }
         return load_entries_from_string(data_string);
