@@ -33,9 +33,7 @@ A more detailed explanation can be found [here](https://softologyblog.wordpress.
    - Seed crystal places a blob in the middle with radius as a fraction of maximum radius.
 5. To change how the world is rendered, you can change the parameters in the graphics panel.
    - Renderer can be selected from volume, point, voxel
-   - Volume is the fastest but worst quality 
-   - Point is slower and has decent quality 
-   - Voxel is the slowest and has the best quality (Very intensive)
+   - You can select different colouring schemes
    - To speed up the simulation, you can disable rendering (show render), and re-enable it later
 6. To change the size of the world use the size controls panel. This will adjust the width, length and height of the simulation. (For large sizes this can become very intensive).
 
@@ -60,3 +58,8 @@ You can also switch between the rules while it is running, which can create inte
 |:---:|:---:|
 | Crystal Growth 1 to Crystal Growth 2 | 445 to Crystal Growth 1 |
 | <img src="docs/images/crystal-growth-1-2.PNG" alt="Crystal growth 1 to 2" width="256"> | <img src="docs/images/445-crystal-growth-1.PNG" alt="Crystal growth 1 to 2" width="256"> |
+
+## Build instructions
+1. Clone the repository and cd into it
+2. <code>npm install</code>
+3. <code>npm run start</code>
