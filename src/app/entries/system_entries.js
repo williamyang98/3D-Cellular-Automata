@@ -18,8 +18,8 @@ let create_system_entry = (label, string, randomiser) => {
 }
 
 const system_entries = [
-    create_system_entry('Amoeba-1',           '9-26/5-7,12-13,15/16/M', new Randomiser_Radius_Absolute(0.3,  5  )),
-    create_system_entry('445',                '4/4/5/M',                new Randomiser_Radius_Absolute(0.05, 15 )),
+    create_system_entry('Amoeba-1',           '9-26/5-7,12-13,15/16/M', new Randomiser_Radius_Absolute(0.3,  8  )),
+    create_system_entry('445',                '4/4/5/M',                new Randomiser_Radius_Absolute(0.1,  15 )),
     create_system_entry('Builder 2',          '6,9/4,6,8-9/10/M',       new Randomiser_Radius_Absolute(0.35, 7  )),
     create_system_entry('Crystal Growth 1',   '0-6/1,3/2/VN',           new Randomiser_Radius_Absolute(1.0,  1  )),
     create_system_entry('Crystal Growth 2',   '1-3/1-3/5/VN',           new Randomiser_Radius_Absolute(1.0,  1  )),

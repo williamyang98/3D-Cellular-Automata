@@ -132,7 +132,7 @@ class Render_Volume {
         colour_data.state = create_state_colours(255);
         colour_data.radial = create_radial_colours();
         colour_textures.state = this.create_texture_from_data(colour_data.state, gl.CLAMP_TO_EDGE);
-        colour_textures.radial = this.create_texture_from_data(colour_data.radial, gl.MIRRORED_REPEAT);
+        colour_textures.radial = this.create_texture_from_data(colour_data.radial, gl.REPEAT);
 
         // NOTE: Colouring schemes which don't need a texture will: 
         //       - store null as their texture id
