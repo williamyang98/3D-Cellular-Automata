@@ -1,9 +1,6 @@
 import { useState } from 'react';
-import { Help } from './Help';
 
-let Toggle = ({ object, object_key, label, help_text, external_on_change }) => {
-  label = (label !== undefined) ? label : object_key;
-
+let Toggle = ({ object, object_key, external_on_change }) => {
   let [is_checked, set_is_checked] = useState(object[object_key]);
 
   let on_change = (ev) => {
@@ -14,25 +11,13 @@ let Toggle = ({ object, object_key, label, help_text, external_on_change }) => {
       external_on_change(value);
     }
   }
-
+  
+  const style = { width: '1.5rem', height: '1.5rem' };
   return (
-    <div className="row w-100">
-      <div className="col-sm-6">
-        <label className='form-check-label'>{label}</label>
-      </div>
-      <div className="col-sm">
-        <div>
-          <input 
-            type='checkbox' className='form-check-input ml-0'
-            checked={is_checked} onChange={on_change}/>
-        </div>
-      </div>
-      { 
-        help_text && 
-        <div className="col-sm-1 text-right">
-          <Help text={help_text}></Help>
-        </div>
-      }
+    <div style={style}>
+      <input 
+        type='checkbox' className='form-check-input ml-0'
+        checked={is_checked} onChange={on_change}/>
     </div>
   );
 }

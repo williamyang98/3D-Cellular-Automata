@@ -1,7 +1,7 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Main_View } from './Main_View';
-import { Size_Changer } from './Size_Changer';
+import { Simulation_Controls } from './Simulation_Controls';
 import { Graphics_Menu } from './Graphics_Menu';
 import { Randomiser_List_View } from './Randomiser_List';
 import { Statistics } from './Statistics';
@@ -19,7 +19,7 @@ let App = ({ app, recoil_state }) => {
     <div className="vw-100">
       <div className="row px-0 mx-0">
         <div className={`col-xl-3 overflow-auto ${is_fullscreen ? 'd-none': ''}`} style={panel_style}>
-          <Size_Changer simulation={app.simulation}></Size_Changer>
+          <Simulation_Controls simulation={app.simulation}></Simulation_Controls>
           <Graphics_Menu simulation={app.simulation}></Graphics_Menu>
           <Randomiser_List_View randomiser_list={app.randomiser_list} recoil_state={recoil_state}></Randomiser_List_View>
           <Statistics simulation={app.simulation} recoil_state={recoil_state}></Statistics>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Entry } from '../../app/entries/entry.js';
 import { read_rule_from_string } from '../../app/entries/read_rule_from_string';
+import { Help } from '../editor/Help.jsx';
 
 let Form_Error = ({ string }) => {
   let lines = String(string).split('\n');
@@ -95,9 +96,7 @@ let User_Entry_Edit = (props) => {
               <label className="text-nowrap">Rule:</label>
             </div>
             <div className="d-inline-block">
-              <span data-toggle="tooltip" data-placement="left" data-html={true} title={string_tooltip}>
-                <i className="fas fa-question-circle"></i>
-              </span>
+              <Help text={string_tooltip}></Help>
             </div>
           </div>
         </div>

@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-
 import { Dropdown } from './widgets/Dropdown';
-import { Slider } from './widgets/Slider';
+import { Editor_Slider } from './editor/Editor_Slider';
+import { Editor_Layout } from './editor/Editor_Layout';
 
 import { Randomiser_List, Randomiser_List_Types } from '../app/randomisers/randomiser_list.js';
 import { Randomiser_Visitor } from '../app/randomisers/randomisers.js';
@@ -16,8 +15,8 @@ class Render_Randomiser extends Randomiser_Visitor {
   visit_radius_absolute = ({ randomiser }) => { 
     return (
       <div>
-        <Slider object={randomiser} object_key={"density"} min={0} max={1} step={0.01}></Slider>
-        <Slider object={randomiser} object_key={"radius"} min={1} max={128} step={1}></Slider>
+        <Editor_Slider object={randomiser} object_key={"density"} min={0} max={1} step={0.01}></Editor_Slider>
+        <Editor_Slider object={randomiser} object_key={"radius"} min={1} max={128} step={1}></Editor_Slider>
       </div>
     );
   }
@@ -26,8 +25,8 @@ class Render_Randomiser extends Randomiser_Visitor {
   visit_radius_relative = ({ randomiser }) => { 
     return (
       <div>
-        <Slider object={randomiser} object_key={"density"} min={0} max={1} step={0.01}></Slider>
-        <Slider object={randomiser} object_key={"radius"} min={0} max={1} step={0.01}></Slider>
+        <Editor_Slider object={randomiser} object_key={"density"} min={0} max={1} step={0.01}></Editor_Slider>
+        <Editor_Slider object={randomiser} object_key={"radius"} min={0} max={1} step={0.01}></Editor_Slider>
       </div>
     );
   }
@@ -68,11 +67,13 @@ let Randomiser_List_View = ({ randomiser_list, recoil_state }) => {
       </a>
       <div className="collapse show" id="collapseRandomiserList">
         <div className="card-body" key={unique_key}>
-          <Dropdown 
-            object={randomiser_list} object_key={"selected_type"} 
-            options={randomiser_options}
-            external_on_change={on_change}
-          ></Dropdown>
+          <Editor_Layout label="randomiser_type">
+            <Dropdown 
+              object={randomiser_list} object_key={"selected_type"} 
+              options={randomiser_options}
+              external_on_change={on_change}
+            ></Dropdown>
+          </Editor_Layout>
           <Randomiser_View randomiser={randomiser}></Randomiser_View>
         </div>
       </div>
