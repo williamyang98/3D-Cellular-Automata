@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Help } from './Help';
 
-let Slider = ({ object, object_key, min, max, step, label, help_text, external_on_change }) => {
+const DEFAULT_DECIMAL_POINTS = 2;
+
+let Slider = ({ object, object_key, min, max, step, label, help_text, external_on_change, decimal_points }) => {
   label = (label !== undefined) ? label : object_key;
+  decimal_points = (decimal_points !== undefined) ? decimal_points : DEFAULT_DECIMAL_POINTS;
+
   if (step === undefined) {
     step = (max-min)/100.0;
   }
@@ -21,7 +25,7 @@ let Slider = ({ object, object_key, min, max, step, label, help_text, external_o
   return (
     <div className="row w-100">
       <div className="col-sm-6">
-        <label className='form-check-label'>{label}: {value.toFixed(2)}</label>
+        <label className='form-check-label'>{label}: {value.toFixed(decimal_points)}</label>
       </div>
       <div className="col-sm d-flex">
         <input 
