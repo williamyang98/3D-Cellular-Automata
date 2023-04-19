@@ -24,8 +24,6 @@ class TouchScreenController {
     }
 
     on_touch_start = (ev) => {
-        // NOTE: We don't want to stop the user from scrolling if the canvas covers the whole screen
-        // ev.preventDefault();
         let touches = ev.touches;
         this.touch_list.push(...touches);
         let total_touches = this.touch_list.length;
@@ -41,8 +39,6 @@ class TouchScreenController {
     }
 
     on_touch_end = (ev) => {
-        // NOTE: We don't want to stop the user from scrolling if the canvas covers the whole screen
-        // ev.preventDefault();
         // NOTE: https://stackoverflow.com/a/1232046
         //       This is the fastest way to clear an array
         this.touch_list.length = 0;
@@ -50,13 +46,13 @@ class TouchScreenController {
     }
 
     on_touch_move = (ev) => {
-        // NOTE: We don't want to stop the user from scrolling if the canvas covers the whole screen
-        // ev.preventDefault();
         switch (this.status) {
         case TouchScreenController.Control_Status.ROTATING:
             this._on_touch_rotate(ev);
             break;
         case TouchScreenController.Control_Status.ZOOMING:
+            // NOTE: Prevent the page from zooming in
+            ev.preventDefault();
             this._on_touch_zoom(ev);
             break;
         case TouchScreenController.Control_Status.NONE:
