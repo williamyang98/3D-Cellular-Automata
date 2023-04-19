@@ -35,12 +35,15 @@ class Simulation {
         // NOTE: initialised from this.set_randomiser_params_getter(...)
         //       We use a getter to calculate correct parameters when simulation size changes between updates
         this.params.get_randomiser_volume_params = null;    
+        this.params.tick_rate = 144;
+        this.params.is_unlimited_tick_rate = true;
 
         this.statistics = {
             total_steps: 0,
             ms_frame_time: 0
         };
         this.ms_last_frame = null;
+        this.ms_last_compute_frame = 0;
 
         this.action = {};
         this.action.is_randomise = false;
@@ -186,9 +189,14 @@ class Simulation {
         }
 
         // Compute single step of cellular automata
-        // NOTE: Refer to Rule_Entry for when the entry is valid
-        if ((this.action.is_running || this.action.is_step)) {
+        const ms_current_compute_frame = performance.now();
+        const ms_tick_elapsed = ms_current_compute_frame - this.ms_last_compute_frame; 
+        const ms_tick_required = 1000 / this.params.tick_rate;
+        const is_auto_tick = (ms_tick_elapsed > ms_tick_required) || this.params.is_unlimited_tick_rate;
+        if ((this.action.is_step || (this.action.is_running && is_auto_tick))) {
             this.action.is_step = false;
+            this.ms_last_compute_frame = ms_current_compute_frame;
+
             if (this.rule !== null) {
                 this.shaders.compute_volume.render(this.shader_data.volume_old, this.shader_data.volume_new, this.rule);
                 this.statistics.total_steps++;
