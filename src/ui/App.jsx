@@ -14,10 +14,11 @@ let App = ({ app, recoil_state }) => {
 
   app.simulation.listen_for_animation_frame(refresh_callback);
 
+  const panel_style = { maxHeight:'100vh' };
   return (
-    <div className="vh-100 vw-100">
+    <div className="vw-100">
       <div className="row px-0 mx-0">
-        <div className={`col-xl-3 overflow-auto vh-100 ${is_fullscreen ? 'd-none': ''}`}>
+        <div className={`col-xl-3 overflow-auto ${is_fullscreen ? 'd-none': ''}`} style={panel_style}>
           <Size_Changer simulation={app.simulation}></Size_Changer>
           <Graphics_Menu simulation={app.simulation}></Graphics_Menu>
           <Randomiser_List_View randomiser_list={app.randomiser_list} recoil_state={recoil_state}></Randomiser_List_View>
@@ -26,7 +27,7 @@ let App = ({ app, recoil_state }) => {
         <div className="col-xl vh-100 mx-0 px-0">
           <Main_View simulation={app.simulation} recoil_state={recoil_state}></Main_View>
         </div>
-        <div className={`col-xl-3 overflow-auto vh-100 ${is_fullscreen ? 'd-none' : ''}`}>
+        <div className={`col-xl-3 overflow-auto ${is_fullscreen ? 'd-none' : ''}`} style={panel_style}>
           <Entries_List app={app} recoil_state={recoil_state}></Entries_List>
         </div>
       </div>

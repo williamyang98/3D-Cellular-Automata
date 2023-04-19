@@ -109,7 +109,7 @@ class Canvas extends React.Component {
     }
 
     return (
-      <div className='w-100 h-100 pb-2' style={{cursor:'grab'}} {...focus_listeners}>
+      <div className='w-100 overflow-hidden' style={{cursor:'grab',height:'calc(min(100%,100vh))'}} {...focus_listeners}>
         <canvas className="w-100 h-100" ref={this.canvas_ref}></canvas>
       </div>
     );

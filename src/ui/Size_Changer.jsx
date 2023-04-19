@@ -42,9 +42,9 @@ let Size_Changer = ({ simulation }) => {
         <div className="card-body">
           <form onSubmit={(ev) => submit_size_change(ev)}>
             <div className="input-group mb-0">
-              <input type="number" value={dim_x} max={MAX_SIZE} min={MIN_SIZE} onChange={(ev) => set_dim_x(Number(ev.target.value))}></input> 
-              <input type="number" value={dim_y} max={MAX_SIZE} min={MIN_SIZE} onChange={(ev) => set_dim_y(Number(ev.target.value))}></input> 
-              <input type="number" value={dim_z} max={MAX_SIZE} min={MIN_SIZE} onChange={(ev) => set_dim_z(Number(ev.target.value))}></input> 
+              <input type="number" value={`${dim_x}`} max={MAX_SIZE} min={MIN_SIZE} onChange={(ev) => set_dim_x(Number(ev.target.value))}></input> 
+              <input type="number" value={`${dim_y}`} max={MAX_SIZE} min={MIN_SIZE} onChange={(ev) => set_dim_y(Number(ev.target.value))}></input> 
+              <input type="number" value={`${dim_z}`} max={MAX_SIZE} min={MIN_SIZE} onChange={(ev) => set_dim_z(Number(ev.target.value))}></input> 
               <div className="input-group-append">
                 <button type="submit" className={`btn btn-primary btn-sm ${is_different ? '' : 'disabled'}`}>Apply</button>
               </div>

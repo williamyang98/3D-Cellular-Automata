@@ -2,6 +2,7 @@ import { Dropdown } from './widgets/Dropdown';
 import { Slider } from './widgets/Slider';
 import { Colour_Changer } from './widgets/Colour_Changer';
 import { Toggle } from './widgets/Toggle';
+import { Vector3D_Editor } from './widgets/Vector3D_Editor';
 
 import { 
   Render_Volume_Colour_Schemes, 
@@ -35,6 +36,7 @@ let Graphics_Menu = ({ simulation }) => {
           <Slider object={params} object_key={"border_thickness"} min={0} max={1} step={0.01}></Slider>
           <Colour_Changer rgb={params.border_colour} label="border_colour"></Colour_Changer>
           <hr></hr>
+          <Vector3D_Editor value={params.sun_direction} label="sun_direction"></Vector3D_Editor>
           <Colour_Changer rgb={params.sky_colour_top} label="sky_top"></Colour_Changer>
           <Colour_Changer rgb={params.sky_colour_bottom} label="sky_bottom"></Colour_Changer>
           <Colour_Changer rgb={params.sun_colour} label="sun_colour"></Colour_Changer>

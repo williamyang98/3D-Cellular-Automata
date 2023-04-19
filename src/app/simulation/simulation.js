@@ -158,8 +158,8 @@ class Simulation {
         // NOTE: Detect viewport size changes when the canvas resizes 
         //       This can occur when resizing or rotating the screen
         let viewport = {
-            x: Math.floor(this.canvas.clientWidth), 
-            y: Math.floor(this.canvas.clientHeight)
+            x: Math.floor(Number(this.canvas.clientWidth)), 
+            y: Math.floor(Number(this.canvas.clientHeight))
         };
         this.canvas.width = viewport.x;
         this.canvas.height = viewport.y;
