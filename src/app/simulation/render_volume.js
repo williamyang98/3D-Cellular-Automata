@@ -20,7 +20,7 @@ class Render_Volume_Params {
         this.clear_colour = { r: 1, g: 1, b: 1};
         this.occlusion_factor = 0.65;
 
-        this.border_thickness = 0.04;
+        this.border_thickness = 0.10;
         this.border_colour = { r: 0, g: 0, b: 0 };
 
         this.sky_colour_top = { r: 1.0, g: 1.0, b: 1.0 };
@@ -249,7 +249,7 @@ class Render_Volume {
         this.get_cell_colour_src = get_cell_colour_src;
     }
 
-    create_program = (colour_scheme) => {
+    create_program = (colour_scheme, is_render_border) => {
         let gl = this.gl;
 
         if (!(colour_scheme in Object.values(Render_Volume_Colour_Schemes))) {
@@ -319,8 +319,13 @@ class Render_Volume {
             uniform float u_sun_strength;
             uniform float u_lighting_amount;
 
-            uniform float u_border_thickness;
-            uniform vec3 u_border_colour;
+            // NOTE: Border code is optional
+            ${
+                is_render_border ? `
+                uniform float u_border_thickness;
+                uniform vec3 u_border_colour;
+                ` : ''
+            }
 
             ${this.get_cell_colour_src[colour_scheme]}
 
@@ -378,20 +383,6 @@ class Render_Volume {
                 return vec3(0.0, 0.0, sign(v.z));
             }
 
-            float get_border_distance(vec3 norm_pos, vec3 normal) {
-                vec3 one_minus_norm_pos = vec3(1.0) - norm_pos;
-                vec3 border_pos = min(norm_pos, one_minus_norm_pos);
-                border_pos = abs(border_pos);
-
-                // NOTE: We mask out the dimension where the border resides
-                //       By adding the absolute of the normal, that dimension
-                //       will never factor into the minimum distance calculation
-                border_pos += abs(normal);  
-
-                float distance = min(min(border_pos.x, border_pos.y), border_pos.z);
-                return distance;
-            }
-
             vec3 get_sun_lighting(const vec3 normal) {
                 vec3 light_direction = -normalize(u_sun_direction);
                 float angle = max(dot(normal, -light_direction), 0.0);
@@ -417,13 +408,34 @@ class Render_Volume {
                 return mix(vec3(1.0), total_lighting, u_lighting_amount);
             }
 
+            // Returns a value from 0 to 1
+            float get_border_distance(vec3 norm_pos, vec3 normal) {
+                vec3 one_minus_norm_pos = vec3(1.0) - norm_pos;
+                vec3 border_pos = min(norm_pos, one_minus_norm_pos);
+                border_pos = abs(border_pos);
+
+                // NOTE: We mask out the dimension where the border resides
+                //       By adding the absolute of the normal, that dimension
+                //       will never factor into the minimum distance calculation
+                border_pos += abs(normal);  
+
+                float distance = min(min(border_pos.x, border_pos.y), border_pos.z);
+                // Normalise distance 0...0.5 to 0...1
+                float norm_distance = 2.0f * distance;
+                return norm_distance;
+            }
+
             vec3 get_ray_colour(vec4 cell, vec3 sample_pos, vec3 march_res, vec3 view_direction) {
                 vec3 norm_pos = mod(sample_pos, march_res) / march_res;
                 vec3 normal = get_normal(norm_pos);
-                float border_distance = get_border_distance(norm_pos, normal);
 
-                if (border_distance < u_border_thickness) {
-                    return u_border_colour;
+                ${
+                    is_render_border ? `
+                    float border_distance = get_border_distance(norm_pos, normal);
+                    if (border_distance < u_border_thickness) {
+                        return u_border_colour;
+                    }
+                    ` : ""
                 }
 
                 float state = cell[0];
@@ -441,7 +453,8 @@ class Render_Volume {
                 vec3 march_res = 1.0/u_grid_size;
                 // NOTE: We add padding to the march in order to prevent infinite loops
                 //       This can occur since we can undershoot continuously without padding
-                vec3 march_res_oversample = march_res * 1e-4f;
+                //       This oversampling factor is constant across any grid size, and depends on the floating precision type
+                vec3 march_res_oversample = vec3(1e-6f);
 
                 // NOTE: The step direction needs to be rescaled to aspect-ratio of texture
                 vec3 dir_norm = normalize((v_position - u_view_position) * march_res);
@@ -490,13 +503,13 @@ class Render_Volume {
         return compile_program(gl, vertex_shader_src, fragment_shader_src);
     }
 
-    get_program = (colour_scheme) => {
-        let key = `${colour_scheme}`;
+    get_program = (colour_scheme, is_render_border) => {
+        let key = `${colour_scheme}-${is_render_border}`;
         if (key in this.programs) {
             return this.programs[key];
         }
 
-        let program = this.create_program(colour_scheme);
+        let program = this.create_program(colour_scheme, is_render_border);
         let uniform_location_cache = new Uniform_Location_Cache(this.gl, program);
         let value = { program, uniform_location_cache };
         this.programs[key] = value;
@@ -537,8 +550,9 @@ class Render_Volume {
         let norm_size = this.get_normalised_size(size);
         const is_camera_inside = this.check_is_camera_inside(camera, norm_size);
         const max_march_steps = this.calculate_max_march_steps(size);
+        const is_render_border = (params.border_thickness > 0.0);
 
-        let { program, uniform_location_cache: loc } = this.get_program(params.colour_scheme);
+        let { program, uniform_location_cache: loc } = this.get_program(params.colour_scheme, is_render_border);
 
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.BLEND);
@@ -594,8 +608,11 @@ class Render_Volume {
         gl.uniform1f(loc.find("u_sun_strength"), params.sun_strength);
         gl.uniform1f(loc.find("u_sky_strength"), params.sky_strength);
         gl.uniform1f(loc.find("u_lighting_amount"), params.lighting_amount);
-        gl.uniform1f(loc.find("u_border_thickness"), params.border_thickness);
-        gl.uniform3f(loc.find("u_border_colour"), ...rgb_to_arr(params.border_colour));
+
+        if (is_render_border) {
+            gl.uniform1f(loc.find("u_border_thickness"), params.border_thickness);
+            gl.uniform3f(loc.find("u_border_colour"), ...rgb_to_arr(params.border_colour));
+        }
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.clearColor(params.clear_colour.r, params.clear_colour.g, params.clear_colour.b, 1.0);
