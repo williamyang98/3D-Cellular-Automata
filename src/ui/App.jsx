@@ -17,24 +17,18 @@ let App = ({ app, recoil_state }) => {
   return (
     <div className="vh-100 vw-100">
       <div className="row px-0 mx-0">
-        {
-          !is_fullscreen &&
-          <div className={`col-xl-3 overflow-auto vh-100`}>
-            <Size_Changer simulation={app.simulation}></Size_Changer>
-            <Graphics_Menu simulation={app.simulation}></Graphics_Menu>
-            <Randomiser_List_View randomiser_list={app.randomiser_list} recoil_state={recoil_state}></Randomiser_List_View>
-            <Statistics simulation={app.simulation} recoil_state={recoil_state}></Statistics>
-          </div>
-        }
+        <div className={`col-xl-3 overflow-auto vh-100 ${is_fullscreen ? 'd-none': ''}`}>
+          <Size_Changer simulation={app.simulation}></Size_Changer>
+          <Graphics_Menu simulation={app.simulation}></Graphics_Menu>
+          <Randomiser_List_View randomiser_list={app.randomiser_list} recoil_state={recoil_state}></Randomiser_List_View>
+          <Statistics simulation={app.simulation} recoil_state={recoil_state}></Statistics>
+        </div>
         <div className="col-xl vh-100 mx-0 px-0">
           <Main_View simulation={app.simulation} recoil_state={recoil_state}></Main_View>
         </div>
-        {
-          !is_fullscreen &&
-          <div className={`col-xl-3 overflow-auto vh-100`}>
-            <Entries_List app={app} recoil_state={recoil_state}></Entries_List>
-          </div>
-        }
+        <div className={`col-xl-3 overflow-auto vh-100 ${is_fullscreen ? 'd-none' : ''}`}>
+          <Entries_List app={app} recoil_state={recoil_state}></Entries_List>
+        </div>
       </div>
     </div>
   );
