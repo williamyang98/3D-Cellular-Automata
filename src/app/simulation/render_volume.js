@@ -99,7 +99,7 @@ class Render_Volume {
         case 3: specifier = { internal_format: gl.RGB8, format: gl.RGB }; break;
         case 4: specifier = { internal_format: gl.RGBA8, format: gl.RGBA }; break;
         default:
-            throw `Unsupported number of channels: ${total_channels}`;
+            throw Error(`Unsupported number of channels: ${total_channels}`);
         }
 
         let texture = gl.createTexture();

@@ -280,9 +280,9 @@ class Compute_Volume {
     render = (volume_in, volume_out, rule) => {
         let gl = this.gl;
 
-        if ((volume_in.size.x !== volume_in.size.x) ||
-            (volume_in.size.y !== volume_in.size.y) ||
-            (volume_in.size.z !== volume_in.size.z)
+        if ((volume_in.size.x !== volume_out.size.x) ||
+            (volume_in.size.y !== volume_out.size.y) ||
+            (volume_in.size.z !== volume_out.size.z)
         ) {
             throw Error(`Compute volumes have mismatching sizes: ${volume_in.size} != ${volume_out.size}`);
         }
