@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/3D-Cellular-Automata/static/css/main.c6fb1bb2.css",
-    "main.js": "/3D-Cellular-Automata/static/js/main.bce4de7c.js",
+    "main.css": "/3D-Cellular-Automata/static/css/main.625bd3c2.css",
+    "main.js": "/3D-Cellular-Automata/static/js/main.a3b2bb3b.js",
     "index.html": "/3D-Cellular-Automata/index.html",
-    "main.c6fb1bb2.css.map": "/3D-Cellular-Automata/static/css/main.c6fb1bb2.css.map",
-    "main.bce4de7c.js.map": "/3D-Cellular-Automata/static/js/main.bce4de7c.js.map"
+    "main.625bd3c2.css.map": "/3D-Cellular-Automata/static/css/main.625bd3c2.css.map",
+    "main.a3b2bb3b.js.map": "/3D-Cellular-Automata/static/js/main.a3b2bb3b.js.map"
   },
   "entrypoints": [
-    "static/css/main.c6fb1bb2.css",
-    "static/js/main.bce4de7c.js"
+    "static/css/main.625bd3c2.css",
+    "static/js/main.a3b2bb3b.js"
   ]
 }
