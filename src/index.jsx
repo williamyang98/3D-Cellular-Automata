@@ -4,7 +4,7 @@ import { RecoilRoot } from 'recoil';
 import { App } from './ui/App';
 import { Recoil_State } from './recoil_state.js';
 
-import { App as AppMain } from './app/app.js';
+import { App as AppMain } from './app/App.js';
 import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ChromePicker } from 'react-color';
-import styles from "./Colour_Picker.module.css";
 
 /**
  * Directly modify rgb object
@@ -39,9 +38,28 @@ let Colour_Picker = ({ rgb, external_on_change }) => {
     g: channel_g,
   };
 
+  const style_picker_size = 14;
+  const style_picker_padding = 5;
+
+  const style_colour_picker_display = {
+    width: `${style_picker_size}px`,
+    height: `${style_picker_size}px`,
+    borderRadius: '2px',
+  };
+
+  const style_colour_picker_swatch = {
+    padding: `${style_picker_padding}px`,
+    background: '#fff',
+    borderRadius: '1px',
+    boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
+    display: 'inline-block',
+    cursor: 'pointer',
+  };
+
   const style_popover = {
     position: 'absolute',
-    zIndex: '2',
+    zIndex: '3',
+    transform: `translateX(calc(-100% + ${style_picker_size+style_picker_padding*2}px))`,
   };
 
   const style_cover = {
@@ -50,20 +68,23 @@ let Colour_Picker = ({ rgb, external_on_change }) => {
     right: '0px',
     bottom: '0px',
     left: '0px',
+    zIndex: '2',
   };
 
   let rgba_style = {background: `rgba(${channel_r}, ${channel_g}, ${channel_b})`};
 
   return (
     <div>
-      <div className={styles['colour-picker-swatch']} onClick={on_click}>
-        <div className={styles['colour-picker-display']} style={rgba_style}></div>
+      <div style={style_colour_picker_swatch} onClick={on_click}>
+        <div style={{...style_colour_picker_display, ...rgba_style}}></div>
       </div>
       {
         is_show_picker && 
-        <div style={style_popover}>
+        <div>
           <div style={style_cover} onClick={(ev) => set_is_show_picker(false)}></div>
-          <ChromePicker color={scaled_rgb} disableAlpha={true} onChange={on_change}></ChromePicker>
+          <div style={style_popover}>
+            <ChromePicker color={scaled_rgb} disableAlpha={true} onChange={on_change}></ChromePicker>
+          </div>
         </div>
       }
     </div>
