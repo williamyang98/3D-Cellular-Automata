@@ -13,7 +13,7 @@
   "devDependencies": {
     "gh-pages": "5.0.0"
   },
-  "homepage": "http://fiendchain.github.io/3D-Cellular-Automata",
+  "homepage": "http://williamyang98.github.io/3D-Cellular-Automata",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

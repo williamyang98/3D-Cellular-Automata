@@ -45,7 +45,7 @@ let Simulation_Controls = ({ simulation, recoil_state }) => {
 }
 
 let Github_Button = () => {
-  let link = "https://github.com/FiendChain/3D-Cellular-Automata";
+  let link = "https://github.com/williamyang98/3D-Cellular-Automata";
   let title = "Github Repository";
   return (
     <a 

@@ -1,5 +1,7 @@
 # 3D Cellular Automata
-[Live Demo](http://fiendchain.github.io/3D-Cellular-Automata) of website here.
+[![deploy](https://github.com/williamyang98/3D-Cellular-Automata/actions/workflows/gh-pages-deploy.yml/badge.svg)](https://github.com/williamyang98/3D-Cellular-Automata/actions/workflows/gh-pages-deploy.yml)
+
+[Live Demo](http://williamyang98.github.io/3D-Cellular-Automata) of website here.
 
 [![3D Cellular Automata](http://img.youtube.com/vi/-sCSQcG2hZM/0.jpg)](http://youtu.be/-sCSQcG2hZM "3D Cellular Automata")
 
